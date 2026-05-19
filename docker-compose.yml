@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # บริการระบบหลังบ้าน
+  backend:
+    build: ./backend
+    container_name: jaksuhealth-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app          # ยิงสดโค้ดที่บีมแก้ เข้า Container ทันทีโดยไม่ต้องคิวรันใหม่ตอน Dev
+    environment:
+      - DB_HOST=jaksuhealth-db.cbumkwcos0gm.ap-southeast-1.rds.amazonaws.com
+      - DB_PORT=5432
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=${DB_PASSWORD}  # ดึงรหัสผ่านมาจากไฟล์ .env บนเครื่องเพื่อความปลอดภัย
+    restart: always
+    networks:
+      - jaksu-network
+
+  # บริการระบบหน้าบ้าน
+  frontend:
+    build: ./frontend
+    container_name: jaksuhealth-frontend
+    ports:
+      - "3000:80"                  # เปิดให้เข้าเว็บตรงๆ ผ่าน IP เครื่อง EC2 พอร์ต 80 ได้เลย
+    restart: always
+    networks:
+      - jaksu-network
+
+# สร้างสะพานเครือข่ายจำลองเชื่อมระบบภายใน
+networks:
+  jaksu-network:
+    driver: bridge
