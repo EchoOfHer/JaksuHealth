@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  # บริการฐานข้อมูล (Local PostgreSQL) - เพิ่มใหม่!
+  jaksu-db-local:
+    image: postgres:15-alpine
+    container_name: jaksuhealth-db-local
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-local_dev_password} # ถ้าไม่มีไฟล์ .env ให้ใช้รหัสนี้แทน
+      POSTGRES_DB: jaksuhealth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - jaksu_pg_data:/var/lib/postgresql/data
+    networks:
+      - jaksu-network
+
   # บริการระบบหลังบ้าน
   backend:
     build: ./backend
@@ -8,14 +24,17 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app          # ยิงสดโค้ดที่บีมแก้ เข้า Container ทันทีโดยไม่ต้องคิวรันใหม่ตอน Dev
+      - ./backend:/app          # ยิงสดโค้ดเข้า Container ทันที
     environment:
-      - DB_HOST=jaksuhealth-db.cbumkwcos0gm.ap-southeast-1.rds.amazonaws.com
+      # เปลี่ยนให้ชี้มาที่ Local Database ตัวบนแทน AWS RDS
+      - DB_HOST=jaksu-db-local
       - DB_PORT=5432
-      - DB_NAME=postgres
+      - DB_NAME=jaksuhealth_db
       - DB_USER=postgres
-      - DB_PASSWORD=${DB_PASSWORD}  # ดึงรหัสผ่านมาจากไฟล์ .env บนเครื่องเพื่อความปลอดภัย
+      - DB_PASSWORD=${DB_PASSWORD:-local_dev_password}
     restart: always
+    depends_on:
+      - jaksu-db-local          # รอให้ DB รันเสร็จก่อนค่อยรัน Backend
     networks:
       - jaksu-network
 
@@ -24,7 +43,7 @@ services:
     build: ./frontend
     container_name: jaksuhealth-frontend
     ports:
-      - "3000:80"                  # เปิดให้เข้าเว็บตรงๆ ผ่าน IP เครื่อง EC2 พอร์ต 80 ได้เลย
+      - "3000:80"                  # เปิดให้เข้าเว็บตรงๆ
     restart: always
     networks:
       - jaksu-network
@@ -33,3 +52,7 @@ services:
 networks:
   jaksu-network:
     driver: bridge
+
+# จองพื้นที่ในฮาร์ดดิสก์เครื่องตัวเองเพื่อเก็บข้อมูล DB ไม่ให้หายตอนปิด Container
+volumes:
+  jaksu_pg_data:
