@@ -53,19 +53,19 @@ const Dashboard = () => {
       {/* กล่องสรุปสถิติ */}
       <div style={{ display: "flex", flexDirection: "row", gap: "40px" }}>
         {/* กล่อง Pending */}
-        <div style={{ backgroundColor: "white", width: "250px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div style={{ backgroundColor: "white", width: "300px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>13</h1>
           <p style={{ backgroundColor: "#FFDDBF", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#FE7743", borderRadius: "10px" }}>PENDING</p>
         </div>
 
         {/* กล่อง High Risk */}
-        <div style={{ backgroundColor: "white", width: "250px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div style={{ backgroundColor: "white", width: "300px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>2</h1>
           <p style={{ backgroundColor: "#FF8383", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#B20101", borderRadius: "10px" }}>HIGH RISK</p>
         </div>
 
         {/* กล่อง Complete */}
-        <div style={{ backgroundColor: "white", width: "250px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div style={{ backgroundColor: "white", width: "300px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>3</h1>
           <p style={{ backgroundColor: "#86D392", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#36543A", borderRadius: "10px" }}>COMPLETE</p>
         </div>
@@ -74,7 +74,7 @@ const Dashboard = () => {
       <hr style={{ border: "none", height: "2px", backgroundColor: "#000", opacity: "30%", margin: "40px 0 30px 0" }} />
       
       <div style={{ marginBottom: "15px" }}>
-        <h1 style={{ fontSize: "30px", color: "#1C1C1E", opacity: "80%" }}>Today's Patient</h1>
+        <h1 style={{ fontSize: "30px", color: "#1C1C1E", opacity: "80%" }}>Today's Patient (3)</h1>
       </div>
 
       {/* Patient List */}
