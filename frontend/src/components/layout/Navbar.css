@@ -78,6 +78,7 @@ nav#mainNav.sticky-nav {
   display: flex;
   align-items: center;
   position: relative; 
+  gap: 12px;
 }
 
 #userImage {
@@ -95,7 +96,7 @@ nav#mainNav.sticky-nav {
   top: 75px; 
   right: 0; 
   background-color: white;
-  min-width: 180px;
+  min-width: 220px;
   border-radius: 20px;
   box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15); 
   padding: 15px;

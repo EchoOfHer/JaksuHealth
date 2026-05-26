@@ -65,7 +65,7 @@ const Navbar = () => {
 
   return (
     <nav id="mainNav" className={isSticky ? "sticky-nav" : ""}>
-      {/* ส่วน Logo (ถ้ายังไม่มีไฟล์รูปในเครื่อง ใช้ข้อความแทนชั่วคราวได้ครับ) */}
+      {/* ส่วน Logo */}
       <img src="/logo.png" alt="logo" width={100}/>
       
       {/* ส่วนเมนูกลาง */}
@@ -87,7 +87,7 @@ const Navbar = () => {
 
       {/* ส่วนโปรไฟล์ */}
       <div className="profile-section" ref={dropdownRef}>
-        <img src="/userImg.png" alt="user"width={50}height={50}style={{ borderRadius: "50%" }}/>
+        <img src="/userImg.png" alt="user" width={50} height={50} style={{ borderRadius: "50%" }}/>
         <svg
           id="downArrow"
           onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -100,13 +100,15 @@ const Navbar = () => {
         {/* Dropdown */}
         <div className={`dropdown-card ${dropdownOpen ? "show" : ""}`} id="profileCard">
           <div className="dropdown-profile">
-            <img src="/userImg.png" alt="user"width={40}height={40}style={{ borderRadius: "50%" }}/>
-            <span style={{opacity:"50%"},{ fontWeight: "500" }} >Dr.Stone K.</span>
+            <img src="/userImg.png" alt="user" width={40} height={40} style={{ borderRadius: "50%" }}/>
+            {/* 👈 แก้ไขบั๊กการเขียนสไตล์ซ้อนตรงนี้เรียบร้อยแล้ว */}
+            <span style={{ opacity: 0.6, fontWeight: "500" }}>Dr.Stone K.</span>
           </div>
           
           <a href="#" className="menu-item-with-icon">
-            <img src="/support.png" alt="user"width={40}height={40}style={{ borderRadius: "50%"}}/>
-            <span style={{opacity:"50%"},{ fontWeight: "500" }}>Support</span>
+            <img src="/support.png" alt="user" width={40} height={40} style={{ borderRadius: "50%" }}/>
+            {/* 👈 แก้ไขบั๊กการเขียนสไตล์ซ้อนตรงนี้เรียบร้อยแล้ว */}
+            <span style={{ opacity: 0.6, fontWeight: "500" }}>Support</span>
           </a>
 
           <hr style={{ width: "100%", border: 0, borderTop: "1px solid #ECECEC", margin: "5px 0" }} />
