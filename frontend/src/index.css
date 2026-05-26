@@ -1,0 +1,14 @@
+/* src/index.css */
+
+/* ล้างระยะห่างขอบจอที่เบราว์เซอร์แถมมาให้ */
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #ECECEC; /* กันเหนียวให้พื้นหลังสุดเป็นสีเทาไปเลย */
+}
+
+/* ตั้งค่าให้ทุกกล่องคำนวณขนาดรวมขอบด้วย (ป้องกัน Layout เพี้ยน) */
+*, *::before, *::after {
+  box-sizing: border-box;
+}

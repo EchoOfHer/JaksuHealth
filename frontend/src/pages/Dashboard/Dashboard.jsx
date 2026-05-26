@@ -1,77 +1,132 @@
-import { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import './Dashboard.css';
 
 const Dashboard = () => {
-  // ข้อมูลจำลอง (Mock Data) สำหรับคิวคนไข้
-  const [patients] = useState([
-    { id: "P-2605-012", name: "John Doe", time: "09:00 AM", status: "High Risk" },
-    { id: "P-2605-013", name: "Jane Smith", time: "09:30 AM", status: "Pending" },
-    { id: "P-2605-014", name: "Somchai M.", time: "10:00 AM", status: "Complete" },
-  ]);
+  const [currentDate, setCurrentDate] = useState('');
+
+  // 1. ฟังก์ชันตั้งค่าวันที่ปัจจุบัน
+  useEffect(() => {
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    const formattedDate = new Date().toLocaleDateString('en-GB', options);
+    setCurrentDate(formattedDate.replace(',', ''));
+  }, []);
+
+  // 2. ข้อมูลจำลอง (Mock Data) ดึงจากที่นายเขียนไว้
+  const mockPatients = [
+    {
+      id: "P-2605-016",
+      name: "Khanatip Gankingpai",
+      queue: "Q#001",
+      time: "10:00AM",
+      diagnosis: "Inter. AMD",
+      riskLevel: "High",
+      colorCode: "#EF4444" // แดง
+    },
+    {
+      id: "P-2605-012",
+      name: "Jirawat Jakthong",
+      queue: "Q#002",
+      time: "10:15AM",
+      diagnosis: "Early AMD",
+      riskLevel: "Medium",
+      colorCode: "#FE7743" // ส้ม
+    },
+    {
+      id: "P-2605-037",
+      name: "Natthawut Saengmani",
+      queue: "Q#003",
+      time: "10:30AM",
+      diagnosis: "Normal",
+      riskLevel: "Low",
+      colorCode: "#40a34f" // เขียว
+    }
+  ];
 
   return (
-    <div style={{ fontFamily: "'Segoe UI', sans-serif", color: "#333" }}>
-      
+    <div className="dashboard-container">
       {/* ส่วนหัวหน้าจอ */}
-      <h2 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px" }}>
-        Today's Overview
-      </h2>
+      <div className="page-header">
+        <h1>Today's Overview</h1>
+        <p className="date">{currentDate}</p>
+      </div>
 
-      {/* กล่องสรุปสถิติ (Summary Cards) */}
-      <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>
-        <div style={{ flex: 1, background: "#fff", padding: "20px", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", borderLeft: "4px solid #F59E0B" }}>
-          <div style={{ fontSize: "14px", color: "#666" }}>Pending Scans</div>
-          <div style={{ fontSize: "28px", fontWeight: "bold" }}>12</div>
+      {/* กล่องสรุปสถิติ */}
+      <div style={{ display: "flex", flexDirection: "row", gap: "40px" }}>
+        {/* กล่อง Pending */}
+        <div style={{ backgroundColor: "white", width: "250px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>13</h1>
+          <p style={{ backgroundColor: "#FFDDBF", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#FE7743", borderRadius: "10px" }}>PENDING</p>
         </div>
-        <div style={{ flex: 1, background: "#fff", padding: "20px", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", borderLeft: "4px solid #EF4444" }}>
-          <div style={{ fontSize: "14px", color: "#666" }}>High Risk Detected</div>
-          <div style={{ fontSize: "28px", fontWeight: "bold", color: "#EF4444" }}>3</div>
+
+        {/* กล่อง High Risk */}
+        <div style={{ backgroundColor: "white", width: "250px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>2</h1>
+          <p style={{ backgroundColor: "#FF8383", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#B20101", borderRadius: "10px" }}>HIGH RISK</p>
         </div>
-        <div style={{ flex: 1, background: "#fff", padding: "20px", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", borderLeft: "4px solid #10B981" }}>
-          <div style={{ fontSize: "14px", color: "#666" }}>Completed</div>
-          <div style={{ fontSize: "28px", fontWeight: "bold" }}>45</div>
+
+        {/* กล่อง Complete */}
+        <div style={{ backgroundColor: "white", width: "250px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>3</h1>
+          <p style={{ backgroundColor: "#86D392", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#36543A", borderRadius: "10px" }}>COMPLETE</p>
         </div>
       </div>
 
-      {/* ตารางคิวคนไข้ (Worklist) */}
-      <div style={{ background: "#fff", padding: "20px", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-        <h3 style={{ fontSize: "18px", marginBottom: "15px" }}>Patient Worklist</h3>
+      <hr style={{ border: "none", height: "2px", backgroundColor: "#000", opacity: "30%", margin: "40px 0 30px 0" }} />
+      
+      <div style={{ marginBottom: "15px" }}>
+        <h1 style={{ fontSize: "30px", color: "#1C1C1E", opacity: "80%" }}>Today's Patient</h1>
+      </div>
+
+      {/* Patient List */}
+      <div style={{ display: "flex", flexDirection: "column", textAlign: "start", gap: "15px", position: "relative" }}>
         
-        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
-          <thead>
-            <tr style={{ borderBottom: "2px solid #eee", color: "#888" }}>
-              <th style={{ padding: "12px 8px" }}>Patient ID</th>
-              <th style={{ padding: "12px 8px" }}>Name</th>
-              <th style={{ padding: "12px 8px" }}>Time</th>
-              <th style={{ padding: "12px 8px" }}>Status</th>
-              <th style={{ padding: "12px 8px" }}>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {patients.map((p, index) => (
-              <tr key={index} style={{ borderBottom: "1px solid #eee" }}>
-                <td style={{ padding: "12px 8px", fontWeight: "500" }}>{p.id}</td>
-                <td style={{ padding: "12px 8px" }}>{p.name}</td>
-                <td style={{ padding: "12px 8px" }}>{p.time}</td>
-                <td style={{ padding: "12px 8px" }}>
-                  <span style={{
-                    padding: "4px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold",
-                    background: p.status === "High Risk" ? "#FEE2E2" : p.status === "Pending" ? "#FEF3C7" : "#D1FAE5",
-                    color: p.status === "High Risk" ? "#EF4444" : p.status === "Pending" ? "#D97706" : "#059669"
-                  }}>
-                    {p.status}
-                  </span>
-                </td>
-                <td style={{ padding: "12px 8px" }}>
-                  <button style={{ padding: "6px 12px", background: "#F97316", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer" }}>
-                    Analyze
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        {/* วนลูปแสดงรายชื่อคนไข้จาก Array */}
+        {mockPatients.map((patient, index) => (
+          <div key={index} style={{
+            display: "flex", flexDirection: "row", backgroundColor: "white", alignItems: "center", 
+            borderLeft: `12px solid ${patient.colorCode}`, borderRadius: "12px", padding: "20px 24px", 
+            boxShadow: "0 4px 16px rgba(0,0,0,0.03)"
+          }}>
+            <div style={{ width: "25%", marginLeft: "10px" }}>
+              <p style={{ fontSize: "25px", fontWeight: "700", color: "#1C1C1E", margin: "0", opacity: "85%" }}>{patient.diagnosis}</p>
+              <p style={{ color: patient.colorCode, fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0" }}>{patient.riskLevel}</p>
+            </div>
+            <div style={{ width: "35%" }}>
+              <p style={{ fontSize: "25px", fontWeight: "700", color: "#1C1C1E", margin: "0", opacity: "85%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={patient.name}>
+                {patient.name}
+              </p>
+              <p style={{ color: "#555", fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0", opacity: "75%" }}>{patient.id}</p>
+            </div>
+            <div style={{ width: "20%" }}>
+              <p style={{ fontSize: "25px", fontWeight: "700", color: "#1C1C1E", margin: "0", opacity: "85%" }}>{patient.queue}</p>
+              <p style={{ color: "#555", fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0", opacity: "75%" }}>{patient.time}</p>
+            </div>
+            <div style={{ width: "20%", display: "flex", justifyContent: "flex-end" }}>
+              <div className="review">
+                <p>Diagnose</p>
+                {/* ถ้าเอาไอคอนมาใส่ อย่าลืมแก้ Path รูปภาพตรงนี้นะครับ */}
+                <span style={{ marginLeft: "8px", color: "#FE7743" }}>➔</span> 
+              </div>
+            </div>
+          </div>
+        ))}
 
+        {/* กล่องควบคุม View All แบบฟุ้งสไลด์เบลอ */}
+        <div style={{ position: "absolute", bottom: "0", left: "0", right: "0", height: "150px", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: "100" }}>
+          <div style={{
+            position: "absolute", top: "0", left: "-12px", right: "-12px", bottom: "0",
+            background: "linear-gradient(to bottom, rgba(236, 236, 236, 0) 0%, rgba(236, 236, 236, 0.96) 65%, rgba(236, 236, 236, 1) 100%)",
+            backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)",
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 85%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 85%)",
+            pointerEvents: "none", borderRadius: "0 0 12px 12px"
+          }}></div>
+          <button className="view-all-btn" style={{ position: "relative", zIndex: "101", marginBottom: "-20px" }}>
+            View All Patients
+          </button>
+        </div>
+
+      </div>
     </div>
   );
 };
