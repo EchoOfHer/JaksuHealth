@@ -94,7 +94,7 @@ nav#mainNav.sticky-nav {
 .dropdown-card {
   position: absolute;
   top: 75px; 
-  right: 0; 
+  right: -20px; 
   background-color: white;
   min-width: 220px;
   border-radius: 20px;
