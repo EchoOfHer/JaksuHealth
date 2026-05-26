@@ -16,3 +16,9 @@ __pycache__/
 *.pth
 *.h5
 *.onnx
+
+# โฟลเดอร์นรก (ห้ามเอาขึ้นเด็ดขาด)
+node_modules
+dist
+dist-ssr
+*.local
