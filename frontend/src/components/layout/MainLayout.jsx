@@ -12,7 +12,7 @@ function MainLayout() {
       <div style={{ 
         flex: 1, 
         padding: '40px', 
-        paddingTop: '130px', // ดันพื้นที่ด้านบนลงมา (ชดเชยความสูง Navbar 70px + ช่องไฟด้านบน 20px + ระยะห่าง)
+        paddingTop: '110px', // ดันพื้นที่ด้านบนลงมา (ชดเชยความสูง Navbar 70px + ช่องไฟด้านบน 20px + ระยะห่าง)
         overflowY: 'auto' 
       }}>
         {/* เนื้อหาของหน้า Dashboard / Diagnostic / Progression จะมาเปลี่ยนตรงนี้โดยไม่ชน Navbar */}
