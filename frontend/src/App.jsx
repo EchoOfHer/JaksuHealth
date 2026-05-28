@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import Dashboard from './pages/Dashboard/Dashboard'; 
+import Diagnostic from './pages/Diagnostic/Diagnostic';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="diagnostic" element={<div>นี่คือหน้า Diagnostic Workspace</div>} />
+          <Route path="diagnostic" element={<Diagnostic />} />
         </Route>
         
         {/* หน้า Login เดี่ยวๆ (เดี๋ยวเราค่อยมาทำทีหลัง) */}

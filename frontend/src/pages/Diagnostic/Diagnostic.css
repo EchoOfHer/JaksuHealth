@@ -1,0 +1,210 @@
+/* src/pages/Diagnostic/Diagnostic.css */
+
+.diagnostic-container {
+  padding: 30px 0px 250px 0px;
+  font-family: 'DM Sans', sans-serif;
+  color: #555;
+}
+
+.page-header {
+  margin-bottom: 18px;
+  animation: fadeUp 0.5s 0.1s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Filter & Search Styles --- */
+.filter-dropdown-container {
+  position: relative;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.filter-btn img {
+  display: block;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.filter-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(254, 119, 67, 0.15);
+  border-color: rgba(254, 119, 67, 0.15);
+}
+
+.filter-btn:hover img {
+  transform: rotate(30deg);
+}
+
+.filter-btn.active {
+  background: #FE7743;
+  border-color: #FE7743;
+  box-shadow: 0 8px 20px rgba(254, 119, 67, 0.3);
+}
+
+.filter-btn.active img {
+  filter: brightness(0) invert(1);
+  transform: rotate(90deg);
+}
+
+.filter-dropdown-card {
+  position: absolute;
+  top: 0px;
+  left: 60px;
+  right: calc(100% + 12px);
+  min-width: 210px; 
+  width: max-content;
+  background: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12), 0 5px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 14px;
+  z-index: 1000;
+  font-family: 'Inter', sans-serif;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-15px);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.filter-dropdown-card.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.filter-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #999;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1C1C1E;
+  transition: color 0.2s ease;
+}
+
+.filter-option:hover {
+  color: #FE7743;
+}
+
+.filter-option input[type="radio"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #D1D5DB;
+  border-radius: 50%;
+  outline: none;
+  margin-right: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.filter-option input:checked {
+  background-color: #FE7743;
+  border-color: #FE7743;
+}
+
+.filter-option input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  display: block;
+  left: 4px;
+  top: 4px;
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+}
+
+.filter-option input:checked + span {
+  color: #FE7743;
+  font-weight: 600;
+}
+
+/* --- Review Button (จากหน้า Dashboard) --- */
+.review {
+  margin-right: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 44px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #FE7743;
+  border-radius: 50px;
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 1;
+}
+
+.review::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: #FE7743;
+  transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: -1;
+}
+
+.review:hover::before {
+  width: 100%;
+}
+
+.review p {
+  color: #FE7743;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 !important;
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.review:hover p {
+  color: #FFFFFF;
+}
+
+.review span.arrow {
+  margin-left: 8px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  color: #FE7743;
+}
+
+.review:hover span.arrow {
+  opacity: 0;
+  transform: translateX(15px);
+}
