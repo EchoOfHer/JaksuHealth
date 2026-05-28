@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // 👈 1. นำเข้า useNavigate
 import './Dashboard.css';
 
 const Dashboard = () => {
   const [currentDate, setCurrentDate] = useState('');
+  const navigate = useNavigate(); // 👈 2. เรียกใช้งานเครื่องมือนำทาง
 
   // 1. ฟังก์ชันตั้งค่าวันที่ปัจจุบัน
   useEffect(() => {
@@ -11,7 +13,7 @@ const Dashboard = () => {
     setCurrentDate(formattedDate.replace(',', ''));
   }, []);
 
-  // 2. ข้อมูลจำลอง (Mock Data) ดึงจากที่นายเขียนไว้
+  // 2. ข้อมูลจำลอง (Mock Data) 
   const mockPatients = [
     {
       id: "P-2605-016",
@@ -20,7 +22,7 @@ const Dashboard = () => {
       time: "10:00AM",
       diagnosis: "Inter. AMD",
       riskLevel: "High",
-      colorCode: "#EF4444" // แดง
+      colorCode: "#EF4444" 
     },
     {
       id: "P-2605-012",
@@ -29,7 +31,7 @@ const Dashboard = () => {
       time: "10:15AM",
       diagnosis: "Early AMD",
       riskLevel: "Medium",
-      colorCode: "#FE7743" // ส้ม
+      colorCode: "#FE7743" 
     },
     {
       id: "P-2605-037",
@@ -38,7 +40,7 @@ const Dashboard = () => {
       time: "10:30AM",
       diagnosis: "Normal",
       riskLevel: "Low",
-      colorCode: "#40a34f" // เขียว
+      colorCode: "#40a34f" 
     }
   ];
 
@@ -74,7 +76,7 @@ const Dashboard = () => {
       <hr style={{ border: "none", height: "2px", backgroundColor: "#000", opacity: "30%", margin: "40px 0 30px 0" }} />
       
       <div style={{ marginBottom: "15px" }}>
-        <h1 style={{ fontSize: "30px", color: "#1C1C1E", opacity: "80%" }}>Today's Patient (3)</h1>
+        <h1 style={{ fontSize: "30px", color: "#1C1C1E", opacity: "80%" }}>Today's Patient ({mockPatients.length})</h1>
       </div>
 
       {/* Patient List */}
@@ -102,10 +104,10 @@ const Dashboard = () => {
               <p style={{ color: "#555", fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0", opacity: "75%" }}>{patient.time}</p>
             </div>
             <div style={{ width: "20%", display: "flex", justifyContent: "flex-end" }}>
-              <div className="review">
+              {/* ทำปุ่ม Diagnose ให้สลับไปหน้า Diagnostic ได้เหมือนกัน */}
+              <div className="review" onClick={() => navigate('/diagnostic')}>
                 <p>Diagnose</p>
-                {/* ถ้าเอาไอคอนมาใส่ อย่าลืมแก้ Path รูปภาพตรงนี้นะครับ */}
-                <span style={{ marginLeft: "8px", color: "#FE7743" }}>➔</span> 
+                <img className="arrow" src="/orangeArrow.png" alt="menu" />
               </div>
             </div>
           </div>
@@ -121,7 +123,13 @@ const Dashboard = () => {
             WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 85%)",
             pointerEvents: "none", borderRadius: "0 0 12px 12px"
           }}></div>
-          <button className="view-all-btn" style={{ position: "relative", zIndex: "101", marginBottom: "-20px" }}>
+          
+          {/* 👈 3. ใส่เหตุการณ์ onClick พร้อมเรียกฟังก์ชัน navigate ชี้ไปที่ /diagnostic */}
+          <button 
+            className="view-all-btn" 
+            onClick={() => navigate('/diagnostic')} 
+            style={{ position: "relative", zIndex: "101", marginBottom: "-20px" }}
+          >
             View All Patients
           </button>
         </div>
