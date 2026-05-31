@@ -1,0 +1,363 @@
+/* ==========================================================================
+   ★ PROGRESSION PAGE STYLESHEET (ProgressionPage.css)
+   ========================================================================== */
+
+/* 1. ส่วนตู้คอนเทนเนอร์หลักของหน้า */
+.progression-container {
+  padding: 30px 0px 250px 0px;
+  font-family: 'DM Sans', sans-serif;
+  color: #555;
+}
+
+/* 2. ส่วนหัวข้อหน้าเว็บ (Page Header) */
+.page-header {
+  margin-bottom: 18px;
+}
+
+.page-title {
+  opacity: 0.8;
+  font-size: 30px;
+  font-weight: 700;
+  color: #1C1C1E;
+  margin: 0;
+}
+
+.page-subtitle-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 50%;
+  margin-top: 5px;
+  margin-bottom: 30px;
+}
+
+.page-subtitle {
+  font-size: 18px;
+  color: #999;
+}
+
+/* 3. เครื่องมือค้นหาและจัดระเบียบ (Search & Filters) */
+.search-filter-row {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+  max-width: 50%;
+  align-items: center;
+  position: relative;
+  z-index: 100;
+}
+
+.search-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 50px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  padding: 8px 20px;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.search-icon {
+  display: block;
+  margin-right: 12px;
+  opacity: 0.5;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #1C1C1E;
+}
+
+/* 4. ปุ่มตัวกรองและเมนูดรอปดาวน์ */
+.filter-dropdown-container {
+  position: relative;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFFFFF;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.filter-btn img {
+  display: block;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* สถานะตัวกรองเปิดอยู่ (Active State) */
+.filter-btn.active {
+  background-color: #FE7743;
+  border-color: #FE7743;
+  box-shadow: 0 8px 20px rgba(254, 119, 67, 0.3);
+}
+
+.filter-btn.active img {
+  filter: brightness(0) invert(1);
+  transform: rotate(90deg);
+}
+
+/* การ์ดเมนูการจัดเรียงดรอปดาวน์ */
+.filter-dropdown-card {
+  position: absolute;
+  top: 0;
+  left: 60px;
+  width: 200px;
+  background-color: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12), 0 5px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 14px;
+  z-index: 1000;
+  font-family: 'Inter', sans-serif;
+  
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-15px);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.filter-dropdown-card.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.filter-dropdown-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #999;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1C1C1E;
+  transition: color 0.2s ease;
+}
+
+.filter-option:hover {
+  color: #FE7743;
+}
+
+.filter-option input[type="radio"] {
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.filter-option.selected {
+  color: #FE7743;
+  font-weight: 600;
+}
+
+/* 5. ส่วนของตารางคนไข้ (Patient Table) */
+.table-container {
+  background-color: white;
+  padding: 20px 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  margin-top: 20px;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 15% 25% 15% 20% 13% 12%;
+  color: #000;
+  opacity: 0.8;
+  font-weight: 600;
+  font-size: 20px;
+  border-bottom: 1.5px solid #E5E7EB;
+  padding-bottom: 20px;
+  margin-bottom: 12px;
+  margin-top: 20px;
+}
+
+.table-header-col-left {
+  text-align: left;
+}
+
+.table-header-col-action {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.table-header-action-inner {
+  width: 160px;
+  margin-right: 20px;
+  text-align: left;
+}
+
+/* แถวข้อมูลตาราง (Table Rows) */
+.patient-row {
+  display: grid;
+  grid-template-columns: 15% 25% 15% 20% 13% 12%;
+  align-items: center;
+  color: #1C1C1E;
+  font-weight: 500;
+  font-size: 18px;
+  padding: 16px 0;
+  border-bottom: 1px solid #ECECEC;
+}
+
+.patient-row:last-child {
+  border-bottom: none;
+}
+
+.patient-cell-left {
+  text-align: left;
+}
+
+.patient-cell-bold {
+  text-align: left;
+  font-weight: 600;
+}
+
+.patient-cell-muted {
+  text-align: left;
+  color: #555;
+}
+
+.patient-cell-trend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.patient-cell-action {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* 6. ★ PREMIUM VIEW TREND BUTTON (Pure CSS Animation) */
+.view-trend-btn {
+  margin-right: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 44px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #FE7743;
+  border-radius: 50px;
+  cursor: pointer;
+  background-color: transparent;
+  color: #FE7743;
+  font-size: 18px;
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 1;
+}
+
+.view-trend-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: #FE7743;
+  transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: -1;
+}
+
+.view-trend-btn:hover {
+  color: #FFFFFF;
+}
+
+.view-trend-btn:hover::before {
+  width: 100%;
+}
+
+.view-trend-btn span.arrow {
+  margin-left: 8px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  font-size: 20px;
+}
+
+.view-trend-btn:hover span.arrow {
+  opacity: 0;
+  transform: translateX(15px);
+}
+
+.table-divider {
+  opacity: 0.2;
+}
+
+/* 7. ส่วนควบคุมการเปลี่ยนหน้า (Pagination) */
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 15px;
+}
+
+.page-arrow {
+  background-color: #F3F3F3;
+  opacity: 0.8;
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-arrow:hover {
+  background-color: #E5E7EB;
+  opacity: 1;
+}
+
+.active-page {
+  background-color: #25343F;
+  color: white;
+  min-width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(37, 52, 63, 0.15);
+  user-select: none;
+}

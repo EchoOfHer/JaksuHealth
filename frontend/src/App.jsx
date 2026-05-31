@@ -4,6 +4,9 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Diagnostic from './pages/Diagnostic/Diagnostic';
 import Login from './pages/Login/Login';
 
+// 1. Import หน้า Progression ที่เราเพิ่งแปลงเสร็จเข้ามา
+import ProgressionPage from './pages/Progression/Progression'; 
+
 function App() {
   return (
     <BrowserRouter>
@@ -15,10 +18,12 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         {/* 3. กลุ่มหน้าในระบบ (ถูกครอบด้วย MainLayout เพื่อให้มี Navbar เสมอ) */}
-        {/* สังเกตว่าเราเอา path="/" ออกจากตรงนี้แล้วเปลี่ยนมาใช้แค่ element */}
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/diagnostic" element={<Diagnostic />} />
+          
+          {/* 🌟 2. เพิ่ม Route สำหรับหน้า Progression ไว้ตรงนี้ 🌟 */}
+          <Route path="/progression" element={<ProgressionPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
