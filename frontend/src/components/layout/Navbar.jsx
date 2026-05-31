@@ -101,19 +101,26 @@ const Navbar = () => {
         <div className={`dropdown-card ${dropdownOpen ? "show" : ""}`} id="profileCard">
           <div className="dropdown-profile">
             <img src="/userImg.png" alt="user" width={40} height={40} style={{ borderRadius: "50%" }}/>
-            {/* 👈 แก้ไขบั๊กการเขียนสไตล์ซ้อนตรงนี้เรียบร้อยแล้ว */}
             <span style={{ opacity: 0.6, fontWeight: "500" }}>Dr.Stone K.</span>
           </div>
           
           <a href="#" className="menu-item-with-icon">
             <img src="/support.png" alt="user" width={40} height={40} style={{ borderRadius: "50%" }}/>
-            {/* 👈 แก้ไขบั๊กการเขียนสไตล์ซ้อนตรงนี้เรียบร้อยแล้ว */}
             <span style={{ opacity: 0.6, fontWeight: "500" }}>Support</span>
           </a>
 
           <hr style={{ width: "100%", border: 0, borderTop: "1px solid #ECECEC", margin: "5px 0" }} />
           
-          <a href="#" style={{ color: "white", background: "#FE7743", textAlign: "center", fontWeight: "bold", paddingTop: 15, paddingBottom: 15 }}>
+          {/* 👈 จุดที่แก้ไข: ใส่ onClick และ navigate('/login') */}
+          <a 
+            href="#" 
+            onClick={(e) => {
+              e.preventDefault(); // ป้องกันไม่ให้หน้าเว็บกระตุกขึ้นไปด้านบนสุด
+              setDropdownOpen(false); // สั่งปิด Dropdown
+              navigate('/login'); // เปลี่ยนหน้ากลับไปที่ Login
+            }}
+            style={{ color: "white", background: "#FE7743", textAlign: "center", fontWeight: "bold", paddingTop: 15, paddingBottom: 15 }}
+          >
             Log Out
           </a>
         </div>
