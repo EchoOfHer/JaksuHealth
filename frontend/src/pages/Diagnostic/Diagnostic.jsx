@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Diagnostic.css';
 
-const Diagnostic = () => {
+const Diagnostic = ({ onSelectPatient }) => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState(''); // 🌟 State ค้นหา
@@ -23,7 +23,7 @@ const Diagnostic = () => {
   const mockPatients = [
     {
       id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM",
-      diagnosis: "Inter. AMD", riskLevel: "High", colorCode: "#EF4444"
+      diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444"
     },
     {
       id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM",
@@ -210,10 +210,10 @@ const Diagnostic = () => {
                 <p style={{ color: "#555", fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0", opacity: "75%" }}>{patient.time}</p>
               </div>
               <div style={{ width: "20%", display: "flex", justifyContent: "flex-end" }}>
-                <div className="review">
-                  <p>Diagnose</p>
-                  <span className="arrow">➔</span>
-                </div>
+                <div className="review" onClick={() => onSelectPatient(patient)} style={{ cursor: 'pointer' }}>
+      <p>Diagnose</p>
+      <span className="arrow">➔</span>
+    </div>
               </div>
             </div>
           ))
