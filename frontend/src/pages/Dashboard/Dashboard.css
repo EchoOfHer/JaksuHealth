@@ -6,7 +6,7 @@
   color: #555;
 }
 
-.page-header {
+.dashboard-container .page-header {
   margin-bottom: 18px;
   animation: fadeUp 0.5s 0.1s ease both;
 }
@@ -16,7 +16,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-.page-header h1 {
+.dashboard-container .page-header h1 {
   font-size: 30px;
   font-weight: 700;
   color: var(--text-dark, #1C1C1E);
@@ -24,7 +24,7 @@
   opacity: 80%;
 }
 
-.page-header .date {
+.dashboard-container .page-header .date {
   font-size: 18px;
   color: var(--text-soft, #999);
   margin-top: -10px;
