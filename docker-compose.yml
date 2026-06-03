@@ -1,32 +1,31 @@
-version: '3.8'
-
 services:
-  # บริการฐานข้อมูล (Local PostgreSQL) - เพิ่มใหม่!
+  # 1. บริการฐานข้อมูล (Local PostgreSQL)
   jaksu-db-local:
     image: postgres:15-alpine
     container_name: jaksuhealth-db-local
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-local_dev_password} # ถ้าไม่มีไฟล์ .env ให้ใช้รหัสนี้แทน
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-local_dev_password}
       POSTGRES_DB: jaksuhealth_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - jaksu_pg_data:/var/lib/postgresql/data
+      # 🌟 แมปโฟลเดอร์ db-init จาก root เข้าไปในคอนเทนเนอร์
+      - ./db-init:/docker-entrypoint-initdb.d
     networks:
       - jaksu-network
 
-  # บริการระบบหลังบ้าน
+  # 2. บริการระบบหลังบ้าน (Backend)
   backend:
-    build: ./backend
+    build: ./backend             # 🌟 ชี้ไปที่โฟลเดอร์ backend
     container_name: jaksuhealth-backend
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app          # ยิงสดโค้ดเข้า Container ทันที
+      - ./backend:/app           # 🌟 แมปโค้ดจากโฟลเดอร์ backend เข้าไปในคอนเทนเนอร์
     environment:
-      # เปลี่ยนให้ชี้มาที่ Local Database ตัวบนแทน AWS RDS
       - DB_HOST=jaksu-db-local
       - DB_PORT=5432
       - DB_NAME=jaksuhealth_db
@@ -34,16 +33,16 @@ services:
       - DB_PASSWORD=${DB_PASSWORD:-local_dev_password}
     restart: always
     depends_on:
-      - jaksu-db-local          # รอให้ DB รันเสร็จก่อนค่อยรัน Backend
+      - jaksu-db-local
     networks:
       - jaksu-network
 
-  # บริการระบบหน้าบ้าน
+  # 3. บริการระบบหน้าบ้าน (Frontend)
   frontend:
-    build: ./frontend
+    build: ./frontend            # 🌟 ชี้ไปที่โฟลเดอร์ frontend
     container_name: jaksuhealth-frontend
     ports:
-      - "3000:80"                  # เปิดให้เข้าเว็บตรงๆ
+      - "3000:80"                # เปิดให้เข้าเว็บตรงๆ ที่พอร์ต 3000
     restart: always
     networks:
       - jaksu-network
