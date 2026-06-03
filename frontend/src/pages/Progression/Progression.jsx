@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import StatusFilterTab from '../../components/common/StatusFilterTab';
 import './Progression.css'; // 🌟 โหลดสไตล์ CSS แยกไฟล์ตรงนี้
+import ProgressionSummary from './ProgressionSummary';
 
 // Mock Data เดิมจากระบบ
 const INITIAL_PATIENTS = [
@@ -11,7 +13,9 @@ const INITIAL_PATIENTS = [
     stage: "Intermediate AMD",
     trend: "Worsening",
     trendColor: "#EF4444",
-    dotColor: "#EF4444"
+    dotColor: "#EF4444",
+    age: "65",
+    sex: "Male"
   },
   {
     id: "P-2605-012",
@@ -20,7 +24,9 @@ const INITIAL_PATIENTS = [
     stage: "Early AMD",
     trend: "Stable",
     trendColor: "#FE7743",
-    dotColor: "#FE7743"
+    dotColor: "#FE7743",
+    age: "58",
+    sex: "Male"
   },
   {
     id: "P-2605-037",
@@ -29,11 +35,15 @@ const INITIAL_PATIENTS = [
     stage: "Normal",
     trend: "Normal",
     trendColor: "#22C55E",
-    dotColor: "#22C55E"
+    dotColor: "#22C55E",
+    age: "62",
+    sex: "Male"
   }
 ];
 
 const ProgressionPage = () => {
+  const location = useLocation();
+  const [selectedPatient, setSelectedPatient] = useState(location.state?.patient || null);
   const [patients] = useState(INITIAL_PATIENTS);
   const [filteredPatients, setFilteredPatients] = useState(INITIAL_PATIENTS);
   
@@ -89,6 +99,16 @@ const ProgressionPage = () => {
 
     setFilteredPatients(result);
   }, [searchQuery, trendFilter, sortBy, patients]);
+
+  // หากมีการเลือกคนไข้ ให้เปลี่ยนไปเรนเดอร์หน้า Progression Summary
+  if (selectedPatient) {
+    return (
+      <ProgressionSummary 
+        patient={selectedPatient} 
+        onBack={() => setSelectedPatient(null)} 
+      />
+    );
+  }
 
   return (
     <div className="progression-container">
@@ -213,7 +233,7 @@ const ProgressionPage = () => {
                 
                 {/* ปุ่ม View Trend แบบใช้งาน CSS Class แอนิเมชันโดยตรง */}
                 <div className="patient-cell-action">
-                  <button className="view-trend-btn">
+                  <button className="view-trend-btn" onClick={() => setSelectedPatient(patient)}>
                     View Trend
                     <span className="arrow">→</span>
                   </button>

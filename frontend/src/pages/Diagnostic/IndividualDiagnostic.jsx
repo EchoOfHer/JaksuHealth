@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import './IndividualDiagnostic.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function IndividualDiagnostic({ patient, onBack }) {
   // ── STATE MANAGEMENT ──
   const location = useLocation();
+  const navigate = useNavigate();
   const passedPatient = location.state?.patient;
   
   const [activeEye, setActiveEye] = useState('os'); // 'os' หรือ 'od'
@@ -238,9 +239,13 @@ export default function IndividualDiagnostic({ patient, onBack }) {
             <div className="premium-card biomarker-card">
               <div className="card-header-row">
                 <p className="pill-label">Biomarker</p>
-                <a href="#progression-link" className="progression-nav-link">
+                <span 
+                  className="progression-nav-link" 
+                  onClick={() => navigate('/progression', { state: { patient: patient || passedPatient } })}
+                  style={{ cursor: 'pointer' }}
+                >
                   Progression <span>→</span>
-                </a>
+                </span>
               </div>
 
               <div className="oct-image-container">
