@@ -156,11 +156,23 @@ const Dashboard = () => {
           setMockPatients(mapped);
 
           // นับยอดเพื่อพล็อตลง Widget สถิติกล่องด้านบนตามฐานข้อมูลจริง
-          const highRiskCount = data.filter(v => v.status === 'HIGH RISK').length;
+          const highRiskCount = mapped.filter(p => p.riskLevel === 'High').length;
+          
+          let approvedCount = 0;
+          const savedMock = localStorage.getItem('mockPatients');
+          if (savedMock) {
+            try {
+              const list = JSON.parse(savedMock);
+              approvedCount = list.filter(p => p.isApproved).length;
+            } catch (e) {
+              console.error(e);
+            }
+          }
+
           setStats({
-            pending: data.length,
+            pending: mapped.length,
             highRisk: highRiskCount,
-            complete: 3 // baseline สะสมเดิม
+            complete: 3 + approvedCount
           });
         } else {
           setMockPatients(loadMockDashboard());
