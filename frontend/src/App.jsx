@@ -17,10 +17,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* 1. ถ้าพิมพ์แค่ localhost:5173/ ให้เด้งไปหน้า Login ทันที */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         
-        {/* 2. เส้นทางสำหรับหน้า Login */}
-        <Route path="/login" element={<Login />} />
+        {/* 2. เส้นทางสำหรับหน้า Login (Redirect to Dashboard) */}
+        <Route path="/login" element={<Navigate to="/dashboard" replace />} />
 
         {/* 3. กลุ่มหน้าในระบบ (ครอบด้วย MainLayout) */}
         <Route element={<MainLayout />}>

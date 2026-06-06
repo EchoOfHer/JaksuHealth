@@ -117,7 +117,7 @@ const Navbar = () => {
             onClick={(e) => {
               e.preventDefault(); // ป้องกันไม่ให้หน้าเว็บกระตุกขึ้นไปด้านบนสุด
               setDropdownOpen(false); // สั่งปิด Dropdown
-              navigate('/login'); // เปลี่ยนหน้ากลับไปที่ Login
+              navigate('/dashboard'); // เปลี่ยนหน้ากลับไปที่ Dashboard
             }}
             style={{ color: "white", background: "#FE7743", textAlign: "center", fontWeight: "bold", paddingTop: 15, paddingBottom: 15 }}
           >
