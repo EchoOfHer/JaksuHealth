@@ -22,6 +22,15 @@ const Diagnostic = ({ onSelectPatient }) => {
 
   // ข้อมูลคนไข้ดึงจากระบบหลังบ้านจริง
   const loadMockPatients = () => {
+    const saved = localStorage.getItem('mockPatients');
+    if (saved) {
+      try {
+        const list = JSON.parse(saved);
+        return list.filter(p => !p.isApproved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
     return [
       { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444" },
       { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743" },

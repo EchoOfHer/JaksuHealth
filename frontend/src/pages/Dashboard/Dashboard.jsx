@@ -162,6 +162,9 @@ const Dashboard = () => {
             highRisk: highRiskCount,
             complete: 3 // baseline สะสมเดิม
           });
+        } else {
+          setMockPatients(loadMockDashboard());
+          setStats(loadMockStats());
         }
       } catch (err) {
         console.error("Error loading dashboard data, using mockup fallback:", err);
