@@ -26,3 +26,9 @@ def create_visit(visit_in: VisitCreate, db: Session = Depends(get_db)):
 def get_pending_worklist(db: Session = Depends(get_db)):
     """API สำหรับดึงคิวตรวจที่รอการวินิจฉัย (Pending Worklist) เรียงตามสถานะเพื่อเตรียมแสดงใน Workspace"""
     return db.query(Visit).filter(Visit.status != "COMPLETE").order_by(Visit.visit_time.asc()).all()
+
+@router.get("/rollback-status")
+def rollback_status():
+    """API สำหรับตรวจสอบเวลาที่เหลือของการตรวจเช็ค/Rollback ฐานข้อมูล"""
+    from app.core.scheduler import get_rollback_status
+    return get_rollback_status()
