@@ -74,8 +74,8 @@ const Diagnostic = ({ onSelectPatient }) => {
                   const index = savedList.findIndex(p => p.id === pid);
                   if (index !== -1) {
                     const defaultDiagnosis = pid === 'P-2605-016' ? 'Intermediate AMD' : pid === 'P-2605-012' ? 'Early AMD' : 'Normal';
-                    // ตรวจพบว่าสเตตัสใน localStorage ต่างจากค่าเริ่มต้นและยังไม่มีการวินิจฉัยจริงใน DB
-                    if (savedList[index].diagnosis !== defaultDiagnosis || savedList[index].isApproved) {
+                    // ตรวจพบว่าสเตตัสใน localStorage ถูกอนุมัติ (Approved) แล้ว แต่ยังไม่มีการวินิจฉัยใน DB (เกิดจากการ Rollback)
+                    if (savedList[index].isApproved) {
                       savedList[index].diagnosis = defaultDiagnosis;
                       savedList[index].riskLevel = pid === 'P-2605-016' ? 'High' : pid === 'P-2605-012' ? 'Medium' : 'Low';
                       savedList[index].colorCode = pid === 'P-2605-016' ? '#EF4444' : pid === 'P-2605-012' ? '#FE7743' : '#40a34f';
