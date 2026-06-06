@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
+import API from '../../services/api';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -11,11 +12,18 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ตรวจสอบเงื่อนไขการเข้าสู่ระบบตาม Mockup
-    if (username.trim() === 'EchoOfHer' && password === '1234') {
+    try {
+      // ตรวจสอบข้อมูลล็อกอินผ่าน FastAPI หลังบ้านจริง
+      const response = await API.post('/auth/login', null, {
+        params: { username: username.trim(), password: password }
+      });
+
+      // เซฟข้อมูลแพทย์ลงเครื่องเพื่อนำไปใช้อ้างอิงตอนกดยืนยันผลตรวจ
+      localStorage.setItem('doctor', JSON.stringify(response.data));
+
       setErrorMessage('');
       setIsSuccess(true);
 
@@ -23,8 +31,13 @@ const Login = () => {
       setTimeout(() => {
         navigate('/dashboard');
       }, 750);
-    } else {
-      setErrorMessage('Username or Password wrong!');
+    } catch (err) {
+      console.error(err);
+      if (err.response && err.response.data && err.response.data.detail) {
+        setErrorMessage(err.response.data.detail);
+      } else {
+        setErrorMessage('Username or Password wrong!');
+      }
       setPassword(''); // ล้างรหัสผ่านเพื่อความปลอดภัย
     }
   };

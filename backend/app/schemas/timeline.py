@@ -21,3 +21,7 @@ class TimelineResponse(TimelineBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+class TimelineUpdate(BaseModel):
+    detected_stage: str
+    tag_line: str
+    progression_summary: str

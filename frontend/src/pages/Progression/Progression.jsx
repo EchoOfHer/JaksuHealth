@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import StatusFilterTab from '../../components/common/StatusFilterTab';
 import './Progression.css'; // 🌟 โหลดสไตล์ CSS แยกไฟล์ตรงนี้
 import ProgressionSummary from './ProgressionSummary';
+import API from '../../services/api';
+
 
 // Mock Data เดิมจากระบบ
 const INITIAL_PATIENTS = [
@@ -44,8 +46,132 @@ const INITIAL_PATIENTS = [
 const ProgressionPage = () => {
   const location = useLocation();
   const [selectedPatient, setSelectedPatient] = useState(location.state?.patient || null);
-  const [patients] = useState(INITIAL_PATIENTS);
-  const [filteredPatients, setFilteredPatients] = useState(INITIAL_PATIENTS);
+  
+  const loadMockProgressionPatients = () => {
+    const saved = localStorage.getItem('mockProgressionPatients');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    localStorage.setItem('mockProgressionPatients', JSON.stringify(INITIAL_PATIENTS));
+    return INITIAL_PATIENTS;
+  };
+
+  const [patients, setPatients] = useState(loadMockProgressionPatients);
+  const [filteredPatients, setFilteredPatients] = useState(loadMockProgressionPatients);
+
+  useEffect(() => {
+    const formatDate = (dateStr) => {
+      if (!dateStr) return 'No visit';
+      const dateObj = new Date(dateStr);
+      const options = { day: 'numeric', month: 'short', year: 'numeric' };
+      return dateObj.toLocaleDateString('en-GB', options).replace(',', '');
+    };
+
+    const loadPatients = async () => {
+      try {
+        const res = await API.get('/patients/');
+        const patientList = res.data;
+        
+        if (patientList && patientList.length > 0) {
+          const mappedPatients = await Promise.all(patientList.map(async (p) => {
+            let lastVisit = "No visit";
+            let stage = "Normal";
+            let trend = "Normal";
+            let trendColor = "#22C55E";
+            let dotColor = "#22C55E";
+            
+            // 1. Load from localStorage mockup first (to sync mockup edits)
+            const savedVisits = localStorage.getItem(`mockVisits_${p.patient_id}`);
+            if (savedVisits) {
+              try {
+                const visitsList = JSON.parse(savedVisits);
+                if (visitsList && visitsList.length > 0) {
+                  const latest = visitsList[0];
+                  lastVisit = latest.date;
+                  stage = latest.stage;
+                  
+                  if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
+                    trend = "Worsening";
+                    trendColor = "#EF4444";
+                    dotColor = "#EF4444";
+                  } else if (stage === "Early AMD") {
+                    trend = "Stable";
+                    trendColor = "#FE7743";
+                    dotColor = "#FE7743";
+                  } else {
+                    trend = "Normal";
+                    trendColor = "#22C55E";
+                    dotColor = "#22C55E";
+                  }
+                }
+              } catch (e) {
+                console.error("Failed to parse saved mock visits in Progression.jsx:", e);
+              }
+            }
+
+            // 2. Call DB (if records exist in PostgreSQL, they will overwrite the defaults)
+            try {
+              const progRes = await API.get(`/diagnostics/patient/${p.patient_id}/progression`);
+              const timeline = progRes.data;
+              
+              if (timeline && timeline.length > 0) {
+                const sortedTimeline = [...timeline].sort((a, b) => new Date(b.detection_date) - new Date(a.detection_date));
+                const latest = sortedTimeline[0];
+                
+                lastVisit = formatDate(latest.detection_date);
+                stage = latest.detected_stage;
+                
+                if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
+                  trend = "Worsening";
+                  trendColor = "#EF4444";
+                  dotColor = "#EF4444";
+                } else if (stage === "Early AMD") {
+                  trend = "Stable";
+                  trendColor = "#FE7743";
+                  dotColor = "#FE7743";
+                } else {
+                  trend = "Normal";
+                  trendColor = "#22C55E";
+                  dotColor = "#22C55E";
+                }
+              }
+            } catch (err) {
+              console.error("Error fetching progression for patient:", p.patient_id, err);
+            }
+            
+            return {
+              id: p.patient_id,
+              name: `${p.first_name} ${p.last_name}`,
+              lastVisit,
+              stage,
+              trend,
+              trendColor,
+              dotColor,
+              age: String(p.age || ''),
+              sex: p.sex
+            };
+          }));
+          
+          setPatients(mappedPatients);
+          setFilteredPatients(mappedPatients);
+        } else {
+          // Fallback to local storage lists if database patients is empty
+          setPatients(loadMockProgressionPatients());
+          setFilteredPatients(loadMockProgressionPatients());
+        }
+      } catch (err) {
+        console.error("Error loading patients registry, keeping mockup fallback:", err);
+        setPatients(loadMockProgressionPatients());
+        setFilteredPatients(loadMockProgressionPatients());
+      }
+    };
+    loadPatients();
+  }, [selectedPatient]);
+
   
   // State สำหรับจัดการค้นหาและคัดกรอง
   const [searchQuery, setSearchQuery] = useState("");

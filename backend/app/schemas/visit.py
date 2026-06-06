@@ -16,6 +16,10 @@ class VisitBase(BaseModel):
 class VisitCreate(VisitBase):
     pass
 
+from app.schemas.patient import PatientResponse
+from app.schemas.diagnostic import DiagnosticResponse
+from typing import Optional
+
 # ข้อมูลส่งกลับของคิวเข้าตรวจ
 class VisitResponse(VisitBase):
     visit_id: UUID
@@ -26,5 +30,6 @@ class VisitResponse(VisitBase):
 # ข้อมูลส่งกลับแบบละเอียดพร้อมข้อมูลคนไข้ (สำหรับแสดงผลฝั่งคิวงาน Worklist)
 class VisitDetailResponse(VisitResponse):
     patient: PatientResponse
+    diagnostic: Optional[DiagnosticResponse] = None
 
     model_config = ConfigDict(from_attributes=True)

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // 👈 1. นำเข้า useNavigate
 import './Dashboard.css';
-
+import API from '../../services/api';
 const Dashboard = () => {
   const [currentDate, setCurrentDate] = useState('');
   const navigate = useNavigate(); // 👈 2. เรียกใช้งานเครื่องมือนำทาง
@@ -14,35 +14,136 @@ const Dashboard = () => {
   }, []);
 
   // 2. ข้อมูลจำลอง (Mock Data) 
-  const mockPatients = [
-    {
-      id: "P-2605-016",
-      name: "Khanatip Gankingpai",
-      queue: "Q#001",
-      time: "10:00AM",
-      diagnosis: "Inter. AMD",
-      riskLevel: "High",
-      colorCode: "#EF4444" 
-    },
-    {
-      id: "P-2605-012",
-      name: "Jirawat Jakthong",
-      queue: "Q#002",
-      time: "10:15AM",
-      diagnosis: "Early AMD",
-      riskLevel: "Medium",
-      colorCode: "#FE7743" 
-    },
-    {
-      id: "P-2605-037",
-      name: "Natthawut Saengmani",
-      queue: "Q#003",
-      time: "10:30AM",
-      diagnosis: "Normal",
-      riskLevel: "Low",
-      colorCode: "#40a34f" 
+  const loadMockDashboard = () => {
+    const saved = localStorage.getItem('mockPatients');
+    if (saved) {
+      try {
+        const list = JSON.parse(saved);
+        return list.filter(p => !p.isApproved);
+      } catch (e) {
+        console.error(e);
+      }
     }
-  ];
+    return [
+      { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444" },
+      { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743" },
+      { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f" }
+    ];
+  };
+
+  const loadMockStats = () => {
+    const saved = localStorage.getItem('mockPatients');
+    let pending = 3;
+    let highRisk = 1;
+    let complete = 3;
+
+    if (saved) {
+      try {
+        const list = JSON.parse(saved);
+        const approvedCount = list.filter(p => p.isApproved).length;
+        pending = list.length - approvedCount;
+        highRisk = list.filter(p => p.riskLevel === 'High' && !p.isApproved).length;
+        complete = 3 + approvedCount;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return { pending, highRisk, complete };
+  };
+
+  const [mockPatients, setMockPatients] = useState(loadMockDashboard);
+  const [stats, setStats] = useState(loadMockStats);
+
+  // โหลดรายการและคำนวณสถิติจากหลังบ้านจริง
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await API.get('/visits/pending');
+        const data = response.data; // รายการคิวจาก SQL
+
+        if (data && data.length > 0) {
+          const formatTime = (timeStr) => {
+            if (!timeStr) return '';
+            const parts = timeStr.split(':');
+            if (parts.length < 2) return timeStr;
+            let hours = parseInt(parts[0], 10);
+            const minutes = parts[1];
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            return `${hours}:${minutes}${ampm}`;
+          };
+
+          const mapped = data.map(v => {
+            const pid = v.patient_id;
+            const name = `${v.patient.first_name} ${v.patient.last_name}`;
+            const time = formatTime(v.visit_time);
+            const queue = v.queue_number;
+
+            let diagnosis = 'Pending';
+            let riskLevel = 'Medium';
+            let colorCode = '#FE7743';
+
+            if (v.diagnostic) {
+              diagnosis = v.diagnostic.condition_stage;
+              riskLevel = v.diagnostic.risk_level === 'HIGH RISK' ? 'High' : v.diagnostic.risk_level === 'MED' ? 'Medium' : 'Low';
+              colorCode = riskLevel === 'High' ? '#EF4444' : riskLevel === 'Medium' ? '#FE7743' : '#40a34f';
+            } else {
+              const savedMock = localStorage.getItem('mockPatients');
+              let foundSaved = false;
+              if (savedMock) {
+                try {
+                  const savedList = JSON.parse(savedMock);
+                  const matched = savedList.find(p => p.id === pid);
+                  if (matched) {
+                    diagnosis = matched.diagnosis;
+                    riskLevel = matched.riskLevel;
+                    colorCode = matched.colorCode;
+                    foundSaved = true;
+                  }
+                } catch (e) {
+                  console.error(e);
+                }
+              }
+              if (!foundSaved) {
+                if (pid === 'P-2605-016') {
+                  diagnosis = 'Intermediate AMD';
+                  riskLevel = 'High';
+                  colorCode = '#EF4444';
+                } else if (pid === 'P-2605-012') {
+                  diagnosis = 'Early AMD';
+                  riskLevel = 'Medium';
+                  colorCode = '#FE7743';
+                } else if (pid === 'P-2605-037') {
+                  diagnosis = 'Normal';
+                  riskLevel = 'Low';
+                  colorCode = '#40a34f';
+                }
+              }
+            }
+
+            return { id: pid, name, queue, time, diagnosis, riskLevel, colorCode, rawVisit: v };
+          });
+
+          setMockPatients(mapped);
+
+          // นับยอดเพื่อพล็อตลง Widget สถิติกล่องด้านบนตามฐานข้อมูลจริง
+          const highRiskCount = data.filter(v => v.status === 'HIGH RISK').length;
+          setStats({
+            pending: data.length,
+            highRisk: highRiskCount,
+            complete: 3 // baseline สะสมเดิม
+          });
+        }
+      } catch (err) {
+        console.error("Error loading dashboard data, using mockup fallback:", err);
+        setMockPatients(loadMockDashboard());
+        setStats(loadMockStats());
+      }
+    };
+    
+    fetchDashboardData();
+  }, []);
 
   return (
     <div className="dashboard-container">
@@ -56,19 +157,19 @@ const Dashboard = () => {
       <div style={{ display: "flex", flexDirection: "row", gap: "40px" }}>
         {/* กล่อง Pending */}
         <div style={{ backgroundColor: "white", width: "300px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>13</h1>
+          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>{stats.pending}</h1>
           <p style={{ backgroundColor: "#FFDDBF", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#FE7743", borderRadius: "10px" }}>PENDING</p>
         </div>
 
         {/* กล่อง High Risk */}
         <div style={{ backgroundColor: "white", width: "300px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>2</h1>
+          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>{stats.highRisk}</h1>
           <p style={{ backgroundColor: "#FF8383", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#B20101", borderRadius: "10px" }}>HIGH RISK</p>
         </div>
 
         {/* กล่อง Complete */}
         <div style={{ backgroundColor: "white", width: "300px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>3</h1>
+          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>{stats.complete}</h1>
           <p style={{ backgroundColor: "#86D392", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#36543A", borderRadius: "10px" }}>COMPLETE</p>
         </div>
       </div>

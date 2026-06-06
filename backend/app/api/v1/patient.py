@@ -32,3 +32,7 @@ def get_patient(patient_id: str, db: Session = Depends(get_db)):
             detail="ไม่พบข้อมูลคนไข้รายนี้"
         )
     return patient
+@router.get("/", response_model=list[PatientResponse])
+def get_all_patients(db: Session = Depends(get_db)):
+    """API สำหรับดึงรายชื่อคนไข้ทั้งหมดในระบบ"""
+    return PatientService.get_all_patients(db)

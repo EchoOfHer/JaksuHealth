@@ -37,3 +37,8 @@ class PatientService:
                 Patient.last_name.ilike(search_filter)
             )
         ).order_by(Patient.created_at.desc()).all() # เรียงจากข้อมูลล่าสุด
+    
+    @staticmethod
+    def get_all_patients(db: Session) -> list[Patient]:
+        """ฟังก์ชันดึงรายชื่อคนไข้ทั้งหมดในระบบ"""
+        return db.query(Patient).order_by(Patient.created_at.desc()).all()

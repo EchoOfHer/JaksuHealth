@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Diagnostic.css';
+import API from '../../services/api';
 
 const Diagnostic = ({ onSelectPatient }) => {
   const [filterOpen, setFilterOpen] = useState(false);
@@ -19,21 +20,100 @@ const Diagnostic = ({ onSelectPatient }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ข้อมูลคนไข้จำลอง (Mock Data)
-  const mockPatients = [
-    {
-      id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM",
-      diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444"
-    },
-    {
-      id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM",
-      diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743"
-    },
-    {
-      id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM",
-      diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f"
-    }
-  ];
+  // ข้อมูลคนไข้ดึงจากระบบหลังบ้านจริง
+  const loadMockPatients = () => {
+    return [
+      { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444" },
+      { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743" },
+      { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f" }
+    ];
+  };
+
+  const [mockPatients, setMockPatients] = useState(loadMockPatients);
+
+  useEffect(() => {
+    const fetchPendingPatients = async () => {
+      try {
+        const response = await API.get('/visits/pending');
+        const data = response.data;
+
+        if (data && data.length > 0) {
+          const formatTime = (timeStr) => {
+            if (!timeStr) return '';
+            const parts = timeStr.split(':');
+            if (parts.length < 2) return timeStr;
+            let hours = parseInt(parts[0], 10);
+            const minutes = parts[1];
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            return `${hours}:${minutes}${ampm}`;
+          };
+
+          const mapped = data.map(v => {
+            const pid = v.patient_id;
+            const name = `${v.patient.first_name} ${v.patient.last_name}`;
+            const time = formatTime(v.visit_time);
+            const queue = v.queue_number;
+
+            let diagnosis = 'Pending';
+            let riskLevel = 'Medium';
+            let colorCode = '#FE7743';
+
+            if (v.diagnostic) {
+              diagnosis = v.diagnostic.condition_stage;
+              riskLevel = v.diagnostic.risk_level === 'HIGH RISK' ? 'High' : v.diagnostic.risk_level === 'MED' ? 'Medium' : 'Low';
+              colorCode = riskLevel === 'High' ? '#EF4444' : riskLevel === 'Medium' ? '#FE7743' : '#40a34f';
+            } else {
+              const savedMock = localStorage.getItem('mockPatients');
+              let foundSaved = false;
+              if (savedMock) {
+                try {
+                  const savedList = JSON.parse(savedMock);
+                  const matched = savedList.find(p => p.id === pid);
+                  if (matched) {
+                    diagnosis = matched.diagnosis;
+                    riskLevel = matched.riskLevel;
+                    colorCode = matched.colorCode;
+                    foundSaved = true;
+                  }
+                } catch (e) {
+                  console.error(e);
+                }
+              }
+              if (!foundSaved) {
+                if (pid === 'P-2605-016') {
+                  diagnosis = 'Intermediate AMD';
+                  riskLevel = 'High';
+                  colorCode = '#EF4444';
+                } else if (pid === 'P-2605-012') {
+                  diagnosis = 'Early AMD';
+                  riskLevel = 'Medium';
+                  colorCode = '#FE7743';
+                } else if (pid === 'P-2605-037') {
+                  diagnosis = 'Normal';
+                  riskLevel = 'Low';
+                  colorCode = '#40a34f';
+                }
+              }
+            }
+
+            return { id: pid, name, queue, time, diagnosis, riskLevel, colorCode, rawVisit: v };
+          });
+
+          setMockPatients(mapped);
+        } else {
+          setMockPatients(loadMockPatients());
+        }
+      } catch (err) {
+        console.error("Error loading pending diagnostic patients, using mockup fallback:", err);
+        setMockPatients(loadMockPatients());
+      }
+    };
+
+    fetchPendingPatients();
+  }, []);
+
 
   // ค่าน้ำหนักในการเปรียบเทียบระดับความรุนแรง (สำหรับเรียงลำดับ Severity)
   const severityWeight = {

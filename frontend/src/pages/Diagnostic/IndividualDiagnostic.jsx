@@ -1,6 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './IndividualDiagnostic.css';
 import { useLocation, useNavigate } from 'react-router-dom';
+import API from '../../services/api';
+
 
 export default function IndividualDiagnostic({ patient, onBack }) {
   // ── STATE MANAGEMENT ──
@@ -18,6 +20,78 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   const [actionText, setActionText] = useState(
     'Recommend reassessing visual acuity and considering Anti-VEGF intravitreal injection. Schedule close follow-up within 2-4 weeks.'
   );
+
+  useEffect(() => {
+    const fetchDraft = async () => {
+      const vId = patient?.rawVisit?.visit_id || passedPatient?.rawVisit?.visit_id;
+      const pId = patient?.id || passedPatient?.id || 'P-2605-016';
+
+      // 1. Load mockup draft from localStorage for specific eye if available
+      const localKey = `mockDraft_${pId}_${activeEye}`;
+      const savedDraft = localStorage.getItem(localKey);
+      if (savedDraft) {
+        try {
+          const parsed = JSON.parse(savedDraft);
+          setRiskStatus(parsed.riskStatus || 'Intermediate AMD');
+          setSummaryText(parsed.summaryText || '');
+          setActionText(parsed.actionText || '');
+          return;
+        } catch (e) {
+          console.error("Failed to parse mockDraft from localStorage:", e);
+        }
+      }
+
+      // Initialize different default mock data based on eyeSide (OS vs OD)
+      const pName = patient?.name || passedPatient?.name || "Khanatip Gankingpai";
+      if (pName.includes("Khanatip")) {
+        if (activeEye === 'os') {
+          setRiskStatus('Intermediate AMD');
+          setSummaryText('Recent OCT analysis reveals a moderate accumulation of Subretinal Fluid (SRF) and the presence of Intraretinal Fluid (IRF). Disruption of the IS/OS junction is also noted. The lesions indicate a high risk of active disease progression.');
+          setActionText('Recommend reassessing visual acuity and considering Anti-VEGF intravitreal injection. Schedule close follow-up within 2-4 weeks.');
+        } else {
+          setRiskStatus('Early AMD');
+          setSummaryText('OCT analysis shows mild drusen accumulation in the macula area with no visible subretinal fluid or intraretinal fluid. The retinal layers are well-preserved.');
+          setActionText('Recommend daily Amsler grid self-monitoring and routine follow-up in 6 months. Consider dietary supplements.');
+        }
+      } else if (pName.includes("Jirawat")) {
+        if (activeEye === 'os') {
+          setRiskStatus('Early AMD');
+          setSummaryText('OCT analysis shows early signs of dry AMD with small drusen accumulation. The retinal structure remains stable with no fluid or active lesions.');
+          setActionText('Advise routine follow-up and monitoring. Recommend smoking cessation and antioxidant vitamins.');
+        } else {
+          setRiskStatus('Normal');
+          setSummaryText('No significant retinal abnormality detected in the macula. Retinal thickness and layers are normal with no signs of drusen or fluid.');
+          setActionText('Routine annual eye examination.');
+        }
+      } else {
+        setRiskStatus('Normal');
+        setSummaryText('The retina appears completely normal with no signs of drusen or fluid accumulation. Comparative review against previous baseline scan confirms no progression.');
+        setActionText('Routine checkup in 12 months.');
+      }
+
+      // 2. Fetch draft from PostgreSQL database if vId exists
+      if (vId) {
+        try {
+          const response = await API.get(`/diagnostics/visit/${vId}`);
+          const data = response.data;
+          if (data) {
+            setRiskStatus(data.condition_stage || '');
+            setSummaryText(data.drafted_summary || '');
+            setActionText(data.suggested_action || '');
+          }
+        } catch (err) {
+          if (err.response && err.response.status === 404) {
+            console.log("No existing draft found in database, using baseline mock defaults.");
+          } else {
+            console.error("Error fetching diagnostic draft:", err);
+          }
+        }
+      }
+    };
+
+    fetchDraft();
+  }, [patient, passedPatient, activeEye]);
+
 
   // สถานะเปิด-ปิด Modal ต่างๆ
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -76,12 +150,83 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   };
 
   // จัดการบันทึกฟอร์มแก้ไขลงหน้าจอหลักแบบเรียลไทม์
-  const handleSaveModalChanges = () => {
+  const handleSaveModalChanges = async () => {
     setIsSavedBtnState(true);
     
     let finalRisk = modalRisk;
     if (modalRisk === 'Other') {
       finalRisk = modalRiskOther.trim() !== '' ? modalRiskOther.trim() : 'Custom AMD';
+    }
+
+    const pId = patient?.id || passedPatient?.id || 'P-2605-016';
+    const vId = patient?.rawVisit?.visit_id || passedPatient?.rawVisit?.visit_id;
+
+    // Save draft mockup state in localStorage for specific eye side
+    const localKey = `mockDraft_${pId}_${activeEye}`;
+    localStorage.setItem(localKey, JSON.stringify({
+      riskStatus: finalRisk,
+      summaryText: modalSummary,
+      actionText: modalAction
+    }));
+
+    // Sync mockup state in localStorage when saving modal changes
+    let list = [];
+    const savedMockPatients = localStorage.getItem('mockPatients');
+    if (savedMockPatients) {
+      try {
+        list = JSON.parse(savedMockPatients);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    if (list.length === 0) {
+      list = [
+        { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444" },
+        { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743" },
+        { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f" }
+      ];
+    }
+    const index = list.findIndex(p => p.id === pId);
+    if (index !== -1) {
+      list[index].diagnosis = finalRisk;
+      list[index].riskLevel = finalRisk === 'Intermediate AMD' ? 'High' : finalRisk === 'Early AMD' ? 'Medium' : 'Low';
+      list[index].colorCode = list[index].riskLevel === 'High' ? '#EF4444' : list[index].riskLevel === 'Medium' ? '#FE7743' : '#40a34f';
+      localStorage.setItem('mockPatients', JSON.stringify(list));
+    }
+
+
+    // Save draft to PostgreSQL if vId exists
+    if (vId) {
+      try {
+        let riskLevel = 'LOW';
+        let aiTrend = 'Normal';
+        if (finalRisk === 'Intermediate AMD') {
+          riskLevel = 'HIGH RISK';
+          aiTrend = 'Worsening';
+        } else if (finalRisk === 'Early AMD') {
+          riskLevel = 'MED';
+          aiTrend = 'Stable';
+        } else if (finalRisk === 'Normal') {
+          riskLevel = 'LOW';
+          aiTrend = 'Normal';
+        } else {
+          riskLevel = 'HIGH RISK';
+          aiTrend = 'Stable';
+        }
+
+        await API.post('/diagnostics/', {
+          patient_id: pId,
+          visit_id: vId,
+          risk_level: riskLevel,
+          condition_stage: finalRisk,
+          ai_trend: aiTrend,
+          drafted_summary: modalSummary,
+          suggested_action: modalAction,
+          exported_to_his: false
+        });
+      } catch (err) {
+        console.error("Error saving diagnostic draft to API:", err);
+      }
     }
 
     setRiskStatus(finalRisk);
@@ -94,12 +239,170 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   };
 
   // ฟังก์ชัน Approve & Save บล็อกล่างสุด
-  const handleTriggerApprove = () => {
+  const handleTriggerApprove = async () => {
+    const vId = patient?.rawVisit?.visit_id || passedPatient?.rawVisit?.visit_id;
+    const pId = patient?.id || passedPatient?.id || 'P-2605-016';
+
+    // Map risk status to severity risk level as expected by DB schema
+    let riskLevel = 'LOW';
+    let aiTrend = 'Normal';
+    if (riskStatus === 'Intermediate AMD') {
+      riskLevel = 'HIGH RISK';
+      aiTrend = 'Worsening';
+    } else if (riskStatus === 'Early AMD') {
+      riskLevel = 'MED';
+      aiTrend = 'Stable';
+    } else if (riskStatus === 'Normal') {
+      riskLevel = 'LOW';
+      aiTrend = 'Normal';
+    } else {
+      riskLevel = 'HIGH RISK';
+      aiTrend = 'Stable';
+    }
+
+    if (vId) {
+      try {
+        await API.put(`/diagnostics/visit/${vId}/approve`, {
+          patient_id: pId,
+          visit_id: vId,
+          risk_level: riskLevel,
+          condition_stage: riskStatus,
+          ai_trend: aiTrend,
+          drafted_summary: summaryText,
+          suggested_action: actionText,
+          exported_to_his: true
+        });
+      } catch (err) {
+        console.error("Error approving and saving diagnostic, fallback to mockup mode:", err);
+      }
+    } else {
+      console.warn("No visit ID found for this patient queue, running in mockup mode");
+    }
+
+    // Save approved mockup state in localStorage for specific eye side
+    const localKey = `mockDraft_${pId}_${activeEye}`;
+    localStorage.setItem(localKey, JSON.stringify({
+      riskStatus,
+      summaryText,
+      actionText,
+      isApproved: true
+    }));
+
+    // Sync mockup state in localStorage
+    let list2 = [];
+    const savedMockPatients2 = localStorage.getItem('mockPatients');
+    if (savedMockPatients2) {
+      try {
+        list2 = JSON.parse(savedMockPatients2);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    if (list2.length === 0) {
+      list2 = [
+        { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444" },
+        { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743" },
+        { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f" }
+      ];
+    }
+    const index2 = list2.findIndex(p => p.id === pId);
+    if (index2 !== -1) {
+      list2[index2].diagnosis = riskStatus;
+      list2[index2].riskLevel = riskStatus === 'Intermediate AMD' ? 'High' : riskStatus === 'Early AMD' ? 'Medium' : 'Low';
+      list2[index2].colorCode = list2[index2].riskLevel === 'High' ? '#EF4444' : list2[index2].riskLevel === 'Medium' ? '#FE7743' : '#40a34f';
+      list2[index2].isApproved = true;
+      localStorage.setItem('mockPatients', JSON.stringify(list2));
+    }
+
+
+    const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const savedVisits = localStorage.getItem(`mockVisits_${pId}_${activeEye}`);
+    let visitsList = [];
+    if (savedVisits) {
+      try {
+        visitsList = JSON.parse(savedVisits);
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      const pName = patient?.name || passedPatient?.name || "Khanatip Gankingpai";
+      if (pName.includes("Khanatip")) {
+        if (activeEye === 'os') {
+          visitsList = [
+            { date: "May 22, 2026", stage: "Intermediate AMD", detection: "Worsening Trend", isLatest: true, lesionPath: "M 210,130 Q 230,110 250,130 Z", strokePath: "M 10,105 L 180,123 Q 230,132 280,127 L 450,127" },
+            { date: "Jan 15, 2024", stage: "Early AMD", detection: "1st Detection", isLatest: false, lesionPath: "M 190,132 Q 215,115 240,132 Z", strokePath: "M 10,105 L 180,123 Q 230,130 280,127 L 450,127" },
+            { date: "Jul 22, 2023", stage: "Normal", detection: "Baseline", isLatest: false, lesionPath: "", strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127" }
+          ];
+        } else {
+          visitsList = [
+            { date: "May 22, 2026", stage: "Early AMD", detection: "Stable", isLatest: true, lesionPath: "M 190,132 Q 215,115 240,132 Z", strokePath: "M 10,105 L 180,123 Q 230,130 280,127 L 450,127" },
+            { date: "Jan 15, 2024", stage: "Normal", detection: "Baseline", isLatest: false, lesionPath: "", strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127" }
+          ];
+        }
+      } else if (pName.includes("Jirawat")) {
+        if (activeEye === 'os') {
+          visitsList = [
+            { date: "May 18, 2026", stage: "Early AMD", detection: "Stable", isLatest: true, lesionPath: "M 190,132 Q 215,115 240,132 Z", strokePath: "M 10,105 L 180,123 Q 230,130 280,127 L 450,127" },
+            { date: "Dec 10, 2023", stage: "Early AMD", detection: "1st Detection", isLatest: false, lesionPath: "M 180,135 Q 200,120 220,135 Z", strokePath: "M 10,105 L 180,122 Q 230,129 280,127 L 450,127" },
+            { date: "Oct 05, 2023", stage: "Normal", detection: "Baseline", isLatest: false, lesionPath: "", strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127" }
+          ];
+        } else {
+          visitsList = [
+            { date: "May 18, 2026", stage: "Normal", detection: "Normal", isLatest: true, lesionPath: "", strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127" },
+            { date: "Oct 05, 2023", stage: "Normal", detection: "Baseline", isLatest: false, lesionPath: "", strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127" }
+          ];
+        }
+      } else {
+        visitsList = [
+          { date: "May 12, 2026", stage: "Normal", detection: "Normal", isLatest: true, lesionPath: "", strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127" },
+          { date: "Jul 22, 2023", stage: "Normal", detection: "Baseline", isLatest: false, lesionPath: "", strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127" }
+        ];
+      }
+    }
+
+    const newVisit = {
+      date: todayStr,
+      stage: riskStatus,
+      detection: "บันทึกการรักษา",
+      isLatest: true,
+      lesionPath: riskStatus === "Intermediate AMD" ? "M 210,130 Q 230,110 250,130 Z" : riskStatus === "Early AMD" ? "M 190,132 Q 215,115 240,132 Z" : "",
+      strokePath: riskStatus === "Intermediate AMD" ? "M 10,105 L 180,123 Q 230,132 280,127 L 450,127" : "M 10,105 L 180,120 Q 230,126 280,127 L 450,127"
+    };
+
+    visitsList = visitsList.map(v => ({ ...v, isLatest: false }));
+    visitsList.unshift(newVisit);
+    localStorage.setItem(`mockVisits_${pId}_${activeEye}`, JSON.stringify(visitsList));
+
+    const savedProgPatients = localStorage.getItem('mockProgressionPatients');
+    if (savedProgPatients) {
+      try {
+        const progList = JSON.parse(savedProgPatients);
+        const progIdx = progList.findIndex(p => p.id === pId);
+        if (progIdx !== -1) {
+          progList[progIdx].stage = riskStatus;
+          progList[progIdx].lastVisit = todayStr;
+          progList[progIdx].trend = riskStatus === "Intermediate AMD" ? "Worsening" : riskStatus === "Early AMD" ? "Stable" : "Normal";
+          progList[progIdx].trendColor = riskStatus === "Intermediate AMD" ? "#EF4444" : riskStatus === "Early AMD" ? "#FE7743" : "#22C55E";
+          progList[progIdx].dotColor = progList[progIdx].trendColor;
+          localStorage.setItem('mockProgressionPatients', JSON.stringify(progList));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Always trigger success state and return back to list
     setIsApproved(true);
     setTimeout(() => {
       setIsApproved(false);
+      if (onBack) {
+        onBack();
+      } else {
+        navigate('/diagnostic');
+      }
     }, 2000);
   };
+
 
   // ── MOUSE/TOUCH DRAG HANDLERS (FUNDUS LINE) ──
   const handlePointerDown = (e) => {
@@ -132,6 +435,14 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   const handlePointerUp = () => {
     isDraggingRef.current = false;
   };
+
+  const getPatientSet = (patientId) => {
+    if (patientId && patientId.includes('012')) return 'set2'; // Jirawat
+    if (patientId && patientId.includes('037')) return 'set3'; // Natthawut
+    return 'set1'; // Khanatip
+  };
+  const patientSet = getPatientSet(patient?.id || passedPatient?.id);
+  const octImgUrl = `/mock_oct/${patientSet}/${activeEye}/${scaleValue}.png`;
 
   return (
     <div className="diagnostic-workspace-page">
@@ -182,7 +493,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                 onPointerMove={handlePointerMove}
                 style={{ touchAction: 'none' }}
               >
-                <img src="/fundus.png" alt="Fundus Image" className="fundus-img" />
+                <img src={activeEye === 'os' ? '/OS.png' : '/OD.png'} alt="Fundus Image" className="fundus-img" />
                 
                 <div 
                   id="dragLineContainer" 
@@ -249,7 +560,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
               </div>
 
               <div className="oct-image-container">
-                <img src="/OCT.png" alt="OCT Scan" className="oct-img" />
+                <img src={octImgUrl} alt="OCT Scan" className="oct-img" />
                 <button className="fullscreen-modal-trigger" onClick={() => { document.body.style.overflow = 'hidden'; setIsOctModalOpen(true); }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M15 3h6v6M9 21H3v-6M21 15v6h-6M3 9V3h6"/>
@@ -444,7 +755,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
             <div className="oct-modal-block">
               <p className="pill-label sub-label">Original OCT</p>
               <div className="oct-modal-img-wrapper grayscale-filter">
-                <img src="/OCT.png" alt="Original OCT Scan" />
+                <img src={octImgUrl} alt="Original OCT Scan" />
               </div>
             </div>
 
@@ -453,7 +764,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
             <div className="oct-modal-block">
               <p className="pill-label sub-label">JaksuBiomarker OCT</p>
               <div className="oct-modal-img-wrapper">
-                <img src="/OCT.png" alt="JaksuBiomarker OCT Scan" />
+                <img src={octImgUrl} alt="JaksuBiomarker OCT Scan" />
               </div>
             </div>
           </div>

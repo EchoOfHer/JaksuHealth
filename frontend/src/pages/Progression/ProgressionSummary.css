@@ -222,7 +222,7 @@
 #dragLineContainer {
   position: absolute;
   left: -30px;
-  right: -40px;
+  right: -20px;
   height: 32px;
   margin-top: -16px;
   display: flex;
@@ -312,11 +312,15 @@
   width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  height: 250px;
 }
 
 .oct-card-view img {
   width: 100%;
-  height: auto;
+  overflow: hidden;
+  height: 400px;
+  object-fit: cover;
+  object-position: top;
   display: block;
 }
 

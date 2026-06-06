@@ -1,63 +1,107 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ProgressionSummary.css';
+import API from '../../services/api';
 
-// ฟังก์ชันดึงรายการสแกนจำลองตามคนไข้แต่ละรายเพื่อให้แสดงผลเสมือนจริง
-const getVisitsForPatient = (patient) => {
+
+// ฟังก์ชันดึงรายการสแกนจำลองตามคนไข้แต่ละรายเพื่อให้แสดงผลเสมือนจริง แยกข้างตาซ้าย/ขวา
+const getVisitsForPatient = (patient, eyeSide = 'os') => {
   const name = patient?.name || "Khanatip Gankingpai";
   if (name.includes("Khanatip")) {
-    return [
-      {
-        date: "May 22, 2026",
-        stage: "Intermediate AMD",
-        detection: "Worsening Trend",
-        isLatest: true,
-        lesionPath: "M 210,130 Q 230,110 250,130 Z",
-        strokePath: "M 10,105 L 180,123 Q 230,132 280,127 L 450,127"
-      },
-      {
-        date: "Jan 15, 2024",
-        stage: "Early AMD",
-        detection: "1st Detection",
-        isLatest: false,
-        lesionPath: "M 190,132 Q 215,115 240,132 Z",
-        strokePath: "M 10,105 L 180,123 Q 230,130 280,127 L 450,127"
-      },
-      {
-        date: "Jul 22, 2023",
-        stage: "Normal",
-        detection: "Baseline",
-        isLatest: false,
-        lesionPath: "",
-        strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127"
-      }
-    ];
+    if (eyeSide === 'os') {
+      return [
+        {
+          date: "May 22, 2026",
+          stage: "Intermediate AMD",
+          detection: "Worsening Trend",
+          isLatest: true,
+          lesionPath: "M 210,130 Q 230,110 250,130 Z",
+          strokePath: "M 10,105 L 180,123 Q 230,132 280,127 L 450,127"
+        },
+        {
+          date: "Jan 15, 2024",
+          stage: "Early AMD",
+          detection: "1st Detection",
+          isLatest: false,
+          lesionPath: "M 190,132 Q 215,115 240,132 Z",
+          strokePath: "M 10,105 L 180,123 Q 230,130 280,127 L 450,127"
+        },
+        {
+          date: "Jul 22, 2023",
+          stage: "Normal",
+          detection: "Baseline",
+          isLatest: false,
+          lesionPath: "",
+          strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127"
+        }
+      ];
+    } else {
+      return [
+        {
+          date: "May 22, 2026",
+          stage: "Early AMD",
+          detection: "Stable",
+          isLatest: true,
+          lesionPath: "M 190,132 Q 215,115 240,132 Z",
+          strokePath: "M 10,105 L 180,123 Q 230,130 280,127 L 450,127"
+        },
+        {
+          date: "Jan 15, 2024",
+          stage: "Normal",
+          detection: "Baseline",
+          isLatest: false,
+          lesionPath: "",
+          strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127"
+        }
+      ];
+    }
   } else if (name.includes("Jirawat")) {
-    return [
-      {
-        date: "May 18, 2026",
-        stage: "Early AMD",
-        detection: "Stable",
-        isLatest: true,
-        lesionPath: "M 190,132 Q 215,115 240,132 Z",
-        strokePath: "M 10,105 L 180,123 Q 230,130 280,127 L 450,127"
-      },
-      {
-        date: "Dec 10, 2023",
-        stage: "Early AMD",
-        detection: "1st Detection",
-        isLatest: false,
-        lesionPath: "M 180,135 Q 200,120 220,135 Z",
-        strokePath: "M 10,105 L 180,122 Q 230,129 280,127 L 450,127"
-      },
-      {
-        date: "Oct 05, 2023",
-        stage: "Normal",
-        detection: "Baseline",
-        isLatest: false,
-        lesionPath: "",
-        strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127"
-      }
-    ];
+    if (eyeSide === 'os') {
+      return [
+        {
+          date: "May 18, 2026",
+          stage: "Early AMD",
+          detection: "Stable",
+          isLatest: true,
+          lesionPath: "M 190,132 Q 215,115 240,132 Z",
+          strokePath: "M 10,105 L 180,123 Q 230,130 280,127 L 450,127"
+        },
+        {
+          date: "Dec 10, 2023",
+          stage: "Early AMD",
+          detection: "1st Detection",
+          isLatest: false,
+          lesionPath: "M 180,135 Q 200,120 220,135 Z",
+          strokePath: "M 10,105 L 180,122 Q 230,129 280,127 L 450,127"
+        },
+        {
+          date: "Oct 05, 2023",
+          stage: "Normal",
+          detection: "Baseline",
+          isLatest: false,
+          lesionPath: "",
+          strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127"
+        }
+      ];
+    } else {
+      return [
+        {
+          date: "May 18, 2026",
+          stage: "Normal",
+          detection: "Normal",
+          isLatest: true,
+          lesionPath: "",
+          strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127"
+        },
+        {
+          date: "Oct 05, 2023",
+          stage: "Normal",
+          detection: "Baseline",
+          isLatest: false,
+          lesionPath: "",
+          strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127"
+        }
+      ];
+    }
   } else {
     // สำหรับ Natthawut หรือทั่วไป
     return [
@@ -81,24 +125,32 @@ const getVisitsForPatient = (patient) => {
   }
 };
 
-const getSummaryForPatient = (patient) => {
+const getSummaryForPatient = (patient, eyeSide = 'os') => {
   const name = patient?.name || "Khanatip Gankingpai";
   if (name.includes("Khanatip")) {
-    return "Compared to the previous scan on Jan 15, 2024, the disease progression shows a significant worsening trend. While the previous scan indicated only Subretinal Hyperreflective Material (SHRM), the current scan reveals new fluid accumulation, including both SRF and IRF. This suggests a potential transition from Intermediate AMD to active Neovascular (Wet) AMD.";
+    if (eyeSide === 'os') {
+      return "Compared to the previous scan on Jan 15, 2024, the disease progression shows a significant worsening trend. While the previous scan indicated only Subretinal Hyperreflective Material (SHRM), the current scan reveals new fluid accumulation, including both SRF and IRF. This suggests a potential transition from Intermediate AMD to active Neovascular (Wet) AMD.";
+    } else {
+      return "Compared to the previous scan on Jan 15, 2024, the dry AMD findings in the right eye are stable. Mild drusen accumulation remains unchanged with no sign of geographic atrophy or active neovascularization.";
+    }
   } else if (name.includes("Jirawat")) {
-    return "Compared to the previous scan on Dec 10, 2023, the disease progression shows a stable trend. No new lesion or fluid accumulation is observed. The early AMD findings are well-maintained with recommendation of routine follow-up.";
+    if (eyeSide === 'os') {
+      return "Compared to the previous scan on Dec 10, 2023, the disease progression shows a stable trend. No new lesion or fluid accumulation is observed. The early AMD findings are well-maintained with recommendation of routine follow-up.";
+    } else {
+      return "The right retina appears completely normal. Retinal layer structural integrity is well-preserved with no signs of drusen or subretinal/intraretinal fluid accumulation.";
+    }
   } else {
     return "The retina appears completely normal with no signs of drusen or fluid accumulation. Comparative review against previous baseline scan confirms no progression.";
   }
 };
 
 export default function ProgressionSummary({ patient, onBack }) {
-  const [visits, setVisits] = useState(() => getVisitsForPatient(patient));
-  const [activeIndex, setActiveIndex] = useState(0);
   const [activeEye, setActiveEye] = useState('os');
+  const [visits, setVisits] = useState(() => getVisitsForPatient(patient, 'os'));
+  const [activeIndex, setActiveIndex] = useState(0);
   
   // Progression Summary Text
-  const [summaryText, setSummaryText] = useState(() => getSummaryForPatient(patient));
+  const [summaryText, setSummaryText] = useState(() => getSummaryForPatient(patient, 'os'));
 
   // Modals state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -130,6 +182,96 @@ export default function ProgressionSummary({ patient, onBack }) {
     };
   }, []);
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const dateObj = new Date(dateStr);
+    const options = { day: 'numeric', month: 'short', year: 'numeric' };
+    return dateObj.toLocaleDateString('en-GB', options).replace(',', '');
+  };
+
+  useEffect(() => {
+    const loadProgression = async () => {
+      const pId = patient?.id || patient?.patient_id;
+      if (!pId) return;
+
+      const loadMockupData = (pid) => {
+        const savedMock = localStorage.getItem(`mockVisits_${pid}_${activeEye}`);
+        if (savedMock) {
+          try {
+            const parsed = JSON.parse(savedMock);
+            if (parsed && parsed.length > 0) {
+              setVisits(parsed);
+              setActiveIndex(0);
+              const firstVisit = parsed[0];
+              setSummaryText(firstVisit.summary || getSummaryForPatient(patient, activeEye));
+              return;
+            }
+          } catch (e) {
+            console.error("Failed to parse mock visits from localStorage", e);
+          }
+        }
+        setVisits(getVisitsForPatient(patient, activeEye));
+        setActiveIndex(0);
+        setSummaryText(getSummaryForPatient(patient, activeEye));
+      };
+
+      try {
+        const res = await API.get(`/diagnostics/patient/${pId}/progression`);
+        const timeline = res.data;
+        if (timeline && timeline.length > 0) {
+          const sortedTimeline = [...timeline].sort((a, b) => new Date(b.detection_date) - new Date(a.detection_date));
+
+          const mappedVisits = sortedTimeline.map((item, idx) => {
+            const stage = item.detected_stage;
+            let lesionPath = "";
+            let strokePath = "M 10,105 L 180,120 Q 230,126 280,127 L 450,127";
+
+            if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
+              lesionPath = "M 210,130 Q 230,110 250,130 Z";
+              strokePath = "M 10,105 L 180,123 Q 230,132 280,127 L 450,127";
+            } else if (stage === "Early AMD") {
+              lesionPath = "M 190,132 Q 215,115 240,132 Z";
+              strokePath = "M 10,105 L 180,123 Q 230,130 280,127 L 450,127";
+            }
+
+            return {
+              date: formatDate(item.detection_date),
+              stage: stage,
+              detection: item.tag_line,
+              isLatest: idx === 0,
+              lesionPath,
+              strokePath,
+              rawTimeline: item
+            };
+          });
+
+          setVisits(mappedVisits);
+          setActiveIndex(0);
+          setSummaryText(mappedVisits[0]?.rawTimeline?.progression_summary || "");
+        } else {
+          // Fallback to mockup data if timeline is empty
+          loadMockupData(pId);
+        }
+      } catch (err) {
+        console.error("Error loading progression timeline, using mockup fallback:", err);
+        loadMockupData(pId);
+      }
+    };
+    loadProgression();
+  }, [patient, activeEye]);
+
+  useEffect(() => {
+    if (visits[activeIndex]) {
+      if (visits[activeIndex].rawTimeline) {
+        setSummaryText(visits[activeIndex].rawTimeline.progression_summary);
+      } else {
+        // Fallback for mockup visits
+        setSummaryText(visits[activeIndex].summary || getSummaryForPatient(patient, activeEye));
+      }
+    }
+  }, [activeIndex, visits, patient, activeEye]);
+
+
   // Sync ข้อมูลของ visit ปัจจุบันขึ้นฟอร์มแก้ไข
   const openEditModal = () => {
     const activeVisit = visits[activeIndex];
@@ -137,14 +279,14 @@ export default function ProgressionSummary({ patient, onBack }) {
 
     document.body.style.overflow = 'hidden';
     setModalSummary(summaryText);
-    setModalTagLine(activeVisit.detection);
+    setModalTagLine(activeVisit.detection || '');
 
     if (['Intermediate AMD', 'Early AMD', 'Normal'].includes(activeVisit.stage)) {
       setModalRisk(activeVisit.stage);
       setModalRiskOther('');
     } else {
       setModalRisk('Other');
-      setModalRiskOther(activeVisit.stage);
+      setModalRiskOther(activeVisit.stage || '');
     }
     
     setIsEditModalOpen(true);
@@ -156,29 +298,150 @@ export default function ProgressionSummary({ patient, onBack }) {
     setSaveSuccess(false);
   };
 
-  const saveModalChanges = () => {
-    setSaveSuccess(true);
-
-    let finalRisk = modalRisk;
-    if (modalRisk === 'Other') {
-      finalRisk = modalRiskOther.trim() !== '' ? modalRiskOther.trim() : 'Custom AMD';
+  const saveModalChanges = async () => {
+    const activeVisit = visits[activeIndex];
+    if (!activeVisit) {
+      console.warn("No active visit found during save changes");
+      return;
     }
 
-    // อัปเดตข้อมูล visits อ้างอิง index ปัจจุบัน
-    const updatedVisits = [...visits];
-    updatedVisits[activeIndex] = {
-      ...updatedVisits[activeIndex],
-      stage: finalRisk,
-      detection: modalTagLine
-    };
+    try {
+      let finalRisk = modalRisk;
+      if (modalRisk === 'Other') {
+        finalRisk = modalRiskOther.trim() !== '' ? modalRiskOther.trim() : 'Custom AMD';
+      }
 
-    setVisits(updatedVisits);
-    setSummaryText(modalSummary);
+      // 1. Save to DB if there is a rawTimeline (wrapped in its own try-catch block)
+      if (activeVisit.rawTimeline) {
+        try {
+          const history_id = activeVisit.rawTimeline.history_id;
+          await API.put(`/diagnostics/timeline/${history_id}`, {
+            detected_stage: finalRisk,
+            tag_line: modalTagLine,
+            progression_summary: modalSummary
+          });
+        } catch (apiErr) {
+          console.error("Failed to save timeline to database, continuing with local updates:", apiErr);
+        }
+      }
 
-    setTimeout(() => {
-      closeEditModal();
-    }, 600);
+      setSaveSuccess(true);
+
+      // Define paths to redraw the SVG overlays based on the edited stage
+      let lesionPath = "";
+      let strokePath = "M 10,105 L 180,120 Q 230,126 280,127 L 450,127";
+
+      if (finalRisk === "Intermediate AMD" || finalRisk === "Inter. AMD") {
+        lesionPath = "M 210,130 Q 230,110 250,130 Z";
+        strokePath = "M 10,105 L 180,123 Q 230,132 280,127 L 450,127";
+      } else if (finalRisk === "Early AMD") {
+        lesionPath = "M 190,132 Q 215,115 240,132 Z";
+        strokePath = "M 10,105 L 180,123 Q 230,130 280,127 L 450,127";
+      }
+
+      const updatedVisits = [...visits];
+      updatedVisits[activeIndex] = {
+        ...updatedVisits[activeIndex],
+        stage: finalRisk,
+        detection: modalTagLine,
+        summary: modalSummary,
+        lesionPath,
+        strokePath
+      };
+
+      if (updatedVisits[activeIndex].rawTimeline) {
+        updatedVisits[activeIndex].rawTimeline = {
+          ...updatedVisits[activeIndex].rawTimeline,
+          detected_stage: finalRisk,
+          tag_line: modalTagLine,
+          progression_summary: modalSummary
+        };
+      }
+
+      setVisits(updatedVisits);
+      setSummaryText(modalSummary);
+
+      // 2. Persist mockup changes in localStorage
+      const pId = patient?.id || patient?.patient_id;
+      if (pId) {
+        localStorage.setItem(`mockVisits_${pId}_${activeEye}`, JSON.stringify(updatedVisits));
+
+        // Sync with mockPatients (for Dashboard & Diagnostic workspace)
+        let mockPatientsList = [];
+        const savedMockPatients = localStorage.getItem('mockPatients');
+        if (savedMockPatients) {
+          try {
+            mockPatientsList = JSON.parse(savedMockPatients);
+          } catch (e) {
+            console.error("Failed to parse mockPatients from localStorage:", e);
+          }
+        }
+        
+        // Ensure mockPatientsList is an array
+        if (!Array.isArray(mockPatientsList)) {
+          mockPatientsList = [];
+        }
+
+        if (mockPatientsList.length === 0) {
+          mockPatientsList = [
+            { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444" },
+            { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743" },
+            { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f" }
+          ];
+        }
+
+        // Sync if the edited visit is the latest one (index 0)
+        if (activeIndex === 0) {
+          const patientIndex = mockPatientsList.findIndex(p => p && p.id === pId);
+          if (patientIndex !== -1) {
+            mockPatientsList[patientIndex].diagnosis = finalRisk;
+            mockPatientsList[patientIndex].riskLevel = finalRisk === 'Intermediate AMD' ? 'High' : finalRisk === 'Early AMD' ? 'Medium' : 'Low';
+            mockPatientsList[patientIndex].colorCode = mockPatientsList[patientIndex].riskLevel === 'High' ? '#EF4444' : mockPatientsList[patientIndex].riskLevel === 'Medium' ? '#FE7743' : '#40a34f';
+            localStorage.setItem('mockPatients', JSON.stringify(mockPatientsList));
+          }
+
+          // Sync with mockProgressionPatients (for Patient Progression Registry)
+          let mockProgList = [];
+          const savedMockProg = localStorage.getItem('mockProgressionPatients');
+          if (savedMockProg) {
+            try {
+              mockProgList = JSON.parse(savedMockProg);
+            } catch (e) {
+              console.error("Failed to parse mockProgressionPatients from localStorage:", e);
+            }
+          }
+
+          // Ensure mockProgList is an array
+          if (!Array.isArray(mockProgList)) {
+            mockProgList = [];
+          }
+
+          if (mockProgList.length === 0) {
+            mockProgList = [
+              { id: "P-2605-016", name: "Khanatip Gankingpai", lastVisit: "22 May 2026", stage: "Intermediate AMD", trend: "Worsening", trendColor: "#EF4444", dotColor: "#EF4444", age: "65", sex: "Male" },
+              { id: "P-2605-012", name: "Jirawat Jakthong", lastVisit: "18 May 2026", stage: "Early AMD", trend: "Stable", trendColor: "#FE7743", dotColor: "#FE7743", age: "58", sex: "Male" },
+              { id: "P-2605-037", name: "Natthawut Saengmani", lastVisit: "12 May 2026", stage: "Normal", trend: "Normal", trendColor: "#22C55E", dotColor: "#22C55E", age: "62", sex: "Male" }
+            ];
+          }
+          const progIdx = mockProgList.findIndex(p => p && p.id === pId);
+          if (progIdx !== -1) {
+            mockProgList[progIdx].stage = finalRisk;
+            mockProgList[progIdx].trend = finalRisk === "Intermediate AMD" ? "Worsening" : finalRisk === "Early AMD" ? "Stable" : "Normal";
+            mockProgList[progIdx].trendColor = finalRisk === "Intermediate AMD" ? "#EF4444" : finalRisk === "Early AMD" ? "#FE7743" : "#22C55E";
+            mockProgList[progIdx].dotColor = mockProgList[progIdx].trendColor;
+            localStorage.setItem('mockProgressionPatients', JSON.stringify(mockProgList));
+          }
+        }
+      }
+
+      setTimeout(() => {
+        closeEditModal();
+      }, 600);
+    } catch (err) {
+      console.error("Critical error in saveModalChanges:", err);
+    }
   };
+
 
   const triggerExportSuccess = () => {
     if (exportSuccess) return;
@@ -220,6 +483,16 @@ export default function ProgressionSummary({ patient, onBack }) {
   const handlePointerUp = () => {
     isDraggingRef.current = false;
   };
+
+  const getPatientSet = (patientId) => {
+    if (patientId && (patientId.includes('012') || patientId.includes('012'))) return 'set2'; // Jirawat (Normal)
+    if (patientId && (patientId.includes('037') || patientId.includes('037'))) return 'set3'; // Natthawut (AMD 1 lesion)
+    return 'set1'; // Khanatip (AMD 2 lesions)
+  };
+  const patientSet = getPatientSet(patient?.id || patient?.patient_id);
+  const octImgUrl = `/mock_oct/${patientSet}/${activeEye}/${scaleValue}.png`;
+  // The previous historical scan will be compared against the normal state (set2) at the same slice index
+  const prevOctImgUrl = `/mock_oct/set2/${activeEye}/${scaleValue}.png`;
 
   return (
     <div className="progression-container progression-summary-page">
@@ -291,8 +564,11 @@ export default function ProgressionSummary({ patient, onBack }) {
               </div>
               <div>
                 <div style={{ color: 'var(--text-soft)', fontWeight: 5, marginBottom: '2px' }}>Jaksu Trend</div>
-                <div style={{ fontWeight: 7, color: patient?.trend === 'Normal' ? 'var(--green)' : patient?.trend === 'Stable' ? 'var(--orange)' : 'var(--red)' }}>
-                  {patient?.trend || 'Worsening'}
+                <div style={{ 
+                  fontWeight: 7, 
+                  color: (visits[0]?.stage === 'Normal') ? 'var(--green)' : (visits[0]?.stage === 'Early AMD') ? 'var(--orange)' : 'var(--red)' 
+                }}>
+                  {visits[0]?.stage === 'Normal' ? 'Normal' : visits[0]?.stage === 'Early AMD' ? 'Stable' : 'Worsening'}
                 </div>
               </div>
             </div>
@@ -338,7 +614,7 @@ export default function ProgressionSummary({ patient, onBack }) {
               onPointerMove={handlePointerMove}
               style={{ touchAction: 'none' }}
             >
-              <img src="/fundus.png" alt="Fundus Image" className="fundus-img" />
+              <img src={activeEye === 'os' ? '/OS.png' : '/OD.png'} alt="Fundus Image" className="fundus-img" />
               <div 
                 id="dragLineContainer" 
                 ref={dragLineRef}
@@ -405,7 +681,7 @@ export default function ProgressionSummary({ patient, onBack }) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {/* สแกนภาพย้อนหลัง (Previous) พร้อม SVG Lesion Dynamic Overlay */}
                 <div className="oct-card-view">
-                  <img src="/OCT2.png" alt="Previous OCT" />
+                  <img src={prevOctImgUrl} alt="Previous OCT" />
                 </div>
                 <div className="scan-selector-row">
                   <span className="scan-label">Previous</span>
@@ -431,7 +707,7 @@ export default function ProgressionSummary({ patient, onBack }) {
               {/* สแกนภาพปัจจุบัน (Current) พร้อม SVG static overlay */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <div className="oct-card-view">
-                  <img src="/OCT.png" alt="Current OCT" />
+                  <img src={octImgUrl} alt="Current OCT" />
                 </div>
                 <div className="scan-selector-row">
                   <span className="scan-label">Current</span>
@@ -676,7 +952,7 @@ export default function ProgressionSummary({ patient, onBack }) {
             {/* ส่วนที่ 1: Previous OCT */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
               <div className="oct-card-view" style={{ width: '100%', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
-                <img src="/OCT2.png" alt="Previous OCT Full" style={{ width: '100%', height: 'auto', display: 'block', }} />
+                <img src={prevOctImgUrl} alt="Previous OCT Full" style={{ width: '100%', height: '400px', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
                 
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', textAlign: 'left' }}>
@@ -703,7 +979,7 @@ export default function ProgressionSummary({ patient, onBack }) {
             {/* ส่วนที่ 2: Current OCT */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
               <div className="oct-card-view" style={{ width: '100%', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
-                <img src="/OCT.png" alt="Current OCT Full" style={{ width: '100%', height: 'auto', display: 'block'}} />
+                <img src={octImgUrl} alt="Current OCT Full" style={{ width: '100%', height: '400px', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', textAlign: 'left' }}>
                 <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-soft)', minWidth: '80px' }}>Current</span>
@@ -726,13 +1002,18 @@ export default function ProgressionSummary({ patient, onBack }) {
   function syncModalFieldsForIndex(idx) {
     const targetVisit = visits[idx];
     if (!targetVisit) return;
-    setModalTagLine(targetVisit.detection);
+    setModalTagLine(targetVisit.detection || '');
     if (['Intermediate AMD', 'Early AMD', 'Normal'].includes(targetVisit.stage)) {
       setModalRisk(targetVisit.stage);
       setModalRiskOther('');
     } else {
       setModalRisk('Other');
-      setModalRiskOther(targetVisit.stage);
+      setModalRiskOther(targetVisit.stage || '');
+    }
+    if (targetVisit.rawTimeline) {
+      setModalSummary(targetVisit.rawTimeline.progression_summary || '');
+    } else {
+      setModalSummary(targetVisit.summary || getSummaryForPatient(patient));
     }
   }
 }
