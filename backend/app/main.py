@@ -4,6 +4,7 @@ from app.api.v1.auth import router as auth_router
 from app.api.v1.patient import router as patient_router
 from app.api.v1.visit import router as visit_router
 from app.api.v1.diagnostic import router as diagnostic_router
+from app.core.scheduler import start_db_monitor
 
 app = FastAPI(
     title="JaksuHealth API",
@@ -33,3 +34,7 @@ app.include_router(diagnostic_router, prefix="/api/v1/diagnostics", tags=["Diagn
 @app.get("/")
 def root():
     return {"message": "ยินดีต้อนรับสู่ระบบบริการข้อมูลหลังบ้าน JaksuHealth API"}
+
+@app.on_event("startup")
+def startup_event():
+    start_db_monitor()

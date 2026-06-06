@@ -42,7 +42,7 @@ services:
     build: ./frontend            # 🌟 ชี้ไปที่โฟลเดอร์ frontend
     container_name: jaksuhealth-frontend
     ports:
-      - "3000:80"                # เปิดให้เข้าเว็บตรงๆ ที่พอร์ต 3000
+      - "80:80"                  # รันระบบหน้าบ้านผ่านพอร์ต 80 มาตรฐาน (ตาม Security Group ปัจจุบัน)
     restart: always
     networks:
       - jaksu-network

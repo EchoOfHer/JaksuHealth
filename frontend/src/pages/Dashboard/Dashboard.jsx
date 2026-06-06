@@ -89,11 +89,39 @@ const Dashboard = () => {
               riskLevel = v.diagnostic.risk_level === 'HIGH RISK' ? 'High' : v.diagnostic.risk_level === 'MED' ? 'Medium' : 'Low';
               colorCode = riskLevel === 'High' ? '#EF4444' : riskLevel === 'Medium' ? '#FE7743' : '#40a34f';
             } else {
+              // ฐานข้อมูลจริงไม่มี diagnostic (เช่น หลังรัน rollback DB)
+              // ล้างสเตตัส mismatch ใน localStorage เพื่อซิงค์กับ DB
               const savedMock = localStorage.getItem('mockPatients');
-              let foundSaved = false;
               if (savedMock) {
                 try {
                   const savedList = JSON.parse(savedMock);
+                  const index = savedList.findIndex(p => p.id === pid);
+                  if (index !== -1) {
+                    const defaultDiagnosis = pid === 'P-2605-016' ? 'Intermediate AMD' : pid === 'P-2605-012' ? 'Early AMD' : 'Normal';
+                    // ตรวจพบว่าสเตตัสใน localStorage ต่างจากค่าเริ่มต้นและยังไม่มีการวินิจฉัยจริงใน DB
+                    if (savedList[index].diagnosis !== defaultDiagnosis || savedList[index].isApproved) {
+                      savedList[index].diagnosis = defaultDiagnosis;
+                      savedList[index].riskLevel = pid === 'P-2605-016' ? 'High' : pid === 'P-2605-012' ? 'Medium' : 'Low';
+                      savedList[index].colorCode = pid === 'P-2605-016' ? '#EF4444' : pid === 'P-2605-012' ? '#FE7743' : '#40a34f';
+                      savedList[index].isApproved = false;
+                      localStorage.setItem('mockPatients', JSON.stringify(savedList));
+
+                      localStorage.removeItem(`mockDraft_${pid}_os`);
+                      localStorage.removeItem(`mockDraft_${pid}_od`);
+                      localStorage.removeItem(`mockVisits_${pid}_os`);
+                      localStorage.removeItem(`mockVisits_${pid}_od`);
+                    }
+                  }
+                } catch (e) {
+                  console.error(e);
+                }
+              }
+
+              const savedMockUpdated = localStorage.getItem('mockPatients');
+              let foundSaved = false;
+              if (savedMockUpdated) {
+                try {
+                  const savedList = JSON.parse(savedMockUpdated);
                   const matched = savedList.find(p => p.id === pid);
                   if (matched) {
                     diagnosis = matched.diagnosis;
