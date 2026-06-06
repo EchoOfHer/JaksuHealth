@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 class Settings(BaseSettings):
     # ตัวแปรเหล่านี้จะถูกดึงมาจาก Environment (ที่ตั้งไว้ใน docker-compose.yml)
@@ -7,6 +8,10 @@ class Settings(BaseSettings):
     DB_NAME: str
     DB_USER: str
     DB_PASSWORD: str
+    
+    # ตัวแปรเสริมสำหรับการเชื่อมต่อ AI Servers (เป็นตัวเลือกเสริม)
+    LLM_SERVER_URL: Optional[str] = None
+    CV_SERVER_URL: Optional[str] = None
 
     @property
     def DATABASE_URL(self) -> str:
@@ -15,5 +20,6 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+        extra = "ignore" # ยอมให้มีตัวแปรอื่นใน .env โดยไม่พ่น Error
 
 settings = Settings()
