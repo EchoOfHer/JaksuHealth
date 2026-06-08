@@ -218,7 +218,7 @@ export default function ProgressionSummary({ patient, onBack }) {
       try {
         const res = await API.get(`/diagnostics/patient/${pId}/progression`);
         const timeline = res.data;
-        if (timeline && timeline.length > 0) {
+        if (Array.isArray(timeline) && timeline.length > 0) {
           const sortedTimeline = [...timeline].sort((a, b) => new Date(b.detection_date) - new Date(a.detection_date));
 
           const mappedVisits = sortedTimeline.map((item, idx) => {
@@ -636,7 +636,7 @@ export default function ProgressionSummary({ patient, onBack }) {
           {/* บล็อก 2: Progression Summary */}
           <div className="premium-card" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', flex: 1 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-              <p class="pill-label">Progression Summary</p>
+              <p className="pill-label">Progression Summary</p>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="12" cy="12" r="10" stroke="var(--orange)" strokeWidth="2.5"/>
                 <circle cx="12" cy="12" r="6" fill="#000"/>

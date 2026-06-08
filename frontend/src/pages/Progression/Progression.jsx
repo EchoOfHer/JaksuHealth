@@ -76,7 +76,7 @@ const ProgressionPage = () => {
         const res = await API.get('/patients/');
         const patientList = res.data;
         
-        if (patientList && patientList.length > 0) {
+        if (Array.isArray(patientList) && patientList.length > 0) {
           const mappedPatients = await Promise.all(patientList.map(async (p) => {
             let lastVisit = "No visit";
             let stage = "Normal";
@@ -118,7 +118,7 @@ const ProgressionPage = () => {
               const progRes = await API.get(`/diagnostics/patient/${p.patient_id}/progression`);
               const timeline = progRes.data;
               
-              if (timeline && timeline.length > 0) {
+              if (Array.isArray(timeline) && timeline.length > 0) {
                 const sortedTimeline = [...timeline].sort((a, b) => new Date(b.detection_date) - new Date(a.detection_date));
                 const latest = sortedTimeline[0];
                 

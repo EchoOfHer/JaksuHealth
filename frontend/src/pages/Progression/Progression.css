@@ -361,3 +361,162 @@
   box-shadow: 0 4px 12px rgba(37, 52, 63, 0.15);
   user-select: none;
 }
+
+/* ==========================================================================
+   RESPONSIVE MEDIA QUERIES FOR PROGRESSION REGISTRY
+   ========================================================================== */
+
+/* --- Tablet Mode (iPad / Width < 1024px) --- */
+@media (max-width: 1023px) {
+  .page-subtitle-container {
+    max-width: 80%;
+  }
+
+  .search-filter-row {
+    max-width: 80%;
+  }
+
+  .table-header {
+    grid-template-columns: 18% 22% 18% 18% 12% 12%;
+    font-size: 16px;
+  }
+
+  .patient-row {
+    grid-template-columns: 18% 22% 18% 18% 12% 12%;
+    font-size: 15px;
+  }
+
+  .view-trend-btn {
+    width: 120px;
+    height: 38px;
+    font-size: 15px;
+    margin-right: 10px;
+  }
+
+  .view-trend-btn span.arrow {
+    font-size: 16px;
+  }
+}
+
+/* --- Mobile Mode (iPhone / Width < 768px) --- */
+@media (max-width: 767px) {
+  .page-title {
+    font-size: 24px;
+  }
+
+  .page-subtitle-container {
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .page-subtitle {
+    font-size: 16px;
+  }
+
+  .search-filter-row {
+    max-width: 100%;
+  }
+
+  .table-container {
+    padding: 15px;
+    margin-top: 15px;
+  }
+
+  /* ซ่อนหัวตารางบนมือถือ */
+  .table-header {
+    display: none;
+  }
+
+  /* แปลงแถวตารางเป็นการ์ดคอลัมน์เดี่ยวแนวตั้ง */
+  .patient-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 20px 15px;
+    background-color: #F9F9FB;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+  }
+
+  .patient-row:last-child {
+    margin-bottom: 0;
+  }
+
+  /* จัดเรียงลำดับเนื้อหาภายในการ์ด */
+  .patient-cell-bold {
+    font-size: 18px;
+    order: 1; /* Name */
+  }
+
+  .patient-cell-left:nth-child(1) {
+    font-size: 14px;
+    color: #8E8E93;
+    order: 2; /* Patient ID */
+  }
+
+  /* แสดงป้ายข้อความกำกับสำหรับข้อมูลบนมือถือ */
+  .patient-cell-left:nth-child(1)::before {
+    content: "ID: ";
+    font-weight: 600;
+  }
+
+  .patient-cell-muted {
+    font-size: 14px;
+    order: 3; /* Last Visit */
+  }
+
+  .patient-cell-muted::before {
+    content: "Last Visit: ";
+    font-weight: 600;
+    color: #1C1C1E;
+  }
+
+  .patient-cell-left:nth-child(4) {
+    font-size: 16px;
+    font-weight: 600;
+    order: 4; /* Current Stage */
+  }
+
+  .patient-cell-left:nth-child(4)::before {
+    content: "Stage: ";
+    font-weight: 500;
+    color: #8E8E93;
+  }
+
+  .patient-cell-trend {
+    order: 5; /* AI Trend */
+    font-size: 16px;
+  }
+
+  .patient-cell-trend::before {
+    content: "Trend: ";
+    font-weight: 500;
+    color: #8E8E93;
+    margin-right: 4px;
+  }
+
+  .patient-cell-action {
+    order: 6; /* Action Button */
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  .view-trend-btn {
+    width: 100%;
+    margin-right: 0;
+    height: 44px;
+    font-size: 16px;
+  }
+
+  .pagination-container {
+    justify-content: center;
+  }
+
+  .filter-dropdown-card {
+    top: 60px !important;
+    right: 0 !important;
+    left: auto !important;
+  }
+}

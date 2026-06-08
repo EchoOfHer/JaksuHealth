@@ -770,3 +770,175 @@
   from { transform: scale(0.95); }
   to { transform: scale(1); }
 }
+
+/* ==========================================================================
+   RESPONSIVE MEDIA QUERIES FOR INDIVIDUAL DIAGNOSTIC
+   ========================================================================== */
+
+/* --- Tablet / Smaller Screen Mode (Width < 992px) --- */
+@media (max-width: 991px) {
+  .main-workspace-grid {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .col-left, .col-right {
+    width: 100% !important;
+  }
+
+  .oct-img {
+    height: 350px; /* ลดความสูงของรูปสแกน OCT ให้พอดีตัวเครื่อง */
+  }
+
+  .patient-info-card {
+    flex: none; /* ป้องกัน card ยืดเกินความจำเป็นในแนวดิ่ง */
+  }
+}
+
+/* --- Mobile Mode (iPhone / Width < 768px) --- */
+@media (max-width: 767px) {
+  .diagnostic-workspace-page {
+    padding-top: 5px;
+  }
+
+  .diagnostic-workspace-page .page-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .header-left, .header-center, .header-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .header-center {
+    justify-content: center;
+    margin: 5px 0;
+  }
+
+  .back-btn {
+    font-size: 16px;
+  }
+
+  .eye-tab {
+    padding: 6px 20px;
+    font-size: 14px;
+  }
+
+  /* Fundus container adjustments */
+  .fundus-viewer-card {
+    padding: 20px 10px !important;
+  }
+
+  #fundusContainer {
+    max-width: 280px; /* บีบขนาดดวงตาให้อยู่ในหน้าจอมือถือได้พอดี */
+  }
+
+  #dragLineContainer {
+    left: -10px;
+    right: -10px;
+  }
+
+  /* Patient Details List */
+  .patient-details-list {
+    padding-left: 0;
+    gap: 16px;
+  }
+
+  .detail-title {
+    font-size: 16px;
+  }
+
+  .detail-value {
+    font-size: 20px;
+  }
+
+  .detail-row-group {
+    gap: 20px;
+  }
+
+  /* OCT scan & biomarker */
+  .oct-img {
+    height: 250px;
+  }
+
+  .biomarker-legend-row {
+    gap: 12px;
+    justify-content: flex-start;
+  }
+
+  .legend-item {
+    font-size: 13px;
+  }
+
+  /* Actions Buttons Column Stack */
+  .workspace-actions-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .edit-workspace-btn, .approve-workspace-btn {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 16px;
+  }
+
+  /* Modals */
+  #modalContainer {
+    padding: 24px 20px;
+    gap: 16px;
+    width: 95%;
+    max-width: 95%;
+  }
+
+  .modal-close-circle-btn {
+    top: 15px;
+    right: 15px;
+  }
+
+  .modal-radio-group {
+    gap: 12px;
+  }
+
+  .modal-radio-label {
+    font-size: 14px;
+    width: 100%; /* stack radio labels */
+  }
+
+  .modal-text-input {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+  }
+
+  .modal-textarea {
+    font-size: 14px;
+    height: 90px;
+  }
+
+  .modal-textarea.action-box {
+    height: 80px;
+  }
+
+  #modalSaveBtn {
+    width: 100%;
+    padding: 12px 0;
+  }
+
+  #modalSaveBtn.saved-state {
+    padding: 9.5px 0 !important;
+  }
+
+  #octModalContainer {
+    padding: 20px;
+    width: 95%;
+    max-width: 95%;
+    gap: 15px;
+  }
+
+  .oct-modal-img-wrapper img {
+    height: 180px;
+  }
+}

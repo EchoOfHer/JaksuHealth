@@ -61,7 +61,7 @@ const Dashboard = () => {
         const response = await API.get('/visits/pending');
         const data = response.data; // รายการคิวจาก SQL
 
-        if (data && data.length > 0) {
+        if (Array.isArray(data) && data.length > 0) {
           const formatTime = (timeStr) => {
             if (!timeStr) return '';
             const parts = timeStr.split(':');
@@ -197,57 +197,51 @@ const Dashboard = () => {
       </div>
 
       {/* กล่องสรุปสถิติ */}
-      <div style={{ display: "flex", flexDirection: "row", gap: "40px" }}>
+      <div className="stats-container">
         {/* กล่อง Pending */}
-        <div style={{ backgroundColor: "white", width: "300px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>{stats.pending}</h1>
-          <p style={{ backgroundColor: "#FFDDBF", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#FE7743", borderRadius: "10px" }}>PENDING</p>
+        <div className="stat-card pending-card">
+          <h1 className="stat-number">{stats.pending}</h1>
+          <p className="stat-label pending-label">PENDING</p>
         </div>
 
         {/* กล่อง High Risk */}
-        <div style={{ backgroundColor: "white", width: "300px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>{stats.highRisk}</h1>
-          <p style={{ backgroundColor: "#FF8383", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#B20101", borderRadius: "10px" }}>HIGH RISK</p>
+        <div className="stat-card high-risk-card">
+          <h1 className="stat-number">{stats.highRisk}</h1>
+          <p className="stat-label high-risk-label">HIGH RISK</p>
         </div>
 
         {/* กล่อง Complete */}
-        <div style={{ backgroundColor: "white", width: "300px", padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <h1 style={{ fontSize: "100px", margin: "0", lineHeight: "1", textAlign: "center" }}>{stats.complete}</h1>
-          <p style={{ backgroundColor: "#86D392", margin: "24px -5px -5px -5px", padding: "15px 12px", textAlign: "center", fontWeight: "700", fontSize: "25px", color: "#36543A", borderRadius: "10px" }}>COMPLETE</p>
+        <div className="stat-card complete-card">
+          <h1 className="stat-number">{stats.complete}</h1>
+          <p className="stat-label complete-label">COMPLETE</p>
         </div>
       </div>
 
-      <hr style={{ border: "none", height: "2px", backgroundColor: "#000", opacity: "30%", margin: "40px 0 30px 0" }} />
+      <hr className="dashboard-divider" />
       
-      <div style={{ marginBottom: "15px" }}>
-        <h1 style={{ fontSize: "30px", color: "#1C1C1E", opacity: "80%" }}>Today's Patient ({mockPatients.length})</h1>
+      <div className="patient-list-header">
+        <h1>Today's Patient ({mockPatients.length})</h1>
       </div>
 
       {/* Patient List */}
-      <div style={{ display: "flex", flexDirection: "column", textAlign: "start", gap: "15px", position: "relative" }}>
+      <div className="patient-list-container">
         
         {/* วนลูปแสดงรายชื่อคนไข้จาก Array */}
         {mockPatients.map((patient, index) => (
-          <div key={index} style={{
-            display: "flex", flexDirection: "row", backgroundColor: "white", alignItems: "center", 
-            borderLeft: `12px solid ${patient.colorCode}`, borderRadius: "12px", padding: "20px 24px", 
-            boxShadow: "0 4px 16px rgba(0,0,0,0.03)"
-          }}>
-            <div style={{ width: "25%", marginLeft: "10px" }}>
-              <p style={{ fontSize: "25px", fontWeight: "700", color: "#1C1C1E", margin: "0", opacity: "85%" }}>{patient.diagnosis}</p>
-              <p style={{ color: patient.colorCode, fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0" }}>{patient.riskLevel}</p>
+          <div key={index} className="patient-card" style={{ borderLeft: `12px solid ${patient.colorCode}` }}>
+            <div className="patient-col diagnosis-col">
+              <p className="patient-diagnosis">{patient.diagnosis}</p>
+              <p className="patient-risk" style={{ color: patient.colorCode }}>{patient.riskLevel}</p>
             </div>
-            <div style={{ width: "35%" }}>
-              <p style={{ fontSize: "25px", fontWeight: "700", color: "#1C1C1E", margin: "0", opacity: "85%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={patient.name}>
-                {patient.name}
-              </p>
-              <p style={{ color: "#555", fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0", opacity: "75%" }}>{patient.id}</p>
+            <div className="patient-col info-col">
+              <p className="patient-name" title={patient.name}>{patient.name}</p>
+              <p className="patient-id">{patient.id}</p>
             </div>
-            <div style={{ width: "20%" }}>
-              <p style={{ fontSize: "25px", fontWeight: "700", color: "#1C1C1E", margin: "0", opacity: "85%" }}>{patient.queue}</p>
-              <p style={{ color: "#555", fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0", opacity: "75%" }}>{patient.time}</p>
+            <div className="patient-col queue-col">
+              <p className="patient-queue">{patient.queue}</p>
+              <p className="patient-time">{patient.time}</p>
             </div>
-            <div style={{ width: "20%", display: "flex", justifyContent: "flex-end" }}>
+            <div className="patient-col action-col">
               {/* ทำปุ่ม Diagnose ให้สลับไปหน้า Diagnostic ได้เหมือนกัน */}
               <div className="review" onClick={() => navigate('/diagnostic')}>
                 <p>Diagnose</p>
@@ -258,21 +252,13 @@ const Dashboard = () => {
         ))}
 
         {/* กล่องควบคุม View All แบบฟุ้งสไลด์เบลอ */}
-        <div style={{ position: "absolute", bottom: "0", left: "0", right: "0", height: "150px", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: "100" }}>
-          <div style={{
-            position: "absolute", top: "0", left: "-12px", right: "-12px", bottom: "0",
-            background: "linear-gradient(to bottom, rgba(236, 236, 236, 0) 0%, rgba(236, 236, 236, 0.96) 65%, rgba(236, 236, 236, 1) 100%)",
-            backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)",
-            maskImage: "linear-gradient(to bottom, transparent 0%, black 85%)",
-            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 85%)",
-            pointerEvents: "none", borderRadius: "0 0 12px 12px"
-          }}></div>
+        <div className="view-all-container">
+          <div className="blur-overlay"></div>
           
           {/* 👈 3. ใส่เหตุการณ์ onClick พร้อมเรียกฟังก์ชัน navigate ชี้ไปที่ /diagnostic */}
           <button 
             className="view-all-btn" 
             onClick={() => navigate('/diagnostic')} 
-            style={{ position: "relative", zIndex: "101", marginBottom: "-20px" }}
           >
             View All Patients
           </button>

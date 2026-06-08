@@ -484,3 +484,158 @@
   box-shadow: none !important;            
   transform: scale(0.98);
 }
+
+/* ==========================================================================
+   RESPONSIVE MEDIA QUERIES FOR PROGRESSION SUMMARY
+   ========================================================================== */
+
+/* --- Tablet / Smaller Screen Mode (Width < 1024px) --- */
+@media (max-width: 1023px) {
+  .workspace-grid {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .col-left, .col-center, .col-right {
+    width: 100% !important;
+  }
+
+  .timeline-container {
+    max-width: 100%;
+  }
+
+  .oct-card-view {
+    height: 280px;
+  }
+
+  .oct-card-view img {
+    height: 350px;
+  }
+}
+
+/* --- Mobile Mode (iPhone / Width < 768px) --- */
+@media (max-width: 767px) {
+  .progression-summary-page {
+    margin-top: -10px;
+    padding-top: 5px;
+  }
+
+  .progression-summary-page .page-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .header-left, .header-center, .header-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .header-center {
+    justify-content: center;
+    margin: 5px 0;
+  }
+
+  .back-btn {
+    font-size: 16px;
+  }
+
+  .eye-tab {
+    padding: 6px 20px;
+    font-size: 14px;
+  }
+
+  /* Fundus container adjustments */
+  .fundus-viewer-card {
+    padding: 20px 10px !important;
+  }
+
+  #fundusContainer {
+    max-width: 280px; /* บีบขนาดดวงตาให้อยู่ในหน้าจอมือถือได้พอดี */
+  }
+
+  #dragLineContainer {
+    left: -20px;
+    right: -10px;
+  }
+
+  /* OCT Comparison */
+  .oct-card-view {
+    height: 180px;
+  }
+
+  .oct-card-view img {
+    height: 260px;
+  }
+
+  .scan-selector-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .custom-select-wrapper {
+    width: 100%;
+  }
+
+  .biomarker-legend-row {
+    gap: 12px;
+    justify-content: flex-start;
+  }
+
+  /* Copilot and Info text styling */
+  .report-desc {
+    font-size: 15px;
+  }
+
+  .detail-row-group {
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .detail-title {
+    font-size: 16px;
+  }
+
+  .detail-value {
+    font-size: 20px;
+  }
+
+  /* Modals */
+  .modal-overlay {
+    padding: 10px;
+  }
+
+  .modal-radio-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .modal-radio-label {
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .modal-text-input {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .modal-textarea {
+    font-size: 14px;
+    height: 90px;
+  }
+
+  #modalSaveBtn {
+    width: 100%;
+    padding: 12px 0;
+  }
+
+  #exportBtn {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 16px;
+  }
+}

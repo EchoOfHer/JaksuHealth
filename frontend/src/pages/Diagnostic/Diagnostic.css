@@ -208,3 +208,299 @@
   opacity: 0;
   transform: translateX(15px);
 }
+
+/* --- Diagnostic Page Header Styles --- */
+.page-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1C1C1E;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.page-subtitle {
+  font-size: 18px;
+  color: #999;
+  margin-top: 5px;
+  margin-bottom: 30px;
+}
+
+/* --- Search and Filter Row --- */
+.search-filter-row {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+  max-width: 50%;
+  align-items: center;
+  position: relative;
+  z-index: 100;
+}
+
+.search-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 50px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  padding: 8px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.search-icon {
+  display: block;
+  margin-right: 12px;
+  opacity: 0.5;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #1C1C1E;
+}
+
+/* --- Tabs --- */
+.filter-tabs-container {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.filter-tab-btn {
+  height: 35px;
+  background: #FFFFFF;
+  color: rgba(0, 0, 0, 0.6);
+  border-radius: 30px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.filter-tab-btn.active {
+  background: #FE7743;
+  color: #FFFFFF;
+  box-shadow: 0 6px 16px rgba(254, 119, 67, 0.25);
+}
+
+.filter-tab-btn:hover:not(.active) {
+  background: rgba(254, 119, 67, 0.05);
+  color: #FE7743;
+}
+
+/* Width mappings for buttons to match original sizes */
+.filter-tab-btn.all-tab,
+.filter-tab-btn.high-tab {
+  width: 85px;
+}
+
+.filter-tab-btn.medium-tab {
+  width: 137px;
+}
+
+.filter-tab-btn.low-tab {
+  width: 104px;
+}
+
+/* --- Patient List Header --- */
+.patient-list-header {
+  margin-top: 35px;
+  margin-bottom: 15px;
+}
+
+.header-title {
+  color: black;
+  opacity: 0.7;
+  font-size: 25px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.no-patients-alert {
+  padding: 40px;
+  text-align: center;
+  background-color: white;
+  border-radius: 12px;
+  color: #999;
+  font-size: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+}
+
+/* --- Patient List and Cards --- */
+.patient-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: relative;
+}
+
+.patient-card {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  align-items: center;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+  transition: transform 0.2s ease;
+}
+
+.patient-card:hover {
+  transform: translateY(-2px);
+}
+
+.patient-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.diagnosis-col {
+  width: 25%;
+  padding-left: 10px;
+}
+
+.info-col {
+  width: 35%;
+}
+
+.queue-col {
+  width: 20%;
+}
+
+.action-col {
+  width: 20%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.patient-diagnosis {
+  font-size: 25px;
+  font-weight: 700;
+  color: #1C1C1E;
+  margin: 0;
+  opacity: 0.85;
+}
+
+.patient-risk {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 10px 0 0 0;
+}
+
+.patient-name {
+  font-size: 25px;
+  font-weight: 700;
+  color: #1C1C1E;
+  margin: 0;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.patient-id {
+  color: #555;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 10px 0 0 0;
+  opacity: 0.75;
+}
+
+.patient-queue {
+  font-size: 25px;
+  font-weight: 700;
+  color: #1C1C1E;
+  margin: 0;
+  opacity: 0.85;
+}
+
+.patient-time {
+  color: #555;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 10px 0 0 0;
+  opacity: 0.75;
+}
+
+/* ==========================================================================
+   RESPONSIVE MEDIA QUERIES FOR DIAGNOSTIC PAGE
+   ========================================================================== */
+
+/* --- Tablet Mode (iPad) --- */
+@media (max-width: 1023px) {
+  .search-filter-row {
+    max-width: 80%;
+  }
+
+  .patient-diagnosis, .patient-name, .patient-queue {
+    font-size: 20px;
+  }
+
+  .patient-risk, .patient-id, .patient-time {
+    font-size: 16px;
+  }
+}
+
+/* --- Mobile Mode (iPhone) --- */
+@media (max-width: 767px) {
+  .page-title {
+    font-size: 24px;
+  }
+
+  .page-subtitle {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  .search-filter-row {
+    max-width: 100%;
+  }
+
+  .filter-tabs-container {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .patient-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 15px;
+  }
+
+  .patient-col {
+    width: 100% !important;
+    padding-left: 0 !important;
+  }
+
+  .action-col {
+    justify-content: flex-start;
+    margin-top: 5px;
+  }
+
+  .review {
+    width: 100%;
+  }
+
+  .patient-name {
+    white-space: normal;
+  }
+
+  .filter-dropdown-card {
+    top: 60px !important;
+    right: 0 !important;
+    left: auto !important;
+  }
+}

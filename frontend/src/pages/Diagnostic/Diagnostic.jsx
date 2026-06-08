@@ -46,7 +46,7 @@ const Diagnostic = ({ onSelectPatient }) => {
         const response = await API.get('/visits/pending');
         const data = response.data;
 
-        if (data && data.length > 0) {
+        if (Array.isArray(data) && data.length > 0) {
           const formatTime = (timeStr) => {
             if (!timeStr) return '';
             const parts = timeStr.split(':');
@@ -151,7 +151,6 @@ const Diagnostic = ({ onSelectPatient }) => {
     fetchPendingPatients();
   }, []);
 
-
   // ค่าน้ำหนักในการเปรียบเทียบระดับความรุนแรง (สำหรับเรียงลำดับ Severity)
   const severityWeight = {
     'High': 3,
@@ -197,50 +196,26 @@ const Diagnostic = ({ onSelectPatient }) => {
       return 0;
     });
 
-  // สไตล์สำหรับปุ่มแท็บ
-  const getTabStyle = (tabName) => {
-    const isActive = activeTab === tabName;
-    return {
-      width: tabName === 'Medium' ? '137px' : tabName === 'Low' ? '104px' : '85px',
-      height: '35px',
-      background: isActive ? '#FE7743' : '#FFFFFF',
-      color: isActive ? '#FFFFFF' : 'rgba(0,0,0,0.6)',
-      borderRadius: '30px',
-      fontFamily: "'Inter', sans-serif",
-      fontWeight: '600',
-      fontSize: '15px',
-      border: 'none',
-      cursor: 'pointer',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      transition: 'all 0.25s ease',
-      boxShadow: isActive ? '0 6px 16px rgba(254, 119, 67, 0.25)' : '0 4px 12px rgba(0,0,0,0.03)'
-    };
-  };
-
   return (
     <div className="diagnostic-container">
       {/* ส่วนหัว */}
       <div className="page-header">
-        <h1 style={{ opacity: "80%", fontSize: "30px", margin: 0 }}>Diagnostic Workspace</h1>
-        <p style={{ fontSize: "18px", color: "#999", marginTop: "5px", marginBottom: "30px" }}>
-          Pending Worklist from HIS
-        </p>
+        <h1 className="page-title">Diagnostic Workspace</h1>
+        <p className="page-subtitle">Pending Worklist from HIS</p>
       </div>
       
       {/* Searching & Filtering */}
-      <div style={{ display: "flex", gap: "15px", width: "100%", maxWidth: "50%", alignItems: "center", position: "relative", zIndex: 100 }}>
+      <div className="search-filter-row">
         
         {/* ช่อง Search */}
-        <div style={{ flex: 1, display: "flex", alignItems: "center", background: "white", borderRadius: "50px", boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)", padding: "8px 20px", border: "1px solid rgba(0, 0, 0, 0.03)" }}>
-          <img src="/SearchIcon.png" alt="search" width="24" height="24" style={{ display: "block", marginRight: "12px", opacity: "50%" }} />
+        <div className="search-wrapper">
+          <img src="/SearchIcon.png" alt="search" width="24" height="24" className="search-icon" />
           <input 
             type="text" 
             placeholder="Search..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)} // 🌟 ผูกฟังก์ชันค้นหาจริง
-            style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontFamily: "'DM Sans', sans-serif", fontSize: "18px", fontWeight: "500", color: "#1C1C1E" }} 
+            className="search-input"
           />
         </div>
 
@@ -287,50 +262,54 @@ const Diagnostic = ({ onSelectPatient }) => {
       </div>
       
       {/* Filter Status Buttons */}
-      <div style={{ display: "flex", gap: "16px", marginTop: "20px" }}>
+      <div className="filter-tabs-container">
         {['ALL', 'High', 'Medium', 'Low'].map(tab => (
-          <button key={tab} style={getTabStyle(tab)} onClick={() => setActiveTab(tab)}>
+          <button 
+            key={tab} 
+            className={`filter-tab-btn ${activeTab === tab ? 'active' : ''} ${tab.toLowerCase()}-tab`}
+            onClick={() => setActiveTab(tab)}
+          >
             {tab}
           </button>
         ))}
       </div>
       
       {/* Today's Patient Header */}
-      <div style={{ marginTop: "35px", marginBottom: "15px" }}>
-        <p style={{ color: "black", opacity: "70%", fontSize: "25px", fontWeight: "bold", margin: 0 }}>
+      <div className="patient-list-header">
+        <p className="header-title">
           Today's Patient ({processedPatients.length}) {/* 🌟 อัปเดตตัวเลขตามจริง */}
         </p>
       </div>
 
       {/* Patient List */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "15px", position: "relative" }}>
+      <div className="patient-list-container">
         {processedPatients.length === 0 ? (
           /* แสดงผลกรณีไม่พบข้อมูลคนไข้ที่ค้นหา */
-          <div style={{ padding: "40px", textAlign: "center", backgroundColor: "white", borderRadius: "12px", color: "#999", fontSize: "18px", boxShadow: "0 4px 16px rgba(0,0,0,0.03)" }}>
+          <div className="no-patients-alert">
             No patients matching the criteria.
           </div>
         ) : (
           processedPatients.map((patient, index) => (
-            <div key={index} style={{ display: "flex", flexDirection: "row", backgroundColor: "white", alignItems: "center", borderLeft: `12px solid ${patient.colorCode}`, borderRadius: "12px", padding: "20px 24px", boxShadow: "0 4px 16px rgba(0,0,0,0.03)" }}>
-              <div style={{ width: "25%", marginLeft: "10px" }}>
-                <p style={{ fontSize: "25px", fontWeight: "700", color: "#1C1C1E", margin: "0", opacity: "85%" }}>{patient.diagnosis}</p>
-                <p style={{ color: patient.colorCode, fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0" }}>{patient.riskLevel}</p>
+            <div key={index} className="patient-card" style={{ borderLeft: `12px solid ${patient.colorCode}` }}>
+              <div className="patient-col diagnosis-col">
+                <p className="patient-diagnosis">{patient.diagnosis}</p>
+                <p className="patient-risk" style={{ color: patient.colorCode }}>{patient.riskLevel}</p>
               </div>
-              <div style={{ width: "35%" }}>
-                <p style={{ fontSize: "25px", fontWeight: "700", color: "#1C1C1E", margin: "0", opacity: "85%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={patient.name}>
+              <div className="patient-col info-col">
+                <p className="patient-name" title={patient.name}>
                   {patient.name}
                 </p>
-                <p style={{ color: "#555", fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0", opacity: "75%" }}>{patient.id}</p>
+                <p className="patient-id">{patient.id}</p>
               </div>
-              <div style={{ width: "20%" }}>
-                <p style={{ fontSize: "25px", fontWeight: "700", color: "#1C1C1E", margin: "0", opacity: "85%" }}>{patient.queue}</p>
-                <p style={{ color: "#555", fontSize: "18px", fontWeight: "600", margin: "10px 0 0 0", opacity: "75%" }}>{patient.time}</p>
+              <div className="patient-col queue-col">
+                <p className="patient-queue">{patient.queue}</p>
+                <p className="patient-time">{patient.time}</p>
               </div>
-              <div style={{ width: "20%", display: "flex", justifyContent: "flex-end" }}>
-                <div className="review" onClick={() => onSelectPatient(patient)} style={{ cursor: 'pointer' }}>
-      <p>Diagnose</p>
-      <span className="arrow">➔</span>
-    </div>
+              <div className="patient-col action-col">
+                <div className="review" onClick={() => onSelectPatient(patient)}>
+                  <p>Diagnose</p>
+                  <span className="arrow">➔</span>
+                </div>
               </div>
             </div>
           ))

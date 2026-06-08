@@ -20,6 +20,8 @@ const Navbar = () => {
     { name: "Progression", path: "/progression" }
   ];
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   // 1. ตรวจจับการ Scroll
   useEffect(() => {
     const handleScroll = () => {
@@ -64,12 +66,30 @@ const Navbar = () => {
   }, [location.pathname]);
 
   return (
-    <nav id="mainNav" className={isSticky ? "sticky-nav" : ""}>
+    <nav id="mainNav" className={`${isSticky ? "sticky-nav" : ""} ${mobileMenuOpen ? "mobile-menu-active" : ""}`}>
       {/* ส่วน Logo */}
       <img src="/logo.png" alt="logo" width={100}/>
       
+      {/* Hamburger Button for Mobile */}
+      <div className="hamburger-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          {mobileMenuOpen ? (
+            <>
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </>
+          ) : (
+            <>
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </>
+          )}
+        </svg>
+      </div>
+
       {/* ส่วนเมนูกลาง */}
-      <div className="nav-links" id="g" ref={navLinksRef}>
+      <div className={`nav-links ${mobileMenuOpen ? "show-mobile" : ""}`} id="g" ref={navLinksRef}>
         <div className="slide-indicator" style={indicatorStyle}></div>
         {navItems.map((item) => (
           <a
@@ -77,6 +97,7 @@ const Navbar = () => {
             className={location.pathname.includes(item.path) ? "active" : ""}
             onClick={(e) => {
               e.preventDefault();
+              setMobileMenuOpen(false); // ปิดเมนูเมื่อคลิกเปลี่ยนหน้า
               navigate(item.path);
             }}
           >
@@ -85,46 +106,8 @@ const Navbar = () => {
         ))}
       </div>
 
-      {/* ส่วนโปรไฟล์ */}
-      <div className="profile-section" ref={dropdownRef}>
-        <img src="/userImg.png" alt="user" width={50} height={50} style={{ borderRadius: "50%" }}/>
-        <svg
-          id="downArrow"
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-          style={{ transform: dropdownOpen ? "rotate(180deg)" : "rotate(0deg)" }}
-          width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-        
-        {/* Dropdown */}
-        <div className={`dropdown-card ${dropdownOpen ? "show" : ""}`} id="profileCard">
-          <div className="dropdown-profile">
-            <img src="/userImg.png" alt="user" width={40} height={40} style={{ borderRadius: "50%" }}/>
-            <span style={{ opacity: 0.6, fontWeight: "500" }}>Dr.Stone K.</span>
-          </div>
-          
-          <a href="#" className="menu-item-with-icon">
-            <img src="/support.png" alt="user" width={40} height={40} style={{ borderRadius: "50%" }}/>
-            <span style={{ opacity: 0.6, fontWeight: "500" }}>Support</span>
-          </a>
-
-          <hr style={{ width: "100%", border: 0, borderTop: "1px solid #ECECEC", margin: "5px 0" }} />
-          
-          {/* 👈 จุดที่แก้ไข: ใส่ onClick และ navigate('/login') */}
-          <a 
-            href="#" 
-            onClick={(e) => {
-              e.preventDefault(); // ป้องกันไม่ให้หน้าเว็บกระตุกขึ้นไปด้านบนสุด
-              setDropdownOpen(false); // สั่งปิด Dropdown
-              navigate('/dashboard'); // เปลี่ยนหน้ากลับไปที่ Dashboard
-            }}
-            style={{ color: "white", background: "#FE7743", textAlign: "center", fontWeight: "bold", paddingTop: 15, paddingBottom: 15 }}
-          >
-            Log Out
-          </a>
-        </div>
-      </div> 
+      {/* Right spacer to balance the logo and center nav links on desktop */}
+      <div className="nav-spacer"></div>
     </nav>
   );
 };
