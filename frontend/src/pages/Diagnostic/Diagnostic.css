@@ -481,9 +481,19 @@
   }
 
   .filter-tabs-container {
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
   }
+
+  .filter-tab-btn {
+    flex: 1 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    font-size: 13px !important;
+    padding: 0 4px !important;
+    white-space: nowrap !important;
+  }
+
 
   .patient-card {
     flex-direction: column;
