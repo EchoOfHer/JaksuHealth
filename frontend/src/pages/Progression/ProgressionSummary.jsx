@@ -497,15 +497,11 @@ export default function ProgressionSummary({ patient, onBack }) {
   return (
     <div className="progression-container progression-summary-page">
       {/* 2.1 pageHeader: ปุ่มย้อนกลับ และ การเลือก OS/OD */}
-      <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: '30px', marginBottom: '30px' }}>
+      <div className="page-header">
         {/* ซ้าย: ปุ่มย้อนกลับ */}
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-          <span 
-            className="back-btn" 
-            style={{ fontSize: '18px', color: 'var(--text-dark)', display: 'inline-flex', alignName: 'center', alignItems: 'center', gap: '10px', cursor: 'pointer', transition: 'all 0.25s cubic-bezier(0.25, 1, 0.5, 1)', userSelect: 'none', fontWeight: '600', opacity: 0.85 }}
-            onClick={onBack}
-          >
-            <span className="arrow-container" style={{ display: 'inline-block', transition: 'transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)', lineHeight: 0 }}>
+        <div className="header-left">
+          <span className="back-btn" onClick={onBack}>
+            <span className="arrow-container">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
@@ -516,7 +512,7 @@ export default function ProgressionSummary({ patient, onBack }) {
         </div>
 
         {/* กลาง: ตัวสลับ OS / OD Selection */}
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="header-center">
           <div className="eye-selector-wrapper">
             <div 
               className={`eye-tab ${activeEye === 'os' ? 'active' : ''}`} 
@@ -534,7 +530,7 @@ export default function ProgressionSummary({ patient, onBack }) {
         </div>
 
         {/* ขวา: บาลานเซอร์ */}
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}></div>
+        <div className="header-right"></div>
       </div>
 
       {/* 2.2 โครงสร้างแบบ 3 คอลัมน์ */}
@@ -762,7 +758,7 @@ export default function ProgressionSummary({ patient, onBack }) {
       {/* 3. บล็อก POPUP MODAL (EDIT TEXT OVERLAY - 2 Columns Layout) */}
       {isEditModalOpen && (
         <div id="modalBackdrop" className="modal-overlay" onClick={closeEditModal}>
-          <div id="modalContainer" style={{ backgroundColor: '#FFFFFF', borderRadius: '24px', padding: '40px', width: '880px', maxWidth: '95%', position: 'relative', display: 'flex', flexDirection: 'row', gap: '30px' }} onClick={(e) => e.stopPropagation()}>
+          <div id="modalContainer" onClick={(e) => e.stopPropagation()}>
             
             {/* ปุ่ม X ปิดสีแดงเด่นด้านมุมบนขวา */}
             <button 
@@ -776,7 +772,7 @@ export default function ProgressionSummary({ patient, onBack }) {
             </button>
 
             {/* 🌟 คอลัมน์ซ้ายของโมดอล: แสดง Timeline การรักษาเพื่อเป็น Reference */}
-            <div style={{ width: '33%', border: '1.5px solid #E5E7EB', borderRadius: 'var(--radius-md)', padding: '20px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+            <div className="modal-timeline-col">
               <p className="pill-label" style={{ fontSize: '12px', padding: '4px 12px' }}>Timeline</p>
               
               <div className="timeline-container" style={{ marginTop: '15px', flex: 1 }}>
@@ -806,7 +802,7 @@ export default function ProgressionSummary({ patient, onBack }) {
             </div>
 
             {/* 🌟 คอลัมน์ขวาของโมดอล: ฟอร์มการแก้ไขข้อมูล (Risk Status, Tag line, Summary) */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
+            <div className="modal-form-col">
               
               {/* หมวด 1: Risk Status */}
               <div>
@@ -933,7 +929,7 @@ export default function ProgressionSummary({ patient, onBack }) {
       {/* 4. บล็อก POPUP MODAL (FULL VIEW OCT IMAGES) */}
       {isFullViewModalOpen && (
         <div id="fullViewModal" className="modal-overlay" onClick={() => { document.body.style.overflow = ''; setIsFullViewModalOpen(false); }}>
-          <div id="fullViewContainer" style={{ backgroundColor: '#FFFFFF', borderRadius: '24px', padding: '30px', width: '880px', maxWidth: '95%', display: 'flex', flexDirection: 'column', gap: '20px' }} onClick={(e) => e.stopPropagation()}>
+          <div id="fullViewContainer" onClick={(e) => e.stopPropagation()}>
             
             {/* ปุ่ม Back ด้านซ้ายบน */}
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
