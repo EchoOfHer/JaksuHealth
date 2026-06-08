@@ -455,6 +455,11 @@
 
 /* --- Mobile Mode (iPhone) --- */
 @media (max-width: 767px) {
+  .diagnostic-container {
+    padding-top: 10px !important;
+    padding-bottom: 80px !important;
+  }
+
   .diagnostic-container .page-header {
     flex-direction: column;
     align-items: flex-start;

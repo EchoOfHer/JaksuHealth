@@ -40,6 +40,6 @@ html, body {
 @media (max-width: 767px) {
   .main-content-wrapper {
     padding: 15px;
-    padding-top: 90px;
+    padding-top: 75px;
   }
 }
