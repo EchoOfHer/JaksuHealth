@@ -7,6 +7,9 @@
 }
 
 .diagnostic-container .page-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
   margin-bottom: 18px;
   animation: fadeUp 0.5s 0.1s ease both;
 }

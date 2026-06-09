@@ -11,6 +11,9 @@
 
 /* 2. ส่วนหัวข้อหน้าเว็บ (Page Header) */
 .progression-container .page-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
   margin-bottom: 18px;
 }
 
