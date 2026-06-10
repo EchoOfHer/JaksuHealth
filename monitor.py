@@ -5,6 +5,9 @@ import time
 import subprocess
 import argparse
 import os
+import json
+import urllib.request
+import urllib.parse
 
 # ANSI escape codes for colors
 RESET = "\033[0m"
@@ -22,6 +25,34 @@ WHITE = "\033[37m"
 NGINX_REGEX = re.compile(
     r'^(\S+) \S+ \S+ \[([^\]]+)\] "([A-Z]+) (\S+)\s*[^"]*" (\d+) (\d+)'
 )
+
+# Local cache to avoid calling Geolocation API repeatedly for the same IP
+IP_LOCATION_CACHE = {}
+
+def get_ip_location(ip):
+    # Filter local/private IPs
+    if ip == "127.0.0.1" or ip.startswith("172.") or ip.startswith("10.") or ip.startswith("192.168."):
+        return "Local Network"
+    if ip in IP_LOCATION_CACHE:
+        return IP_LOCATION_CACHE[ip]
+    
+    try:
+        # Fetch geolocation from free ip-api.com (no key needed, fast)
+        url = f"http://ip-api.com/json/{ip}?fields=status,countryCode,city"
+        # Set 2-second timeout to avoid blocking the log stream if API is slow
+        with urllib.request.urlopen(url, timeout=2) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            if data.get("status") == "success":
+                country = data.get("countryCode", "")
+                city = data.get("city", "")
+                location = f"{country} ({city})" if country and city else country or "Unknown"
+            else:
+                location = "Unknown"
+    except Exception:
+        location = "Unknown"
+        
+    IP_LOCATION_CACHE[ip] = location
+    return location
 
 def get_status_style(status_code):
     try:
@@ -85,6 +116,7 @@ def process_line(line):
     time_formatted = parse_nginx_date(date_str)
     status_styled, _ = get_status_style(status)
     method_styled = get_method_style(method)
+    location = get_ip_location(ip)
     
     # Highlight API vs Page
     if path.startswith("/api/"):
@@ -92,16 +124,16 @@ def process_line(line):
     else:
         path_styled = f"{WHITE}{path}{RESET}"
         
-    print(f" {time_formatted:<8}  {ip:<15}  {method_styled:<14}  {status_styled:<15}  {path_styled}")
+    print(f" {time_formatted:<8}  {ip:<15}  {location:<16}  {method_styled:<14}  {status_styled:<15}  {path_styled}")
 
 def print_header():
     print(f"{BOLD}{CYAN}")
-    print(" ┌───────────────────────────────────────────────────────────────────────────────────┐")
-    print(" │                       JAKSU HEALTH LIVE TRAFFIC MONITOR                           │")
-    print(" └───────────────────────────────────────────────────────────────────────────────────┘")
+    print(" ┌──────────────────────────────────────────────────────────────────────────────────────────────────────┐")
+    print(" │                                JAKSU HEALTH LIVE TRAFFIC MONITOR                                     │")
+    print(" └──────────────────────────────────────────────────────────────────────────────────────────────────────┘")
     print(f"{RESET}")
-    print(f" {BOLD}{WHITE}{'Time':<8}  {'IP Address':<15}  {'Method':<5}   {'Status':<6}    {'URI / Path'}{RESET}")
-    print(f" {CYAN}─────────────────────────────────────────────────────────────────────────────────────{RESET}")
+    print(f" {BOLD}{WHITE}{'Time':<8}  {'IP Address':<15}  {'Location':<16}  {'Method':<5}   {'Status':<6}    {'URI / Path'}{RESET}")
+    print(f" {CYAN}────────────────────────────────────────────────────────────────────────────────────────────────────────{RESET}")
     sys.stdout.flush()
 
 def follow_file(filepath):
