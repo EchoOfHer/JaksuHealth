@@ -108,7 +108,7 @@ def approve_diagnostic(visit_id: UUID, diagnostic_in: DiagnosticCreate, db: Sess
             patient_id=diagnostic_in.patient_id,
             diagnostic_id=db_diagnostic.diagnostic_id,
             detected_stage=diagnostic_in.condition_stage,
-            progression_summary=f"วิเคราะห์พบในระดับ {diagnostic_in.condition_stage} แนวโน้ม {diagnostic_in.ai_trend}",
+            progression_summary=diagnostic_in.drafted_summary,
             detection_date=now.date(),
             tag_line="บันทึกการรักษา",
             created_at=now
@@ -116,7 +116,7 @@ def approve_diagnostic(visit_id: UUID, diagnostic_in: DiagnosticCreate, db: Sess
         db.add(db_timeline)
     else:
         existing_timeline.detected_stage = diagnostic_in.condition_stage
-        existing_timeline.progression_summary = f"วิเคราะห์พบในระดับ {diagnostic_in.condition_stage} แนวโน้ม {diagnostic_in.ai_trend}"
+        existing_timeline.progression_summary = diagnostic_in.drafted_summary
 
     db.commit()
     db.refresh(db_diagnostic)

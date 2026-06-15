@@ -401,6 +401,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
       date: todayStr,
       stage: riskStatus,
       detection: "บันทึกการรักษา",
+      summary: summaryText,
       isLatest: true,
       lesionPath: riskStatus === "Intermediate AMD" ? "M 210,130 Q 230,110 250,130 Z" : riskStatus === "Early AMD" ? "M 190,132 Q 215,115 240,132 Z" : "",
       strokePath: riskStatus === "Intermediate AMD" ? "M 10,105 L 180,123 Q 230,132 280,127 L 450,127" : "M 10,105 L 180,120 Q 230,126 280,127 L 450,127"
