@@ -23,3 +23,14 @@ class DiagnosticResponse(DiagnosticBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class AIDraftRequest(BaseModel):
+    patient_id: str
+    visit_id: UUID
+    age: int
+    eye_side: str
+    drusen_pixels: int
+    srf_pixels: int
+    irf_pixels: int
+    shrm_pixels: int
+

@@ -3,11 +3,13 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from uuid import UUID
 from app.core.database import get_db
-from app.schemas.diagnostic import DiagnosticCreate, DiagnosticResponse
+from app.schemas.diagnostic import DiagnosticCreate, DiagnosticResponse, AIDraftRequest
 from app.schemas.timeline import TimelineResponse, TimelineUpdate
 from app.models.diagnostic import Diagnostic
 from app.models.timeline import Timeline
 from app.models.visit import Visit
+from app.services.llm import generate_single_diagnostic, generate_progression_trend
+
 
 router = APIRouter()
 
@@ -139,3 +141,100 @@ def update_timeline_entry(history_id: UUID, timeline_update: TimelineUpdate, db:
 def get_patient_progression_trend(patient_id: str, db: Session = Depends(get_db)):
     """API สำหรับดึงข้อมูลไทม์ไลน์ประวัติโรคทั้งหมดเพื่อเอาไปพล็อตกราฟเส้น"""
     return db.query(Timeline).filter(Timeline.patient_id == patient_id).order_by(Timeline.detection_date.asc()).all()
+
+@router.post("/generate-draft", response_model=DiagnosticResponse)
+async def generate_ai_diagnostic_draft(request: AIDraftRequest, db: Session = Depends(get_db)):
+    """API สำหรับให้จักษุแพทย์สั่งงานให้ LLM วิเคราะห์และสรุปผลตรวจเชิงตัวเลขพิกเซล (Auto-generate Draft)"""
+    # 1. ตรวจสอบระยะความรุนแรงตามกฎทางคลินิก (Rule-based Stage & Severity Mapping)
+    if request.srf_pixels > 0 or request.irf_pixels > 0:
+        current_stage = "Wet AMD"
+        risk_level = "HIGH RISK"
+    elif request.drusen_pixels > 500:
+        current_stage = "Intermediate AMD"
+        risk_level = "HIGH RISK"
+    elif request.drusen_pixels > 0:
+        current_stage = "Early AMD"
+        risk_level = "MED"
+    else:
+        current_stage = "Normal"
+        risk_level = "LOW"
+
+    # 2. ค้นหาประวัติการตรวจในอดีต (Longitudinal Timeline History) เพื่อประเมินแนวโน้ม
+    prev_timeline = db.query(Timeline).filter(Timeline.patient_id == request.patient_id).order_by(Timeline.detection_date.desc()).first()
+
+    if prev_timeline:
+        # --- เคสที่มีประวัติเก่า: รัน Task 2: Progression Trend Analysis ---
+        prev_status = f"{prev_timeline.detected_stage} (พบจุดเหลืองสะสมและพยาธิสภาพในวันที่ตรวจ)"
+        curr_status = f"{current_stage} ตรวจพบล่าสุดมี ดรูเซน: {request.drusen_pixels}px, ของเหลวใต้จอตา (SRF): {request.srf_pixels}px, ของเหลวในชั้นจอตา (IRF): {request.irf_pixels}px, สารหนาตัวใต้จอตา (SHRM): {request.shrm_pixels}px"
+        
+        llm_result = await generate_progression_trend(
+            patient_id=request.patient_id,
+            age=request.age,
+            eye_side=request.eye_side,
+            prev_status=prev_status,
+            curr_status=curr_status
+        )
+        
+        if llm_result:
+            ai_trend = llm_result.get("progression_trend", "Stable")
+            drafted_summary = llm_result.get("progression_summary", "")
+            suggested_action = llm_result.get("suggested_action", "")
+            # อัพเดตระยะตามการประเมินล่าสุดของ LLM
+            current_stage = llm_result.get("condition_stage", current_stage)
+            risk_level = llm_result.get("risk_level", risk_level)
+        else:
+            ai_trend = "Stable"
+            drafted_summary = "เกิดข้อผิดพลาดในการดึงความเห็นแพทย์จากโมเดล AI"
+            suggested_action = "กรุณาแก้ไขด้วยตนเอง"
+    else:
+        # --- เคสตรวจครั้งแรก: รัน Task 1: Single Diagnostic Analysis ---
+        llm_result = await generate_single_diagnostic(
+            patient_id=request.patient_id,
+            age=request.age,
+            eye_side=request.eye_side,
+            cv_model_result=current_stage
+        )
+        
+        ai_trend = "Normal" # ตรวจครั้งแรกแนวโน้มเป็นค่าเริ่มต้น
+        if llm_result:
+            drafted_summary = llm_result.get("clinical_summary", "")
+            suggested_action = llm_result.get("suggested_action", "")
+            current_stage = llm_result.get("condition_stage", current_stage)
+            risk_level = llm_result.get("risk_level", risk_level)
+        else:
+            drafted_summary = "เกิดข้อผิดพลาดในการดึงความเห็นแพทย์จากโมเดล AI"
+            suggested_action = "กรุณาแก้ไขด้วยตนเอง"
+
+    # 3. บันทึก/อัปเดตลงฐานข้อมูล (Diagnostics Table)
+    db_diagnostic = db.query(Diagnostic).filter(Diagnostic.visit_id == request.visit_id).first()
+    if db_diagnostic:
+        db_diagnostic.risk_level = risk_level
+        db_diagnostic.condition_stage = current_stage
+        db_diagnostic.ai_trend = ai_trend
+        db_diagnostic.drafted_summary = drafted_summary
+        db_diagnostic.suggested_action = suggested_action
+    else:
+        db_diagnostic = Diagnostic(
+            patient_id=request.patient_id,
+            visit_id=request.visit_id,
+            risk_level=risk_level,
+            condition_stage=current_stage,
+            ai_trend=ai_trend,
+            drafted_summary=drafted_summary,
+            suggested_action=suggested_action,
+            exported_to_his=False,
+            created_at=datetime.utcnow()
+        )
+        db.add(db_diagnostic)
+
+    # อัปเดตสถานะคิวนัดหมายตามประเมินเบื้องต้น
+    visit = db.query(Visit).filter(Visit.visit_id == request.visit_id).first()
+    if visit:
+        if risk_level == "HIGH RISK":
+            visit.status = "HIGH RISK"
+        elif visit.status == "HIGH RISK" and risk_level != "HIGH RISK":
+            visit.status = "PENDING"
+
+    db.commit()
+    db.refresh(db_diagnostic)
+    return db_diagnostic

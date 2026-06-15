@@ -81,7 +81,44 @@ export default function IndividualDiagnostic({ patient, onBack }) {
           }
         } catch (err) {
           if (err.response && err.response.status === 404) {
-            console.log("No existing draft found in database, using baseline mock defaults.");
+            console.log("No existing draft found in database, generating new AI draft via LLM.");
+            try {
+              const pName = patient?.name || passedPatient?.name || "Khanatip Gankingpai";
+              let drusen = 0, srf = 0, irf = 0, shrm = 0;
+              if (pName.includes("Khanatip")) {
+                if (activeEye === 'os') {
+                  drusen = 1200; srf = 450; irf = 100; shrm = 80;
+                } else {
+                  drusen = 450; srf = 0; irf = 0; shrm = 0;
+                }
+              } else if (pName.includes("Jirawat")) {
+                if (activeEye === 'os') {
+                  drusen = 350; srf = 0; irf = 0; shrm = 0;
+                } else {
+                  drusen = 0; srf = 0; irf = 0; shrm = 0;
+                }
+              }
+
+              const draftResponse = await API.post('/diagnostics/generate-draft', {
+                patient_id: pId,
+                visit_id: vId,
+                age: parseInt(patient?.age || passedPatient?.age || "65"),
+                eye_side: activeEye.toUpperCase(),
+                drusen_pixels: drusen,
+                srf_pixels: srf,
+                irf_pixels: irf,
+                shrm_pixels: shrm
+              });
+              
+              const draftData = draftResponse.data;
+              if (draftData) {
+                setRiskStatus(draftData.condition_stage || '');
+                setSummaryText(draftData.drafted_summary || '');
+                setActionText(draftData.suggested_action || '');
+              }
+            } catch (draftErr) {
+              console.error("Failed to generate AI draft, using local fallbacks:", draftErr);
+            }
           } else {
             console.error("Error fetching diagnostic draft:", err);
           }
