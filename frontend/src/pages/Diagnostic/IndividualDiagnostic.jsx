@@ -590,23 +590,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
           <div className="col-right">
             <div className="premium-card biomarker-card">
               <div className="card-header-row">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                  <p className="pill-label">Biomarker</p>
-                  <div className="mask-selector-wrapper">
-                    <div 
-                      className={`mask-tab ${showMask ? 'active' : ''}`} 
-                      onClick={() => setShowMask(true)}
-                    >
-                      AI Mask On
-                    </div>
-                    <div 
-                      className={`mask-tab ${!showMask ? 'active' : ''}`} 
-                      onClick={() => setShowMask(false)}
-                    >
-                      Off
-                    </div>
-                  </div>
-                </div>
+                <p className="pill-label">Biomarker</p>
                 <span 
                   className="progression-nav-link" 
                   onClick={() => navigate('/progression', { state: { patient: patient || passedPatient } })}
@@ -618,6 +602,21 @@ export default function IndividualDiagnostic({ patient, onBack }) {
 
               <div className="oct-image-container">
                 <img src={octImgUrl} alt="OCT Scan" className="oct-img" />
+                
+                <div className="mask-selector-wrapper oct-overlay-toggle">
+                  <div 
+                    className={`mask-tab ${showMask ? 'active' : ''}`} 
+                    onClick={() => setShowMask(true)}
+                  >
+                    AI Mask On
+                  </div>
+                  <div 
+                    className={`mask-tab ${!showMask ? 'active' : ''}`} 
+                    onClick={() => setShowMask(false)}
+                  >
+                    Off
+                  </div>
+                </div>
               </div>
 
               <div className="biomarker-legend-row">
