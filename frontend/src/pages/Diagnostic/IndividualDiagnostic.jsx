@@ -11,6 +11,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   const passedPatient = location.state?.patient;
   
   const [activeEye, setActiveEye] = useState('os'); // 'os' หรือ 'od'
+  const [showMask, setShowMask] = useState(true);
   
   // กำหนดค่าเริ่มต้นของ State จาก Props หรือ Location State (แบบไดนามิกเต็มรูปแบบ)
   const [riskStatus, setRiskStatus] = useState(patient?.diagnosis || passedPatient?.diagnosis || 'Intermediate AMD');
@@ -480,7 +481,9 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     return 'set1'; // Khanatip
   };
   const patientSet = getPatientSet(patient?.id || passedPatient?.id);
-  const octImgUrl = `/mock_oct/${patientSet}/${activeEye}/${scaleValue}.png`;
+  const octImgUrl = showMask 
+    ? `/mock_oct/${patientSet}/${activeEye}/${scaleValue}.png`
+    : `/mock_oct/${patientSet}_original/${activeEye}/${scaleValue}.png`;
 
   return (
     <div className="diagnostic-workspace-page">
@@ -587,7 +590,23 @@ export default function IndividualDiagnostic({ patient, onBack }) {
           <div className="col-right">
             <div className="premium-card biomarker-card">
               <div className="card-header-row">
-                <p className="pill-label">Biomarker</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <p className="pill-label">Biomarker</p>
+                  <div className="mask-selector-wrapper">
+                    <div 
+                      className={`mask-tab ${showMask ? 'active' : ''}`} 
+                      onClick={() => setShowMask(true)}
+                    >
+                      AI Mask On
+                    </div>
+                    <div 
+                      className={`mask-tab ${!showMask ? 'active' : ''}`} 
+                      onClick={() => setShowMask(false)}
+                    >
+                      Off
+                    </div>
+                  </div>
+                </div>
                 <span 
                   className="progression-nav-link" 
                   onClick={() => navigate('/progression', { state: { patient: patient || passedPatient } })}
