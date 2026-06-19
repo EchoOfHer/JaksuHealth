@@ -591,19 +591,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
             <div className="premium-card biomarker-card">
               <div className="card-header-row">
                 <p className="pill-label">Biomarker</p>
-                <span 
-                  className="progression-nav-link" 
-                  onClick={() => navigate('/progression', { state: { patient: patient || passedPatient } })}
-                  style={{ cursor: 'pointer' }}
-                >
-                  Progression <span>→</span>
-                </span>
-              </div>
-
-              <div className="oct-image-container">
-                <img src={octImgUrl} alt="OCT Scan" className="oct-img" />
-                
-                <div className="mask-selector-wrapper oct-overlay-toggle">
+                <div className="mask-selector-wrapper">
                   <div 
                     className={`mask-tab ${showMask ? 'active' : ''}`} 
                     onClick={() => setShowMask(true)}
@@ -617,6 +605,10 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                     Off
                   </div>
                 </div>
+              </div>
+
+              <div className="oct-image-container">
+                <img src={octImgUrl} alt="OCT Scan" className="oct-img" />
               </div>
 
               <div className="biomarker-legend-row">
