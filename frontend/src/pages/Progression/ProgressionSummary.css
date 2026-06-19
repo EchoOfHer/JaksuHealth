@@ -495,7 +495,7 @@
   margin-bottom: 30px;
 }
 .header-left, .header-center, .header-right {
-  flex: 1;
+  width: 33.33%;
   display: flex;
   align-items: center;
 }
