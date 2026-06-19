@@ -599,11 +599,6 @@ export default function IndividualDiagnostic({ patient, onBack }) {
 
               <div className="oct-image-container">
                 <img src={octImgUrl} alt="OCT Scan" className="oct-img" />
-                <button className="fullscreen-modal-trigger" onClick={() => { document.body.style.overflow = 'hidden'; setIsOctModalOpen(true); }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M15 3h6v6M9 21H3v-6M21 15v6h-6M3 9V3h6"/>
-                  </svg>
-                </button>
               </div>
 
               <div className="biomarker-legend-row">
