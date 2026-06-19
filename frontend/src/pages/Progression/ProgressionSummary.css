@@ -26,12 +26,15 @@
 /* ══════════════════════════════════════════════════
    MAIN CONTENT LAYOUT (3-COLUMNS GRID)
  ══════════════════════════════════════════════════ */
+.progression-summary-container {
+  padding: 30px 0px 10px 0px;
+}
+
 .progression-summary-page {
   font-family: var(--font);
   color: var(--text-dark);
   padding-top: 0px !important;   /* ทับไลน์การเว้นระยะห่างด้านบน 30px เดิม */
   margin-top: -20px;            /* ใช้ค่าติดลบดึงเนื้อหาให้ขยับขึ้นไปหา Navbar อีกนิด */
-
 }
 
 .workspace-grid {

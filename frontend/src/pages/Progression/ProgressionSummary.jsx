@@ -495,7 +495,7 @@ export default function ProgressionSummary({ patient, onBack }) {
   const prevOctImgUrl = `/mock_oct/set2/${activeEye}/${scaleValue}.png`;
 
   return (
-    <div className="progression-container progression-summary-page">
+    <div className="progression-summary-container progression-summary-page">
       {/* 2.1 pageHeader: ปุ่มย้อนกลับ และ การเลือก OS/OD */}
       <div className="page-header">
         {/* ซ้าย: ปุ่มย้อนกลับ */}
