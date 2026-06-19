@@ -34,7 +34,7 @@ async def query_ollama_llm(instruction: str, input_text: str) -> dict:
             
             if response.status_code != 200:
                 logger.error(f"Ollama API returned error {response.status_code}: {response.text}")
-                raise HTTPException(status_code=500, detail="บริการ LLM มีปัญหาในการประมวลผล")
+                raise ValueError("บริการ LLM มีปัญหาในการประมวลผล")
             
             result_data = response.json()
             response_text = result_data.get("response", "").strip()
