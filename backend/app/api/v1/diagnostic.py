@@ -197,7 +197,7 @@ async def generate_ai_diagnostic_draft(request: AIDraftRequest, db: Session = De
         
         ai_trend = "Normal" # ตรวจครั้งแรกแนวโน้มเป็นค่าเริ่มต้น
         if llm_result:
-            drafted_summary = llm_result.get("clinical_summary", "")
+            drafted_summary = llm_result.get("drafted_summary", "")
             suggested_action = llm_result.get("suggested_action", "")
             current_stage = llm_result.get("condition_stage", current_stage)
             risk_level = llm_result.get("risk_level", risk_level)
