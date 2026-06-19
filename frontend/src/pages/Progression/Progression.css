@@ -14,7 +14,7 @@
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
 }
 
 .page-title {
@@ -32,7 +32,7 @@
   width: 100%;
   max-width: 50%;
   margin-top: 5px;
-  margin-bottom: 30px;
+  margin-bottom: 0px;
 }
 
 .page-subtitle {
