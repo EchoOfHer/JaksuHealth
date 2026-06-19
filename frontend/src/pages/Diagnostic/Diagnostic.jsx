@@ -32,9 +32,9 @@ const Diagnostic = ({ onSelectPatient }) => {
       }
     }
     return [
-      { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444" },
-      { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743" },
-      { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f" }
+      { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444", rawVisit: { visit_id: "39a2fe63-8bfd-406d-a51b-1c4495b8d00e" } },
+      { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743", rawVisit: { visit_id: "49a2fe63-8bfd-406d-a51b-1c4495b8d00f" } },
+      { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f", rawVisit: { visit_id: "59a2fe63-8bfd-406d-a51b-1c4495b8d00e" } }
     ];
   };
 

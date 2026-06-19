@@ -24,8 +24,15 @@ export default function IndividualDiagnostic({ patient, onBack }) {
 
   useEffect(() => {
     const fetchDraft = async () => {
-      const vId = patient?.rawVisit?.visit_id || passedPatient?.rawVisit?.visit_id;
+      let vId = patient?.rawVisit?.visit_id || passedPatient?.rawVisit?.visit_id;
       const pId = patient?.id || passedPatient?.id || 'P-2605-016';
+
+      // Fallback to seed visit_ids if visit_id is missing to enable LLM generation in mockup mode
+      if (!vId) {
+        if (pId === 'P-2605-016') vId = '39a2fe63-8bfd-406d-a51b-1c4495b8d00e';
+        else if (pId === 'P-2605-012') vId = '49a2fe63-8bfd-406d-a51b-1c4495b8d00f';
+        else if (pId === 'P-2605-037') vId = '59a2fe63-8bfd-406d-a51b-1c4495b8d00e';
+      }
 
       // 1. Load mockup draft from localStorage for specific eye if available
       const localKey = `mockDraft_${pId}_${activeEye}`;
