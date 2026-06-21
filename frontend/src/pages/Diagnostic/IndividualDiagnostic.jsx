@@ -12,6 +12,14 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   
   const [activeEye, setActiveEye] = useState('os'); // 'os' หรือ 'od'
   const [showMask, setShowMask] = useState(true);
+  const [csvMetadata, setCsvMetadata] = useState([]);
+  
+  // ระบบลากขีดแนวแกนสแกนพิกัดบน Fundus (Draggable Scale 1-100)
+  const [dragTopPercent, setDragTopPercent] = useState(92);
+  const [scaleValue, setScaleValue] = useState(1);
+  const isDraggingRef = useRef(false);
+  const fundusContainerRef = useRef(null);
+  const dragLineRef = useRef(null);
   
   // กำหนดค่าเริ่มต้นของ State จาก Props หรือ Location State (แบบไดนามิกเต็มรูปแบบ)
   const [riskStatus, setRiskStatus] = useState(patient?.diagnosis || passedPatient?.diagnosis || 'Intermediate AMD');
@@ -137,6 +145,58 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     fetchDraft();
   }, [patient, passedPatient, activeEye]);
 
+  // ตั้งค่า mapping สำหรับคนไข้เพื่อหา dataset_id ของภาพและข้อมูลจริง
+  const patientToDatasetMap = {
+    'P-2605-016': { os: '79', od: '14' }, // Khanatip (Intermediate/Early)
+    'P-2605-012': { os: '130', od: '117' },   // Jirawat (Early/Normal)
+    'P-2605-037': { os: 'natthawut_os', od: 'natthawut_od' }  // Natthawut (Normal/Normal)
+  };
+  const pId = patient?.id || passedPatient?.id || 'P-2605-016';
+  const eyeSide = activeEye.toLowerCase();
+  const datasetId = patientToDatasetMap[pId]?.[eyeSide] || '95';
+
+  // โหลดข้อมูลพิกเซลรอยโรคแบบไดนามิกจากหลังบ้าน
+  useEffect(() => {
+    const fetchCsvMetadata = async () => {
+      try {
+        const response = await API.get(`/diagnostics/dataset/${datasetId}/metadata`);
+        if (response.data) {
+          setCsvMetadata(response.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch dataset CSV metadata:", err);
+      }
+    };
+    
+    // รีเซ็ตค่าสเกลและตำแหน่งขีดสีขาวกลับไปค่าเริ่มต้นก่อน
+    setScaleValue(1);
+    setDragTopPercent(92);
+    fetchCsvMetadata();
+  }, [datasetId]);
+
+  // จำกัดขอบเขตของ scaleValue และซิงก์ตำแหน่งขีดตาม B-scan ปัจจุบัน
+  useEffect(() => {
+    if (!isDraggingRef.current && csvMetadata.length > 0) {
+      const N = csvMetadata.length;
+      
+      // จำกัดค่า scaleValue ให้อยู่ในช่วง 1 ถึง N
+      let constrained = scaleValue;
+      if (scaleValue > N) {
+        constrained = N;
+        setScaleValue(N);
+      } else if (scaleValue < 1) {
+        constrained = 1;
+        setScaleValue(1);
+      }
+      
+      // คำนวณเปอร์เซ็นต์ส่วนสูงจากสูตร y = maxY - ratio * (maxY - minY)
+      // โดยขอบเขตอยู่ระหว่าง 8% (บนสุด) ถึง 92% (ล่างสุด)
+      const ratio = N > 1 ? (constrained - 1) / (N - 1) : 0;
+      const percentY = 92 - ratio * (92 - 8);
+      setDragTopPercent(percentY);
+    }
+  }, [scaleValue, csvMetadata]);
+
 
   // สถานะเปิด-ปิด Modal ต่างๆ
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -153,12 +213,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   const [isSavedBtnState, setIsSavedBtnState] = useState(false); // ควบคุมสถานะปุ่มใน Modal
   const [isApproved, setIsApproved] = useState(false); // ปุ่ม Approve ใหญ่
 
-  // ระบบลากขีดแนวแกนสแกนพิกัดบน Fundus (Draggable Scale 1-100)
-  const [dragTopPercent, setDragTopPercent] = useState(92);
-  const [scaleValue, setScaleValue] = useState(1);
-  const isDraggingRef = useRef(false);
-  const fundusContainerRef = useRef(null);
-  const dragLineRef = useRef(null);
+  // (Declarations moved to the top of the component to prevent ReferenceError)
 
   // ── FUNCTIONS ──
   // ฟังก์ชันคัดลอกข้อความสรุป (Copy to Hospital HIS)
@@ -474,7 +529,10 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     const percentY = (y / rect.height) * 100;
     setDragTopPercent(percentY);
 
-    const calculatedScale = Math.round(((maxY - y) / (maxY - minY)) * 99) + 1;
+    const totalSlices = csvMetadata.length > 0 ? csvMetadata.length : 100;
+    const calculatedScale = totalSlices > 1
+      ? Math.round(((maxY - y) / (maxY - minY)) * (totalSlices - 1)) + 1
+      : 1;
     setScaleValue(calculatedScale);
   };
 
@@ -482,15 +540,21 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     isDraggingRef.current = false;
   };
 
-  const getPatientSet = (patientId) => {
-    if (patientId && patientId.includes('012')) return 'set2'; // Jirawat
-    if (patientId && patientId.includes('037')) return 'set3'; // Natthawut
-    return 'set1'; // Khanatip
-  };
-  const patientSet = getPatientSet(patient?.id || passedPatient?.id);
+  const apiHost = API.defaults.baseURL ? API.defaults.baseURL.replace('/api/v1', '') : '';
+  
+  // โหลดรูปภาพและ overlay ตามชื่อไฟล์จริงจาก CSV metadata (ไดนามิกตามจำนวนจริง)
+  const currentImageName = csvMetadata[scaleValue - 1]?.Image_Name || `${datasetId}_${scaleValue}.png`;
+  
   const octImgUrl = showMask 
-    ? `/mock_oct/${patientSet}/${activeEye}/${scaleValue}.png`
-    : `/mock_oct/${patientSet}_original/${activeEye}/${scaleValue}.png`;
+    ? `${apiHost}/api/v1/dataset/${datasetId}/cropped_overlays/${currentImageName}`
+    : `${apiHost}/api/v1/dataset/${datasetId}/cropped_images/${currentImageName}`;
+
+  const originalOctImgUrl = `${apiHost}/api/v1/dataset/${datasetId}/cropped_images/${currentImageName}`;
+  const biomarkerOctImgUrl = `${apiHost}/api/v1/dataset/${datasetId}/cropped_overlays/${currentImageName}`;
+
+  const currentSliceData = csvMetadata[scaleValue - 1] || {
+    SRF: 0, PED: 0, IRF: 0, SHRM: 0, IS_OS: 0, Total_Lesion_Pixels: 0
+  };
 
   return (
     <div className="diagnostic-workspace-page">
@@ -619,11 +683,11 @@ export default function IndividualDiagnostic({ patient, onBack }) {
               </div>
 
               <div className="biomarker-legend-row">
-                <div className="legend-item"><span className="dot blue-dot"></span>SRF</div>
-                <div className="legend-item"><span className="dot green-dot"></span>PED</div>
-                <div className="legend-item"><span className="dot red-dot"></span>IRF</div>
-                <div className="legend-item"><span className="dot yellow-dot"></span>SHRM</div>
-                <div className="legend-item"><span className="dot purple-dot"></span>IS/OS</div>
+                <div className="legend-item"><span className="dot blue-dot"></span>SRF: {currentSliceData.SRF} px</div>
+                <div className="legend-item"><span className="dot green-dot"></span>PED: {currentSliceData.PED} px</div>
+                <div className="legend-item"><span className="dot red-dot"></span>IRF: {currentSliceData.IRF} px</div>
+                <div className="legend-item"><span className="dot yellow-dot"></span>SHRM: {currentSliceData.SHRM} px</div>
+                <div className="legend-item"><span className="dot purple-dot"></span>IS/OS: {currentSliceData.IS_OS} px</div>
               </div>
             </div>
 
@@ -805,7 +869,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
             <div className="oct-modal-block">
               <p className="pill-label sub-label">Original OCT</p>
               <div className="oct-modal-img-wrapper grayscale-filter">
-                <img src={octImgUrl} alt="Original OCT Scan" />
+                <img src={originalOctImgUrl} alt="Original OCT Scan" />
               </div>
             </div>
 
@@ -814,7 +878,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
             <div className="oct-modal-block">
               <p className="pill-label sub-label">JaksuBiomarker OCT</p>
               <div className="oct-modal-img-wrapper">
-                <img src={octImgUrl} alt="JaksuBiomarker OCT Scan" />
+                <img src={biomarkerOctImgUrl} alt="JaksuBiomarker OCT Scan" />
               </div>
             </div>
           </div>

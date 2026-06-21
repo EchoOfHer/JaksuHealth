@@ -29,6 +29,13 @@ app.include_router(patient_router, prefix="/api/v1/patients", tags=["Patients"])
 app.include_router(visit_router, prefix="/api/v1/visits", tags=["Visits (Queues)"])
 app.include_router(diagnostic_router, prefix="/api/v1/diagnostics", tags=["Diagnostics & Progression"])
 
+# Mount static folder for dataset scans
+from fastapi.staticfiles import StaticFiles
+import os
+dataset_dir = "D:\\Dataset-JaksuHealth"
+if os.path.exists(dataset_dir):
+    app.mount("/api/v1/dataset", StaticFiles(directory=dataset_dir), name="dataset")
+
 @app.get("/")
 def root():
     return {"message": "ยินดีต้อนรับสู่ระบบบริการข้อมูลหลังบ้าน JaksuHealth API"}

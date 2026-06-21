@@ -147,7 +147,10 @@ const getSummaryForPatient = (patient, eyeSide = 'os') => {
 export default function ProgressionSummary({ patient, onBack }) {
   const [activeEye, setActiveEye] = useState('os');
   const [visits, setVisits] = useState(() => getVisitsForPatient(patient, 'os'));
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(() => {
+    const initialVisits = getVisitsForPatient(patient, 'os');
+    return initialVisits.length > 1 ? 1 : 0;
+  });
   
   // Progression Summary Text
   const [summaryText, setSummaryText] = useState(() => getSummaryForPatient(patient, 'os'));
@@ -172,6 +175,87 @@ export default function ProgressionSummary({ patient, onBack }) {
   const isDraggingRef = useRef(false);
   const fundusContainerRef = useRef(null);
   const dragLineRef = useRef(null);
+
+  const [csvMetadata, setCsvMetadata] = useState([]);
+  const [prevCsvMetadata, setPrevCsvMetadata] = useState([]);
+
+  const patientToDatasetMap = {
+    'P-2605-016': { 
+      os: { current: '79', baseline: '18' }, 
+      od: { current: '14', baseline: '151' } 
+    },
+    'P-2605-012': { 
+      os: { current: '130', baseline: '6' }, 
+      od: { current: '117', baseline: '95' } 
+    },
+    'P-2605-037': { 
+      os: { current: 'natthawut_os', baseline: 'natthawut_os' }, 
+      od: { current: 'natthawut_od', baseline: 'natthawut_od' } 
+    }
+  };
+
+  const pId = patient?.id || patient?.patient_id || 'P-2605-016';
+  const eyeSide = activeEye.toLowerCase();
+  
+  const currentDatasetId = patientToDatasetMap[pId]?.[eyeSide]?.current || '79';
+  const selectedVisit = visits[activeIndex] || {};
+  const isSelectedVisitNormal = selectedVisit.stage === 'Normal' || selectedVisit.stage === 'normal';
+
+  const prevDatasetId = activeIndex === 0
+    ? currentDatasetId
+    : (isSelectedVisitNormal 
+        ? `natthawut_${eyeSide}` 
+        : (patientToDatasetMap[pId]?.[eyeSide]?.baseline || '18'));
+
+  // โหลดข้อมูล CSV Metadata ของทั้ง Current และ Previous
+  useEffect(() => {
+    const fetchCurrentMetadata = async () => {
+      try {
+        const response = await API.get(`/diagnostics/dataset/${currentDatasetId}/metadata`);
+        if (response.data) {
+          setCsvMetadata(response.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch current dataset CSV metadata:", err);
+      }
+    };
+    
+    setScaleValue(1);
+    setDragTopPercent(92);
+    fetchCurrentMetadata();
+  }, [currentDatasetId]);
+
+  useEffect(() => {
+    const fetchPrevMetadata = async () => {
+      try {
+        const response = await API.get(`/diagnostics/dataset/${prevDatasetId}/metadata`);
+        if (response.data) {
+          setPrevCsvMetadata(response.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch previous dataset CSV metadata:", err);
+      }
+    };
+    fetchPrevMetadata();
+  }, [prevDatasetId]);
+
+  // จำกัดขอบเขตของ scaleValue และซิงก์ตำแหน่งขีดตาม B-scan ปัจจุบัน
+  useEffect(() => {
+    if (!isDraggingRef.current && csvMetadata.length > 0) {
+      const N = csvMetadata.length;
+      let constrained = scaleValue;
+      if (scaleValue > N) {
+        constrained = N;
+        setScaleValue(N);
+      } else if (scaleValue < 1) {
+        constrained = 1;
+        setScaleValue(1);
+      }
+      const ratio = N > 1 ? (constrained - 1) / (N - 1) : 0;
+      const percentY = 92 - ratio * (92 - 8);
+      setDragTopPercent(percentY);
+    }
+  }, [scaleValue, csvMetadata]);
 
   const activeVisit = visits[activeIndex] || {};
 
@@ -201,7 +285,7 @@ export default function ProgressionSummary({ patient, onBack }) {
             const parsed = JSON.parse(savedMock);
             if (parsed && parsed.length > 0) {
               setVisits(parsed);
-              setActiveIndex(0);
+              setActiveIndex(parsed.length > 1 ? 1 : 0);
               const firstVisit = parsed[0];
               setSummaryText(firstVisit.summary || getSummaryForPatient(patient, activeEye));
               return;
@@ -210,8 +294,9 @@ export default function ProgressionSummary({ patient, onBack }) {
             console.error("Failed to parse mock visits from localStorage", e);
           }
         }
-        setVisits(getVisitsForPatient(patient, activeEye));
-        setActiveIndex(0);
+        const fallbackVisits = getVisitsForPatient(patient, activeEye);
+        setVisits(fallbackVisits);
+        setActiveIndex(fallbackVisits.length > 1 ? 1 : 0);
         setSummaryText(getSummaryForPatient(patient, activeEye));
       };
 
@@ -246,7 +331,7 @@ export default function ProgressionSummary({ patient, onBack }) {
           });
 
           setVisits(mappedVisits);
-          setActiveIndex(0);
+          setActiveIndex(mappedVisits.length > 1 ? 1 : 0);
           setSummaryText(mappedVisits[0]?.rawTimeline?.progression_summary || "");
         } else {
           // Fallback to mockup data if timeline is empty
@@ -476,7 +561,10 @@ export default function ProgressionSummary({ patient, onBack }) {
     const percentY = (relativeY / rect.height) * 100;
     setDragTopPercent(percentY);
 
-    const calculatedScale = Math.round(((maxY - relativeY) / (maxY - minY)) * 99) + 1;
+    const totalSlices = csvMetadata.length > 0 ? csvMetadata.length : 100;
+    const calculatedScale = totalSlices > 1
+      ? Math.round(((maxY - relativeY) / (maxY - minY)) * (totalSlices - 1)) + 1
+      : 1;
     setScaleValue(calculatedScale);
   };
 
@@ -484,15 +572,19 @@ export default function ProgressionSummary({ patient, onBack }) {
     isDraggingRef.current = false;
   };
 
-  const getPatientSet = (patientId) => {
-    if (patientId && (patientId.includes('012') || patientId.includes('012'))) return 'set2'; // Jirawat (Normal)
-    if (patientId && (patientId.includes('037') || patientId.includes('037'))) return 'set3'; // Natthawut (AMD 1 lesion)
-    return 'set1'; // Khanatip (AMD 2 lesions)
-  };
-  const patientSet = getPatientSet(patient?.id || patient?.patient_id);
-  const octImgUrl = `/mock_oct/${patientSet}/${activeEye}/${scaleValue}.png`;
-  // The previous historical scan will be compared against the normal state (set2) at the same slice index
-  const prevOctImgUrl = `/mock_oct/set2/${activeEye}/${scaleValue}.png`;
+  const apiHost = API.defaults.baseURL ? API.defaults.baseURL.replace('/api/v1', '') : '';
+
+  const currentSlices = csvMetadata.length;
+  const prevSlices = prevCsvMetadata.length;
+  const prevScaleValue = (prevSlices > 1 && currentSlices > 1)
+    ? Math.round(((scaleValue - 1) / (currentSlices - 1)) * (prevSlices - 1)) + 1
+    : scaleValue;
+
+  const currentImageName = csvMetadata[scaleValue - 1]?.Image_Name || `${currentDatasetId}_${scaleValue}.png`;
+  const prevImageName = prevCsvMetadata[prevScaleValue - 1]?.Image_Name || `${prevDatasetId}_${prevScaleValue}.png`;
+
+  const octImgUrl = `${apiHost}/api/v1/dataset/${currentDatasetId}/cropped_overlays/${currentImageName}`;
+  const prevOctImgUrl = `${apiHost}/api/v1/dataset/${prevDatasetId}/cropped_overlays/${prevImageName}`;
 
   return (
     <div className="progression-summary-container progression-summary-page">
@@ -947,9 +1039,8 @@ export default function ProgressionSummary({ patient, onBack }) {
 
             {/* ส่วนที่ 1: Previous OCT */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
-              <div className="oct-card-view" style={{ width: '100%', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
-                <img src={prevOctImgUrl} alt="Previous OCT Full" style={{ width: '100%', height: '400px', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
-                
+              <div className="oct-card-view" style={{ width: '100%', height: '400px', borderRadius: '12px', overflow: 'hidden', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
+                <img src={prevOctImgUrl} alt="Previous OCT Full" style={{ width: '100%', height: '118%', objectFit: 'fill', display: 'block' }} />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', textAlign: 'left' }}>
                 <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-soft)', minWidth: '80px' }}>Previous</span>
@@ -974,8 +1065,8 @@ export default function ProgressionSummary({ patient, onBack }) {
 
             {/* ส่วนที่ 2: Current OCT */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
-              <div className="oct-card-view" style={{ width: '100%', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
-                <img src={octImgUrl} alt="Current OCT Full" style={{ width: '100%', height: '400px', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
+              <div className="oct-card-view" style={{ width: '100%', height: '400px', borderRadius: '12px', overflow: 'hidden', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
+                <img src={octImgUrl} alt="Current OCT Full" style={{ width: '100%', height: '118%', objectFit: 'fill', display: 'block' }} />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', textAlign: 'left' }}>
                 <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-soft)', minWidth: '80px' }}>Current</span>

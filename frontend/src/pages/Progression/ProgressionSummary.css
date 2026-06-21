@@ -6,12 +6,12 @@
   --orange: #FE7743;
   --orange-light: #FFF0E6;
   --orange-mid: #FED7AA;
-  --red: #EF4444;
+  --red: rgb(50, 205, 50); /* Lime Green for IRF */
   --red-light: #FEE2E2;
-  --green: #10B981;
-  --blue: #2A59F5;
-  --yellow: #FBBF24;
-  --purple: #D946EF;
+  --green: rgb(255, 165, 0); /* Orange for PED */
+  --blue: rgb(30, 144, 255); /* Dodger Blue for SRF */
+  --yellow: rgb(220, 20, 60); /* Crimson for SHRM */
+  --purple: rgb(147, 112, 219); /* Medium Purple for IS/OS */
   --bg: #ECECEC;
   --card-bg: #FFFFFF;
   --text-dark: #1C1C1E;
@@ -316,14 +316,16 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
   height: 250px;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .oct-card-view img {
   width: 100%;
-  overflow: hidden;
-  height: 400px;
-  object-fit: cover;
-  object-position: top;
+  height: 118%;
+  object-fit: fill;
   display: block;
 }
 
@@ -610,7 +612,9 @@
   }
 
   .oct-card-view img {
-    height: 350px;
+    width: 100%;
+    height: 118%;
+    object-fit: fill;
   }
 }
 
@@ -667,7 +671,9 @@
   }
 
   .oct-card-view img {
-    height: 260px;
+    width: 100%;
+    height: 118%;
+    object-fit: fill;
   }
 
   .scan-selector-row {

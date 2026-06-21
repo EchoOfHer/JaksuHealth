@@ -5,12 +5,12 @@
   --orange: #FE7743;
   --orange-light: #FFF0E6;
   --orange-mid: #FED7AA;
-  --red: #EF4444;
+  --red: rgb(50, 205, 50); /* Lime Green for IRF */
   --red-light: #FEE2E2;
-  --green: #10B981;
-  --blue: #2A59F5;
-  --yellow: #FBBF24;
-  --purple: #D946EF;
+  --green: rgb(255, 165, 0); /* Orange for PED */
+  --blue: rgb(30, 144, 255); /* Dodger Blue for SRF */
+  --yellow: rgb(220, 20, 60); /* Crimson for SHRM */
+  --purple: rgb(147, 112, 219); /* Medium Purple for IS/OS */
   --bg: #ECECEC;
   --card-bg: #FFFFFF;
   --text-dark: #1C1C1E;
@@ -316,13 +316,17 @@
   border-radius: 12px;
   overflow: hidden;
   width: 100%;
+  height: 380px; /* ปรับลดความสูงลงเพื่อให้ภาพสัดส่วนแนวนอนสวยงาม */
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .oct-img {
   width: 100%;
-  height: 450px;
-  object-fit: cover;
-  object-position: top;
+  height: 118%; /* ยืดส่วนสูงภาพออกนอกกรอบ 18% (บน 9% ล่าง 9%) เพื่อตัดพื้นที่ขอบดำส่วนเกิน */
+  object-fit: fill; /* ยืดขยายด้านข้างให้เต็มกรอบ */
   display: block;
   border-radius: 12px;
 }
@@ -753,7 +757,7 @@
   overflow: hidden;
   height: 300px;
   object-fit: cover;
-  object-position: top;
+  object-position: center;
   display: block;
   pointer-events: none;
 }
@@ -790,8 +794,14 @@
     width: 100% !important;
   }
 
+  .oct-image-container {
+    height: 300px;
+  }
+
   .oct-img {
-    height: 350px; /* ลดความสูงของรูปสแกน OCT ให้พอดีตัวเครื่อง */
+    width: 100%;
+    height: 118%;
+    object-fit: fill;
   }
 
   .patient-info-card {
@@ -864,8 +874,14 @@
   }
 
   /* OCT scan & biomarker */
+  .oct-image-container {
+    height: 200px;
+  }
+
   .oct-img {
-    height: 250px;
+    width: 100%;
+    height: 118%;
+    object-fit: fill;
   }
 
   .biomarker-legend-row {
@@ -944,6 +960,8 @@
 
   .oct-modal-img-wrapper img {
     height: 180px;
+    object-fit: cover;
+    object-position: center;
   }
 }
 
