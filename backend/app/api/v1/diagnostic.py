@@ -148,7 +148,7 @@ def get_dataset_metadata(dataset_id: str):
     import os
     import csv
     
-    csv_path = f"D:\\Dataset-JaksuHealth\\{dataset_id}\\{dataset_id}_lesion_report.csv"
+    csv_path = f"D:\\JaksuHealth\\frontend\\public\\dataset\\{dataset_id}\\{dataset_id}_lesion_report.csv"
     if not os.path.exists(csv_path):
         raise HTTPException(status_code=404, detail=f"ไม่พบไฟล์ข้อมูลรอยโรคสำหรับรหัส {dataset_id}")
         
@@ -209,7 +209,7 @@ async def generate_ai_diagnostic_draft(request: AIDraftRequest, db: Session = De
     # ดึงข้อมูลรอยโรคจริงจากไฟล์ CSV
     if p_id in patient_to_dataset and e_side in patient_to_dataset[p_id]:
         dataset_id = patient_to_dataset[p_id][e_side]
-        csv_path = f"D:\\Dataset-JaksuHealth\\{dataset_id}\\{dataset_id}_lesion_report.csv"
+        csv_path = f"D:\\JaksuHealth\\frontend\\public\\dataset\\{dataset_id}\\{dataset_id}_lesion_report.csv"
         if os.path.exists(csv_path):
             try:
                 sum_srf = sum_ped = sum_irf = sum_shrm = 0

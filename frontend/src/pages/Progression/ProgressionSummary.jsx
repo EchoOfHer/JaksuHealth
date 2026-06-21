@@ -572,8 +572,6 @@ export default function ProgressionSummary({ patient, onBack }) {
     isDraggingRef.current = false;
   };
 
-  const apiHost = API.defaults.baseURL ? API.defaults.baseURL.replace('/api/v1', '') : '';
-
   const currentSlices = csvMetadata.length;
   const prevSlices = prevCsvMetadata.length;
   const prevScaleValue = (prevSlices > 1 && currentSlices > 1)
@@ -583,8 +581,8 @@ export default function ProgressionSummary({ patient, onBack }) {
   const currentImageName = csvMetadata[scaleValue - 1]?.Image_Name || `${currentDatasetId}_${scaleValue}.png`;
   const prevImageName = prevCsvMetadata[prevScaleValue - 1]?.Image_Name || `${prevDatasetId}_${prevScaleValue}.png`;
 
-  const octImgUrl = `${apiHost}/api/v1/dataset/${currentDatasetId}/cropped_overlays/${currentImageName}`;
-  const prevOctImgUrl = `${apiHost}/api/v1/dataset/${prevDatasetId}/cropped_overlays/${prevImageName}`;
+  const octImgUrl = `/dataset/${currentDatasetId}/cropped_overlays/${currentImageName}`;
+  const prevOctImgUrl = `/dataset/${prevDatasetId}/cropped_overlays/${prevImageName}`;
 
   return (
     <div className="progression-summary-container progression-summary-page">

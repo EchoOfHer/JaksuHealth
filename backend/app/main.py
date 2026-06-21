@@ -32,7 +32,7 @@ app.include_router(diagnostic_router, prefix="/api/v1/diagnostics", tags=["Diagn
 # Mount static folder for dataset scans
 from fastapi.staticfiles import StaticFiles
 import os
-dataset_dir = "D:\\Dataset-JaksuHealth"
+dataset_dir = "D:\\JaksuHealth\\frontend\\public\\dataset"
 if os.path.exists(dataset_dir):
     app.mount("/api/v1/dataset", StaticFiles(directory=dataset_dir), name="dataset")
 

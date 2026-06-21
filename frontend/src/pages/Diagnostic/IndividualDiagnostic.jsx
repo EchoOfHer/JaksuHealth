@@ -540,17 +540,15 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     isDraggingRef.current = false;
   };
 
-  const apiHost = API.defaults.baseURL ? API.defaults.baseURL.replace('/api/v1', '') : '';
-  
   // โหลดรูปภาพและ overlay ตามชื่อไฟล์จริงจาก CSV metadata (ไดนามิกตามจำนวนจริง)
   const currentImageName = csvMetadata[scaleValue - 1]?.Image_Name || `${datasetId}_${scaleValue}.png`;
   
   const octImgUrl = showMask 
-    ? `${apiHost}/api/v1/dataset/${datasetId}/cropped_overlays/${currentImageName}`
-    : `${apiHost}/api/v1/dataset/${datasetId}/cropped_images/${currentImageName}`;
+    ? `/dataset/${datasetId}/cropped_overlays/${currentImageName}`
+    : `/dataset/${datasetId}/cropped_images/${currentImageName}`;
 
-  const originalOctImgUrl = `${apiHost}/api/v1/dataset/${datasetId}/cropped_images/${currentImageName}`;
-  const biomarkerOctImgUrl = `${apiHost}/api/v1/dataset/${datasetId}/cropped_overlays/${currentImageName}`;
+  const originalOctImgUrl = `/dataset/${datasetId}/cropped_images/${currentImageName}`;
+  const biomarkerOctImgUrl = `/dataset/${datasetId}/cropped_overlays/${currentImageName}`;
 
   const currentSliceData = csvMetadata[scaleValue - 1] || {
     SRF: 0, PED: 0, IRF: 0, SHRM: 0, IS_OS: 0, Total_Lesion_Pixels: 0
