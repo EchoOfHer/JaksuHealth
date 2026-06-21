@@ -146,6 +146,7 @@ const getSummaryForPatient = (patient, eyeSide = 'os') => {
 
 export default function ProgressionSummary({ patient, onBack }) {
   const [activeEye, setActiveEye] = useState('os');
+  const [showMask, setShowMask] = useState(true);
   const [visits, setVisits] = useState(() => getVisitsForPatient(patient, 'os'));
   const [activeIndex, setActiveIndex] = useState(() => {
     const initialVisits = getVisitsForPatient(patient, 'os');
@@ -581,8 +582,12 @@ export default function ProgressionSummary({ patient, onBack }) {
   const currentImageName = csvMetadata[scaleValue - 1]?.Image_Name || `${currentDatasetId}_${scaleValue}.png`;
   const prevImageName = prevCsvMetadata[prevScaleValue - 1]?.Image_Name || `${prevDatasetId}_${prevScaleValue}.png`;
 
-  const octImgUrl = `/dataset/${currentDatasetId}/cropped_overlays/${currentImageName}`;
-  const prevOctImgUrl = `/dataset/${prevDatasetId}/cropped_overlays/${prevImageName}`;
+  const octImgUrl = showMask
+    ? `/dataset/${currentDatasetId}/cropped_overlays/${currentImageName}`
+    : `/dataset/${currentDatasetId}/cropped_images/${currentImageName}`;
+  const prevOctImgUrl = showMask
+    ? `/dataset/${prevDatasetId}/cropped_overlays/${prevImageName}`
+    : `/dataset/${prevDatasetId}/cropped_images/${prevImageName}`;
 
   return (
     <div className="progression-summary-container progression-summary-page">
@@ -749,18 +754,20 @@ export default function ProgressionSummary({ patient, onBack }) {
           <div className="premium-card" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
               <p className="pill-label" style={{ margin: 0 }}>Comparative View</p>
-              <button 
-                onClick={() => { document.body.style.overflow = 'hidden'; setIsFullViewModalOpen(true); }}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-soft)', fontWeight: 700, fontSize: '14px', padding: '4px 8px', borderRadius: '6px', transition: 'all 0.2s' }} 
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                  <polyline points="15 3 21 3 21 9"></polyline>
-                  <polyline points="9 21 3 21 3 15"></polyline>
-                  <line x1="21" y1="3" x2="14" y2="10"></line>
-                  <line x1="3" y1="21" x2="10" y2="14"></line>
-                </svg>
-                Full View
-              </button>
+              <div className="mask-selector-wrapper">
+                <div 
+                  className={`mask-tab ${showMask ? 'active' : ''}`} 
+                  onClick={() => setShowMask(true)}
+                >
+                  AI Mask On
+                </div>
+                <div 
+                  className={`mask-tab ${!showMask ? 'active' : ''}`} 
+                  onClick={() => setShowMask(false)}
+                >
+                  Off
+                </div>
+              </div>
             </div>
 
             <div className="oct-comparison-wrapper">
@@ -1021,8 +1028,8 @@ export default function ProgressionSummary({ patient, onBack }) {
         <div id="fullViewModal" className="modal-overlay" onClick={() => { document.body.style.overflow = ''; setIsFullViewModalOpen(false); }}>
           <div id="fullViewContainer" onClick={(e) => e.stopPropagation()}>
             
-            {/* ปุ่ม Back ด้านซ้ายบน */}
-            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            {/* ปุ่ม Back ด้านซ้ายบน และ AI Mask Toggle ด้านขวาบน */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
               <span 
                 onClick={() => { document.body.style.overflow = ''; setIsFullViewModalOpen(false); }} 
                 style={{ fontSize: '16px', color: 'var(--text-dark)', display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, opacity: 0.85, transition: 'opacity 0.2s' }}
@@ -1033,6 +1040,21 @@ export default function ProgressionSummary({ patient, onBack }) {
                 </svg>
                 Back
               </span>
+
+              <div className="mask-selector-wrapper">
+                <div 
+                  className={`mask-tab ${showMask ? 'active' : ''}`} 
+                  onClick={() => setShowMask(true)}
+                >
+                  AI Mask On
+                </div>
+                <div 
+                  className={`mask-tab ${!showMask ? 'active' : ''}`} 
+                  onClick={() => setShowMask(false)}
+                >
+                  Off
+                </div>
+              </div>
             </div>
 
             {/* ส่วนที่ 1: Previous OCT */}
