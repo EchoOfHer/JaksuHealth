@@ -142,13 +142,34 @@ def get_patient_progression_trend(patient_id: str, db: Session = Depends(get_db)
     """API สำหรับดึงข้อมูลไทม์ไลน์ประวัติโรคทั้งหมดเพื่อเอาไปพล็อตกราฟเส้น"""
     return db.query(Timeline).filter(Timeline.patient_id == patient_id).order_by(Timeline.detection_date.asc()).all()
 
+def get_dataset_dir():
+    import os
+    # 1. เช็ค relative path สำหรับ local dev (รัน uvicorn ใน backend/)
+    local_path = os.path.abspath(os.path.join(os.getcwd(), "../frontend/public/dataset"))
+    if os.path.exists(local_path):
+        return local_path
+        
+    # 2. เช็ค path สำหรับ Docker container
+    docker_path = "/app/dataset"
+    if os.path.exists(docker_path):
+        return docker_path
+        
+    # 3. เช็ค relative path ตรงตัวจาก working directory
+    docker_rel_path = os.path.abspath(os.path.join(os.getcwd(), "dataset"))
+    if os.path.exists(docker_rel_path):
+        return docker_rel_path
+        
+    # 4. Fallback
+    return "D:\\JaksuHealth\\frontend\\public\\dataset"
+
 @router.get("/dataset/{dataset_id}/metadata")
 def get_dataset_metadata(dataset_id: str):
     """API สำหรับดึงข้อมูลรอยโรคราย B-scan ไดนามิกจากไฟล์ CSV ใน Dataset"""
     import os
     import csv
     
-    csv_path = f"D:\\JaksuHealth\\frontend\\public\\dataset\\{dataset_id}\\{dataset_id}_lesion_report.csv"
+    dataset_dir = get_dataset_dir()
+    csv_path = os.path.join(dataset_dir, dataset_id, f"{dataset_id}_lesion_report.csv")
     if not os.path.exists(csv_path):
         raise HTTPException(status_code=404, detail=f"ไม่พบไฟล์ข้อมูลรอยโรคสำหรับรหัส {dataset_id}")
         
@@ -209,7 +230,8 @@ async def generate_ai_diagnostic_draft(request: AIDraftRequest, db: Session = De
     # ดึงข้อมูลรอยโรคจริงจากไฟล์ CSV
     if p_id in patient_to_dataset and e_side in patient_to_dataset[p_id]:
         dataset_id = patient_to_dataset[p_id][e_side]
-        csv_path = f"D:\\JaksuHealth\\frontend\\public\\dataset\\{dataset_id}\\{dataset_id}_lesion_report.csv"
+        dataset_dir = get_dataset_dir()
+        csv_path = os.path.join(dataset_dir, dataset_id, f"{dataset_id}_lesion_report.csv")
         if os.path.exists(csv_path):
             try:
                 sum_srf = sum_ped = sum_irf = sum_shrm = 0

@@ -32,7 +32,27 @@ app.include_router(diagnostic_router, prefix="/api/v1/diagnostics", tags=["Diagn
 # Mount static folder for dataset scans
 from fastapi.staticfiles import StaticFiles
 import os
-dataset_dir = "D:\\JaksuHealth\\frontend\\public\\dataset"
+
+def get_dataset_dir():
+    # 1. เช็ค relative path สำหรับ local dev (รัน uvicorn ใน backend/)
+    local_path = os.path.abspath(os.path.join(os.getcwd(), "../frontend/public/dataset"))
+    if os.path.exists(local_path):
+        return local_path
+        
+    # 2. เช็ค path สำหรับ Docker container
+    docker_path = "/app/dataset"
+    if os.path.exists(docker_path):
+        return docker_path
+        
+    # 3. เช็ค relative path ตรงตัวจาก working directory
+    docker_rel_path = os.path.abspath(os.path.join(os.getcwd(), "dataset"))
+    if os.path.exists(docker_rel_path):
+        return docker_rel_path
+        
+    # 4. Fallback
+    return "D:\\JaksuHealth\\frontend\\public\\dataset"
+
+dataset_dir = get_dataset_dir()
 if os.path.exists(dataset_dir):
     app.mount("/api/v1/dataset", StaticFiles(directory=dataset_dir), name="dataset")
 

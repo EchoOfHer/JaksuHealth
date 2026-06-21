@@ -25,6 +25,7 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app           # 🌟 แมปโค้ดจากโฟลเดอร์ backend เข้าไปในคอนเทนเนอร์
+      - ./frontend/public/dataset:/app/dataset  # 🌟 เมานต์ข้อมูลสแกนและ CSV ไปยัง backend
     environment:
       - DB_HOST=jaksu-db-local
       - DB_PORT=5432
