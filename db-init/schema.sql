@@ -38,7 +38,7 @@ CREATE TABLE Visits (
     visit_date DATE NOT NULL,
     visit_time TIME NOT NULL,
     queue_number VARCHAR(20) NOT NULL,
-    status VARCHAR NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'COMPLETE', 'HIGH RISK')),
+    status VARCHAR NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'COMPLETE', 'CANCELLED')),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -47,10 +47,11 @@ CREATE TABLE Visits (
 CREATE TABLE Diagnostics (
     diagnostic_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     patient_id VARCHAR(20) NOT NULL REFERENCES Patient(patient_id) ON DELETE CASCADE,
-    visit_id UUID NOT NULL UNIQUE REFERENCES Visits(visit_id) ON DELETE CASCADE, -- One-to-One
-    risk_level VARCHAR(20) NOT NULL CHECK (risk_level IN ('HIGH RISK', 'MED', 'LOW')),
-    condition_stage VARCHAR(50) NOT NULL CHECK (condition_stage IN ('Intermediate AMD', 'Early AMD', 'Normal', 'Other')),
-    ai_trend VARCHAR(20) NOT NULL CHECK (ai_trend IN ('Worsening', 'Stable', 'Normal')),
+    visit_id UUID NOT NULL REFERENCES Visits(visit_id) ON DELETE CASCADE,
+    eye_side VARCHAR(2) NOT NULL,
+    risk_level VARCHAR(50) NOT NULL,
+    condition_stage VARCHAR(200) NOT NULL,
+    ai_trend VARCHAR(50) NOT NULL,
     drafted_summary TEXT NOT NULL,
     suggested_action TEXT NOT NULL,
     exported_to_his BOOLEAN NOT NULL DEFAULT FALSE,
@@ -139,7 +140,7 @@ CREATE TABLE Refresh_Tokens (
 
 -- Get Visit Diagnostic Detail
 -- :visit_id
--- SELECT d.diagnostic_id, d.risk_level, d.condition_stage, d.ai_trend, d.drafted_summary, d.suggested_action, d.exported_to_his, e.eye_side, e.biomarker_notes, e.oct_scan_image_url FROM Diagnostics d LEFT JOIN Eye_Examinations e ON d.diagnostic_id = e.diagnostic_id WHERE d.visit_id = :visit_id;
+-- SELECT d.diagnostic_id, d.risk_level, d.condition_stage, d.ai_trend, d.drafted_summary, d.suggested_action, d.exported_to_his, d.eye_side, e.biomarker_notes, e.oct_scan_image_url FROM Diagnostics d LEFT JOIN Eye_Examinations e ON d.diagnostic_id = e.diagnostic_id WHERE d.visit_id = :visit_id;
 
 -- 2.5 Timeline (Progression)
 -- Get Timeline
