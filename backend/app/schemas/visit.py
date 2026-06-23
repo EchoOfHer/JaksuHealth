@@ -30,6 +30,6 @@ class VisitResponse(VisitBase):
 # ข้อมูลส่งกลับแบบละเอียดพร้อมข้อมูลคนไข้ (สำหรับแสดงผลฝั่งคิวงาน Worklist)
 class VisitDetailResponse(VisitResponse):
     patient: PatientResponse
-    diagnostic: Optional[DiagnosticResponse] = None
+    diagnostics: list[DiagnosticResponse] = []
 
     model_config = ConfigDict(from_attributes=True)

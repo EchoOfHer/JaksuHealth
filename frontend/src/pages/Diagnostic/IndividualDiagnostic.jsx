@@ -21,98 +21,105 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   const fundusContainerRef = useRef(null);
   const dragLineRef = useRef(null);
   
-  // กำหนดค่าเริ่มต้นของ State จาก Props หรือ Location State (แบบไดนามิกเต็มรูปแบบ)
-  const [riskStatus, setRiskStatus] = useState(patient?.diagnosis || passedPatient?.diagnosis || 'Intermediate AMD');
-  const [summaryText, setSummaryText] = useState(
-    'Recent OCT analysis reveals a moderate accumulation of Subretinal Fluid (SRF) and the presence of Intraretinal Fluid (IRF). Disruption of the IS/OS junction is also noted. The lesions indicate a high risk of active disease progression.'
-  );
-  const [actionText, setActionText] = useState(
-    'Recommend reassessing visual acuity and considering Anti-VEGF intravitreal injection. Schedule close follow-up within 2-4 weeks.'
-  );
+  const [riskStatus, setRiskStatus] = useState(patient?.diagnosis || passedPatient?.diagnosis || '');
+  const [summaryText, setSummaryText] = useState('');
+  const [actionText, setActionText] = useState('');
+  const [isDraftLoading, setIsDraftLoading] = useState(false); // แสดง loading ขณะรอ Gemini
+  const isGeneratingRef = useRef(false); // ป้องกัน Gemini ถูกยิงซ้ำพร้อมกัน
+  const abortControllerRef = useRef(null); // ยกเลิก request เก่าเมื่อ switch ตา
 
   useEffect(() => {
+    // ยกเลิก request เก่าถ้ามีการ switch ตาก่อนที่จะโหลดเสร็จ
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    // ล้างข้อมูลเก่าทันทีเมื่อเปลี่ยนตา เพื่อไม่ให้แสดงผลข้างเดิมค้างอยู่
+    setSummaryText('');
+    setActionText('');
+    setRiskStatus('');
+    setIsDraftLoading(true);
+
     const fetchDraft = async () => {
       let vId = patient?.rawVisit?.visit_id || passedPatient?.rawVisit?.visit_id;
       const pId = patient?.id || passedPatient?.id || 'P-2605-016';
 
       // Fallback to seed visit_ids if visit_id is missing to enable LLM generation in mockup mode
       if (!vId) {
-        if (pId === 'P-2605-016') vId = '39a2fe63-8bfd-406d-a51b-1c4495b8d00e';
-        else if (pId === 'P-2605-012') vId = '49a2fe63-8bfd-406d-a51b-1c4495b8d00f';
-        else if (pId === 'P-2605-037') vId = '59a2fe63-8bfd-406d-a51b-1c4495b8d00e';
-      }
-
-      // 1. Load mockup draft from localStorage for specific eye if available
-      const localKey = `mockDraft_${pId}_${activeEye}`;
-      const savedDraft = localStorage.getItem(localKey);
-      if (savedDraft) {
-        try {
-          const parsed = JSON.parse(savedDraft);
-          setRiskStatus(parsed.riskStatus || 'Intermediate AMD');
-          setSummaryText(parsed.summaryText || '');
-          setActionText(parsed.actionText || '');
-          return;
-        } catch (e) {
-          console.error("Failed to parse mockDraft from localStorage:", e);
+        if (pId === 'P-2605-016') {
+          vId = '39a2fe63-8bfd-406d-a51b-1c4495b8d00e';
+        } else if (pId === 'P-2605-012') {
+          vId = '49a2fe63-8bfd-406d-a51b-1c4495b8d00f';
+        } else if (pId === 'P-2605-037') {
+          vId = '59a2fe63-8bfd-406d-a51b-1c4495b8d00e';
         }
       }
+
+      // 1. We removed localStorage check to ALWAYS fetch from backend database
 
       // Initialize different default mock data based on eyeSide (OS vs OD)
-      const pName = patient?.name || passedPatient?.name || "Khanatip Gankingpai";
-      if (pName.includes("Khanatip")) {
-        if (activeEye === 'os') {
-          setRiskStatus('Intermediate AMD');
-          setSummaryText('Recent OCT analysis reveals a moderate accumulation of Subretinal Fluid (SRF) and the presence of Intraretinal Fluid (IRF). Disruption of the IS/OS junction is also noted. The lesions indicate a high risk of active disease progression.');
-          setActionText('Recommend reassessing visual acuity and considering Anti-VEGF intravitreal injection. Schedule close follow-up within 2-4 weeks.');
-        } else {
-          setRiskStatus('Early AMD');
-          setSummaryText('OCT analysis shows mild drusen accumulation in the macula area with no visible subretinal fluid or intraretinal fluid. The retinal layers are well-preserved.');
-          setActionText('Recommend daily Amsler grid self-monitoring and routine follow-up in 6 months. Consider dietary supplements.');
-        }
-      } else if (pName.includes("Jirawat")) {
-        if (activeEye === 'os') {
-          setRiskStatus('Early AMD');
-          setSummaryText('OCT analysis shows early signs of dry AMD with small drusen accumulation. The retinal structure remains stable with no fluid or active lesions.');
-          setActionText('Advise routine follow-up and monitoring. Recommend smoking cessation and antioxidant vitamins.');
-        } else {
-          setRiskStatus('Normal');
-          setSummaryText('No significant retinal abnormality detected in the macula. Retinal thickness and layers are normal with no signs of drusen or fluid.');
-          setActionText('Routine annual eye examination.');
-        }
-      } else {
-        setRiskStatus('Normal');
-        setSummaryText('The retina appears completely normal with no signs of drusen or fluid accumulation. Comparative review against previous baseline scan confirms no progression.');
-        setActionText('Routine checkup in 12 months.');
-      }
-
-      // 2. Fetch draft from PostgreSQL database if vId exists
       if (vId) {
         try {
-          const response = await API.get(`/diagnostics/visit/${vId}`);
+          const response = await API.get(`/diagnostics/visit/${vId}/${activeEye.toUpperCase()}`);
+          if (controller.signal.aborted) return; // ถ้า switch ตาไปแล้ว ยกเลิกทันที
           const data = response.data;
-          if (data) {
+          if (data && data.drafted_summary && data.drafted_summary.trim().length > 30) {
+            // มีผลวินิจฉัยจริงจาก Gemini อยู่ใน DB แล้ว — แสดงทันที ไม่ยิง Gemini ซ้ำ
             setRiskStatus(data.condition_stage || '');
             setSummaryText(data.drafted_summary || '');
             setActionText(data.suggested_action || '');
+            setIsDraftLoading(false);
+            return;
+          } else {
+            // drafted_summary ว่างเปล่า (ข้อมูล seed เริ่มต้น) → ต้องขอ Gemini
+            if (!isGeneratingRef.current) {
+              isGeneratingRef.current = true;
+              throw new Error("Draft empty");
+            } else {
+              // มีคำขอ Gemini อยู่แล้ว ไม่ต้องยิงซ้ำ
+              setIsDraftLoading(false);
+              return;
+            }
           }
         } catch (err) {
-          if (err.response && err.response.status === 404) {
-            console.log("No existing draft found in database, generating new AI draft via LLM.");
+          if (controller.signal.aborted) return;
+          if ((err.response && err.response.status === 404) || err.message === "Draft empty") {
+            console.log("No existing draft found (or empty) in database, generating new AI draft via LLM.");
             try {
               const pName = patient?.name || passedPatient?.name || "Khanatip Gankingpai";
-              let drusen = 0, srf = 0, irf = 0, shrm = 0;
+              
+              // 1. ดึงข้อมูล CSV แบบ Real-time เพื่อเอาค่าพิกเซลจริงส่งให้ LLM
+              const patientMap = {
+                'P-2605-016': { os: '79', od: '14' },
+                'P-2605-012': { os: '130', od: '117' },
+                'P-2605-037': { os: 'natthawut_os', od: 'natthawut_od' }
+              };
+              const datasetId = patientMap[pId]?.[activeEye.toLowerCase()] || '95';
+              let metaData = [];
+              try {
+                const metaRes = await API.get(`/diagnostics/dataset/${datasetId}/metadata`);
+                metaData = metaRes.data || [];
+              } catch (e) {
+                console.error("Failed to fetch metadata for draft:", e);
+              }
+
+              // 2. คำนวณผลรวมพิกเซลจากทุก B-Scan
+              let srf = 0, irf = 0, shrm = 0, is_os = 0;
+              metaData.forEach(row => {
+                srf += row.SRF || 0;
+                irf += row.IRF || 0;
+                shrm += row.SHRM || 0;
+                is_os += row.IS_OS || 0;
+              });
+
+              // 3. Drusen ไม่มีใน CSV จึงจำลองตามเคส (เหมือนเดิม)
+              let drusen = 0;
               if (pName.includes("Khanatip")) {
-                if (activeEye === 'os') {
-                  drusen = 1200; srf = 450; irf = 100; shrm = 80;
-                } else {
-                  drusen = 450; srf = 0; irf = 0; shrm = 0;
-                }
+                drusen = activeEye === 'os' ? 1200 : 450;
               } else if (pName.includes("Jirawat")) {
-                if (activeEye === 'os') {
-                  drusen = 350; srf = 0; irf = 0; shrm = 0;
-                } else {
-                  drusen = 0; srf = 0; irf = 0; shrm = 0;
-                }
+                drusen = activeEye === 'os' ? 350 : 0;
               }
 
               const draftResponse = await API.post('/diagnostics/generate-draft', {
@@ -123,9 +130,11 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                 drusen_pixels: drusen,
                 srf_pixels: srf,
                 irf_pixels: irf,
-                shrm_pixels: shrm
+                shrm_pixels: shrm,
+                is_os_pixels: is_os
               });
-              
+
+              if (controller.signal.aborted) return;
               const draftData = draftResponse.data;
               if (draftData) {
                 setRiskStatus(draftData.condition_stage || '');
@@ -133,16 +142,31 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                 setActionText(draftData.suggested_action || '');
               }
             } catch (draftErr) {
-              console.error("Failed to generate AI draft, using local fallbacks:", draftErr);
+              if (controller.signal.aborted) return;
+              console.error("Failed to generate AI draft:", draftErr);
+              setSummaryText("Connection issue with LLM. Please try again later.");
+              setActionText("Unable to analyze data due to server connection error.");
+            } finally {
+              isGeneratingRef.current = false;
             }
           } else {
             console.error("Error fetching diagnostic draft:", err);
+          }
+        } finally {
+          if (!controller.signal.aborted) {
+            setIsDraftLoading(false);
           }
         }
       }
     };
 
     fetchDraft();
+
+    // Cleanup: ยกเลิก request เมื่อ component unmount หรือ activeEye เปลี่ยน
+    return () => {
+      controller.abort();
+      isGeneratingRef.current = false;
+    };
   }, [patient, passedPatient, activeEye]);
 
   // ตั้งค่า mapping สำหรับคนไข้เพื่อหา dataset_id ของภาพและข้อมูลจริง
@@ -261,13 +285,10 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     const pId = patient?.id || passedPatient?.id || 'P-2605-016';
     const vId = patient?.rawVisit?.visit_id || passedPatient?.rawVisit?.visit_id;
 
-    // Save draft mockup state in localStorage for specific eye side
-    const localKey = `mockDraft_${pId}_${activeEye}`;
-    localStorage.setItem(localKey, JSON.stringify({
-      riskStatus: finalRisk,
-      summaryText: modalSummary,
-      actionText: modalAction
-    }));
+    // 1. Update React state immediately (without saving to localStorage)
+    setRiskStatus(finalRisk);
+    setSummaryText(modalSummary);
+    setActionText(modalAction);
 
     // Sync mockup state in localStorage when saving modal changes
     let list = [];
@@ -298,19 +319,19 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     // Save draft to PostgreSQL if vId exists
     if (vId) {
       try {
-        let riskLevel = 'LOW';
+        let riskLevel = 'Low';
         let aiTrend = 'Normal';
         if (finalRisk === 'Intermediate AMD') {
-          riskLevel = 'HIGH RISK';
+          riskLevel = 'High';
           aiTrend = 'Worsening';
         } else if (finalRisk === 'Early AMD') {
-          riskLevel = 'MED';
+          riskLevel = 'Medium';
           aiTrend = 'Stable';
         } else if (finalRisk === 'Normal') {
-          riskLevel = 'LOW';
+          riskLevel = 'Low';
           aiTrend = 'Normal';
         } else {
-          riskLevel = 'HIGH RISK';
+          riskLevel = 'High';
           aiTrend = 'Stable';
         }
 
@@ -344,19 +365,19 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     const pId = patient?.id || passedPatient?.id || 'P-2605-016';
 
     // Map risk status to severity risk level as expected by DB schema
-    let riskLevel = 'LOW';
+    let riskLevel = 'Low';
     let aiTrend = 'Normal';
     if (riskStatus === 'Intermediate AMD') {
-      riskLevel = 'HIGH RISK';
+      riskLevel = 'High';
       aiTrend = 'Worsening';
     } else if (riskStatus === 'Early AMD') {
-      riskLevel = 'MED';
+      riskLevel = 'Medium';
       aiTrend = 'Stable';
     } else if (riskStatus === 'Normal') {
-      riskLevel = 'LOW';
+      riskLevel = 'Low';
       aiTrend = 'Normal';
     } else {
-      riskLevel = 'HIGH RISK';
+      riskLevel = 'High';
       aiTrend = 'Stable';
     }
 
@@ -696,15 +717,33 @@ export default function IndividualDiagnostic({ patient, onBack }) {
               </div>
 
               <div className="copilot-report-body">
-                <div>
-                  <p className="report-title">Drafted Summary:</p>
-                  <p id="summaryText" className="report-desc">{summaryText}</p>
-                </div>
+                {isDraftLoading ? (
+                  <div style={{ textAlign: 'center', padding: '28px 0', color: 'var(--text-muted, #aaa)' }}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1.2s linear infinite', marginBottom: '10px', display: 'block', margin: '0 auto 10px' }}>
+                      <line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/>
+                      <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+                      <line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>
+                      <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+                    </svg>
+                    <p style={{ margin: 0, fontSize: '13px' }}>Analyzing OCT data with AI...</p>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <p className="report-title">Drafted Summary:</p>
+                      <p id="summaryText" className="report-desc" style={{ whiteSpace: 'pre-wrap' }}>
+                        {summaryText}
+                      </p>
+                    </div>
 
-                <div>
-                  <p className="report-title">Suggested Action:</p>
-                  <p id="actionText" className="report-desc">{actionText}</p>
-                </div>
+                    <div>
+                      <p className="report-title">Suggested Action:</p>
+                      <p id="actionText" className="report-desc" style={{ whiteSpace: 'pre-wrap' }}>
+                        {actionText ? actionText.replace(/ (\d+\.)/g, '\n$1') : ''}
+                      </p>
+                    </div>
+                  </>
+                )}
 
                 <div className="copy-action-wrapper">
                   <button id="copyBtn" className="copy-to-his-btn" onClick={handleCopyToHIS}>

@@ -6,6 +6,7 @@ from datetime import datetime
 class DiagnosticBase(BaseModel):
     patient_id: str
     visit_id: UUID
+    eye_side: str
     risk_level: str # HIGH RISK, MED, LOW
     condition_stage: str # Intermediate AMD, Early AMD, Normal, Other
     ai_trend: str # Worsening, Stable, Normal
@@ -33,4 +34,5 @@ class AIDraftRequest(BaseModel):
     srf_pixels: int
     irf_pixels: int
     shrm_pixels: int
+    is_os_pixels: int = 0
 

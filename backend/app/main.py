@@ -63,3 +63,4 @@ def root():
 @app.on_event("startup")
 def startup_event():
     start_db_monitor()
+

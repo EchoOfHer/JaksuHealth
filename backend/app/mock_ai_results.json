@@ -1,0 +1,50 @@
+{
+  "P-2605-016": {
+    "OS": {
+      "risk_level": "High",
+      "condition_stage": "Late AMD (Neovascular/Wet AMD)",
+      "ai_trend": "Worsening",
+      "drafted_summary": "The patient has progressed from Intermediate AMD to active Neovascular AMD. Current OCT findings reveal significant disease activity with Drusen at 1200px, Subretinal Fluid (SRF) at 450px, Intraretinal Fluid (IRF) at 100px, and Subretinal Hyperreflective Material (SHRM) at 80px. The presence of both SRF and IRF indicates active exudative disease.",
+      "suggested_action": "Immediate referral to a retina specialist for anti-VEGF intravitreal injection therapy. Arrange for follow-up OCT scans in 4 weeks to monitor treatment response."
+    },
+    "OD": {
+      "risk_level": "Low",
+      "condition_stage": "Early AMD",
+      "ai_trend": "Normal",
+      "drafted_summary": "The right eye (OD) exhibits Early AMD with 450px of drusen. There is no active fluid accumulation, with subretinal fluid (SRF) at 0px, intraretinal fluid (IRF) at 0px, and subretinal hyperreflective material (SHRM) at 0px.",
+      "suggested_action": "Recommend regular clinical monitoring and home Amsler grid testing. Advise on lifestyle modifications and dietary counseling."
+    }
+  },
+  "P-2605-012": {
+    "OS": {
+      "risk_level": "Low",
+      "condition_stage": "Early AMD",
+      "ai_trend": "Stable",
+      "drafted_summary": "The patient remains in the Early AMD stage. Current OCT scan shows drusen measuring 350px, with no subretinal fluid (SRF: 0px), intraretinal fluid (IRF: 0px), or subretinal hyperreflective material (SHRM: 0px). The condition is stable with no active exudative changes.",
+      "suggested_action": "Continue routine monitoring with home Amsler grid and schedule a follow-up OCT scan in 6 to 12 months to monitor drusen progression."
+    },
+    "OD": {
+      "risk_level": "Low",
+      "condition_stage": "Normal",
+      "ai_trend": "Normal",
+      "drafted_summary": "OCT analysis of the right eye (OD) for a 58-year-old patient shows no pathological signs. Drusen, SRF, IRF, and SHRM are all measured at 0px, indicating a normal retinal profile with no active fluid accumulation or structural changes.",
+      "suggested_action": "Continue with routine ophthalmic examinations as clinically indicated. No active treatment or immediate intervention is required."
+    }
+  },
+  "P-2605-037": {
+    "OS": {
+      "risk_level": "Low",
+      "condition_stage": "Normal",
+      "ai_trend": "Normal",
+      "drafted_summary": "OCT scan of the left eye (OS) shows normal retinal architecture with no evidence of drusen, subretinal fluid (SRF), intraretinal fluid (IRF), or subretinal hyperreflective material (SHRM). No signs of age-related macular degeneration (AMD) are present.",
+      "suggested_action": "Recommend routine ophthalmic follow-up as clinically indicated. No active intervention or treatment is required at this time."
+    },
+    "OD": {
+      "risk_level": "Low",
+      "condition_stage": "Normal",
+      "ai_trend": "Normal",
+      "drafted_summary": "OCT analysis of the right eye (OD) for this 45-year-old patient shows no pathological features. Drusen, subretinal fluid (SRF), intraretinal fluid (IRF), and subretinal hyperreflective material (SHRM) are all at 0px, indicating a normal retinal profile.",
+      "suggested_action": "Continue with routine ophthalmic monitoring. No active treatment or intervention is indicated at this time."
+    }
+  }
+}

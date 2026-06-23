@@ -380,6 +380,8 @@
 
 .queue-col {
   width: 20%;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .action-col {

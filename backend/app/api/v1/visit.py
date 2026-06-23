@@ -27,6 +27,11 @@ def get_pending_worklist(db: Session = Depends(get_db)):
     """API สำหรับดึงคิวตรวจที่รอการวินิจฉัย (Pending Worklist) เรียงตามสถานะเพื่อเตรียมแสดงใน Workspace"""
     return db.query(Visit).filter(Visit.status != "COMPLETE").order_by(Visit.visit_time.asc()).all()
 
+@router.get("/completed-count")
+def get_completed_count(db: Session = Depends(get_db)):
+    """API สำหรับดึงจำนวนคิวตรวจที่เสร็จสิ้นแล้ว"""
+    return db.query(Visit).filter(Visit.status == "COMPLETE").count()
+
 @router.get("/rollback-status")
 def rollback_status():
     """API สำหรับตรวจสอบเวลาที่เหลือของการตรวจเช็ค/Rollback ฐานข้อมูล"""

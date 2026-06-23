@@ -69,10 +69,21 @@ const Diagnostic = ({ onSelectPatient }) => {
             let riskLevel = 'Medium';
             let colorCode = '#FE7743';
 
-            if (v.diagnostic) {
-              diagnosis = v.diagnostic.condition_stage;
-              riskLevel = v.diagnostic.risk_level === 'HIGH RISK' ? 'High' : v.diagnostic.risk_level === 'MED' ? 'Medium' : 'Low';
-              colorCode = riskLevel === 'High' ? '#EF4444' : riskLevel === 'Medium' ? '#FE7743' : '#40a34f';
+            if (v.diagnostics && v.diagnostics.length > 0) {
+              const highDiag = v.diagnostics.find(d => d.risk_level === 'High' || d.risk_level === 'High');
+              const medDiag = v.diagnostics.find(d => d.risk_level === 'Medium' || d.risk_level === 'Medium');
+              const validDiag = highDiag || medDiag || v.diagnostics[0];
+
+              diagnosis = validDiag.condition_stage;
+              riskLevel = validDiag.risk_level;
+              
+              if (riskLevel === 'High' || riskLevel === 'High') {
+                colorCode = '#EF4444';
+              } else if (riskLevel === 'Medium' || riskLevel === 'Medium') {
+                colorCode = '#FE7743';
+              } else {
+                colorCode = '#40a34f';
+              }
             } else {
               // ฐานข้อมูลจริงไม่มี diagnostic (เช่น หลังรัน rollback DB)
               // ล้างสเตตัส mismatch ใน localStorage เพื่อซิงค์กับ DB

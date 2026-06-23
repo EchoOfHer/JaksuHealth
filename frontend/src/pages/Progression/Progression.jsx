@@ -113,23 +113,27 @@ const ProgressionPage = () => {
               }
             }
 
-            // 2. Call DB (if records exist in PostgreSQL, they will overwrite the defaults)
             try {
               const progRes = await API.get(`/diagnostics/patient/${p.patient_id}/progression`);
               const timeline = progRes.data;
               
               if (Array.isArray(timeline) && timeline.length > 0) {
+                // ข้อมูลมาจาก endpoint ล่าสุด (รวม Pending ด้วย) เรียงจากเก่าไปใหม่
                 const sortedTimeline = [...timeline].sort((a, b) => new Date(b.detection_date) - new Date(a.detection_date));
                 const latest = sortedTimeline[0];
                 
                 lastVisit = formatDate(latest.detection_date);
                 stage = latest.detected_stage;
                 
-                if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
+                if (stage === "Active Wet AMD" || stage === "Late AMD" || stage === "Late AMD (Neovascular/Wet AMD)") {
                   trend = "Worsening";
                   trendColor = "#EF4444";
                   dotColor = "#EF4444";
-                } else if (stage === "Early AMD") {
+                } else if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
+                  trend = "Worsening";
+                  trendColor = "#EF4444";
+                  dotColor = "#EF4444";
+                } else if (stage === "Early AMD" || stage === "Early/Intermediate AMD") {
                   trend = "Stable";
                   trendColor = "#FE7743";
                   dotColor = "#FE7743";
@@ -137,6 +141,10 @@ const ProgressionPage = () => {
                   trend = "Normal";
                   trendColor = "#22C55E";
                   dotColor = "#22C55E";
+                }
+                
+                if (latest.is_pending) {
+                  // ถ้ามันเป็น Pending timeline สามารถเอามาทำ UI badge เล็กๆ ได้
                 }
               }
             } catch (err) {
@@ -361,7 +369,6 @@ const ProgressionPage = () => {
                 <div className="patient-cell-action">
                   <button className="view-trend-btn" onClick={() => setSelectedPatient(patient)}>
                     View Trend
-                    <span className="arrow">→</span>
                   </button>
                 </div>
               </div>

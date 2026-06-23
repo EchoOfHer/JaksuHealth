@@ -9,8 +9,8 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASSWORD: str
     
-    # ตัวแปรเสริมสำหรับการเชื่อมต่อ AI Servers (เป็นตัวเลือกเสริม)
-    LLM_SERVER_URL: Optional[str] = None
+    # ตัวแปรเสริมสำหรับการเชื่อมต่อ AI Servers & APIs
+    GEMINI_API_KEY: Optional[str] = None
     CV_SERVER_URL: Optional[str] = None
 
     @property

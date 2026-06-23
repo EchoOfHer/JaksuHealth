@@ -214,11 +214,6 @@
   border-radius: 12px;
   padding: 20px 24px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-  transition: transform 0.2s ease;
-}
-
-.patient-card:hover {
-  transform: translateY(-2px);
 }
 
 .patient-col {
@@ -228,21 +223,20 @@
 }
 
 .diagnosis-col {
-  width: 25%;
+  flex: 1;
   padding-left: 10px;
 }
 
 .info-col {
-  width: 35%;
+  flex: 1;
+  padding-left: 20px;
 }
 
 .queue-col {
-  width: 20%;
-}
-
-.action-col {
-  width: 20%;
+  flex: 1;
   align-items: flex-end;
+  text-align: right;
+  padding-right: 10px;
 }
 
 .patient-diagnosis, .patient-name, .patient-queue {
@@ -376,13 +370,10 @@
     padding-left: 0 !important;
   }
 
-  .action-col {
-    align-items: flex-start;
-  }
-
-  .review {
-    width: 100%;
-    margin-right: 0;
+  .queue-col {
+    align-items: flex-start !important;
+    text-align: left !important;
+    padding-right: 0 !important;
   }
 
   .patient-name {

@@ -58,6 +58,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        // ดึงข้อมูลที่อัปเดตแล้วมาแสดงผล
         const response = await API.get('/visits/pending');
         const data = response.data; // รายการคิวจาก SQL
 
@@ -84,10 +85,22 @@ const Dashboard = () => {
             let riskLevel = 'Medium';
             let colorCode = '#FE7743';
 
-            if (v.diagnostic) {
-              diagnosis = v.diagnostic.condition_stage;
-              riskLevel = v.diagnostic.risk_level === 'HIGH RISK' ? 'High' : v.diagnostic.risk_level === 'MED' ? 'Medium' : 'Low';
-              colorCode = riskLevel === 'High' ? '#EF4444' : riskLevel === 'Medium' ? '#FE7743' : '#40a34f';
+            if (v.diagnostics && v.diagnostics.length > 0) {
+              // Try to find high risk first, then medium
+              const highDiag = v.diagnostics.find(d => d.risk_level === 'High' || d.risk_level === 'High');
+              const medDiag = v.diagnostics.find(d => d.risk_level === 'Medium' || d.risk_level === 'Medium');
+              const validDiag = highDiag || medDiag || v.diagnostics[0];
+
+              riskLevel = validDiag.risk_level;
+              diagnosis = validDiag.condition_stage;
+
+              if (riskLevel === 'High' || riskLevel === 'High') {
+                colorCode = '#EF4444';
+              } else if (riskLevel === 'Medium' || riskLevel === 'Medium') {
+                colorCode = '#FE7743';
+              } else {
+                colorCode = '#40a34f';
+              }
             } else {
               // ฐานข้อมูลจริงไม่มี diagnostic (เช่น หลังรัน rollback DB)
               // ล้างสเตตัส mismatch ใน localStorage เพื่อซิงค์กับ DB
@@ -158,21 +171,14 @@ const Dashboard = () => {
           // นับยอดเพื่อพล็อตลง Widget สถิติกล่องด้านบนตามฐานข้อมูลจริง
           const highRiskCount = mapped.filter(p => p.riskLevel === 'High').length;
           
-          let approvedCount = 0;
-          const savedMock = localStorage.getItem('mockPatients');
-          if (savedMock) {
-            try {
-              const list = JSON.parse(savedMock);
-              approvedCount = list.filter(p => p.isApproved).length;
-            } catch (e) {
-              console.error(e);
-            }
-          }
+          // ดึงค่า Completed Count จาก Backend จริง
+          const completedResponse = await API.get('/visits/completed-count');
+          const completedCountFromDB = completedResponse.data;
 
           setStats({
             pending: mapped.length,
             highRisk: highRiskCount,
-            complete: 3 + approvedCount
+            complete: completedCountFromDB
           });
         } else {
           setMockPatients(loadMockDashboard());
@@ -241,13 +247,6 @@ const Dashboard = () => {
               <p className="patient-queue">{patient.queue}</p>
               <p className="patient-time">{patient.time}</p>
             </div>
-            <div className="patient-col action-col">
-              {/* ทำปุ่ม Diagnose ให้สลับไปหน้า Diagnostic ได้เหมือนกัน */}
-              <div className="review" onClick={() => navigate('/diagnostic')}>
-                <p>Diagnose</p>
-                <img className="arrow" src="/orangeArrow.png" alt="menu" />
-              </div>
-            </div>
           </div>
         ))}
 
@@ -260,7 +259,7 @@ const Dashboard = () => {
             className="view-all-btn" 
             onClick={() => navigate('/diagnostic')} 
           >
-            View All Patients
+            View All
           </button>
         </div>
 

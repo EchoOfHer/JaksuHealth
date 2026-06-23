@@ -21,7 +21,7 @@ def seed():
         db.query(Patient).delete()
         db.query(Doctor).delete()
         db.commit()
-        print("🧹 ทำความสะอาดตารางข้อมูลเดิมเรียบร้อย")
+        print("[OK] Old data cleared successfully")
 
         # 2. เพิ่มแพทย์ EchoOfHer (รหัสผ่าน 1234 ผ่านการแฮช SHA-256)
         password_hash = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"
@@ -34,7 +34,7 @@ def seed():
         )
         db.add(doc)
         db.commit()
-        print("✅ บันทึกข้อมูลแพทย์สำเร็จ (username: 'EchoOfHer' / password: '1234')")
+        print("[OK] Doctor seeded (username: 'EchoOfHer' / password: '1234')")
 
         # 3. บันทึกรายชื่อคนไข้ทั้ง 3 คน
         p1 = Patient(
@@ -102,7 +102,22 @@ def seed():
         )
         db.add_all([v1, v2, v3])
         db.commit()
-        print("✅ เปิดคิวตรวจนัดหมาย (Visits) ของวันนี้สำเร็จ")
+        
+        # Pre-calculate Tier 1 CV rules for Dashboard
+        # P-2605-016
+        d1_os = Diagnostic(patient_id=p1.patient_id, visit_id=v1.visit_id, eye_side="OS", risk_level="High", condition_stage="Intermediate AMD", ai_trend="", drafted_summary="", suggested_action="")
+        d1_od = Diagnostic(patient_id=p1.patient_id, visit_id=v1.visit_id, eye_side="OD", risk_level="Medium", condition_stage="Early AMD", ai_trend="", drafted_summary="", suggested_action="")
+        # P-2605-012
+        d2_os = Diagnostic(patient_id=p2.patient_id, visit_id=v2.visit_id, eye_side="OS", risk_level="Medium", condition_stage="Early AMD", ai_trend="", drafted_summary="", suggested_action="")
+        d2_od = Diagnostic(patient_id=p2.patient_id, visit_id=v2.visit_id, eye_side="OD", risk_level="Low", condition_stage="Normal", ai_trend="", drafted_summary="", suggested_action="")
+        # P-2605-037
+        d3_os = Diagnostic(patient_id=p3.patient_id, visit_id=v3.visit_id, eye_side="OS", risk_level="Low", condition_stage="Normal", ai_trend="", drafted_summary="", suggested_action="")
+        d3_od = Diagnostic(patient_id=p3.patient_id, visit_id=v3.visit_id, eye_side="OD", risk_level="Low", condition_stage="Normal", ai_trend="", drafted_summary="", suggested_action="")
+        
+        db.add_all([d1_os, d1_od, d2_os, d2_od, d3_os, d3_od])
+        db.commit()
+        
+        print("✅ เปิดคิวตรวจนัดหมาย (Visits) และคำนวณ CV Risk ล่วงหน้าสำหรับ Dashboard เรียบร้อย")
 
         # 5. เพิ่มข้อมูลประวัติย้อนหลัง (เพื่อเอาไปทำกราฟแนวโน้ม Progression)
         # -- ประวัติคนไข้ Khanatip Gankingpai --
@@ -123,7 +138,8 @@ def seed():
             diagnostic_id=uuid.uuid4(),
             patient_id=p1.patient_id,
             visit_id=v_h1.visit_id,
-            risk_level="LOW",
+            eye_side="OS",
+            risk_level="Low",
             condition_stage="Normal",
             ai_trend="Normal",
             drafted_summary="The retina appears completely normal with no signs of drusen or fluid accumulation. Comparative review against previous baseline scan confirms no progression.",
@@ -162,7 +178,8 @@ def seed():
             diagnostic_id=uuid.uuid4(),
             patient_id=p1.patient_id,
             visit_id=v_h2.visit_id,
-            risk_level="MED",
+            eye_side="OS",
+            risk_level="Medium",
             condition_stage="Early AMD",
             ai_trend="Stable",
             drafted_summary="Early signs of AMD detected with drusen accumulation. IS/OS junction remains intact.",
@@ -202,7 +219,8 @@ def seed():
             diagnostic_id=uuid.uuid4(),
             patient_id=p2.patient_id,
             visit_id=v_j1.visit_id,
-            risk_level="LOW",
+            eye_side="OS",
+            risk_level="Low",
             condition_stage="Normal",
             ai_trend="Normal",
             drafted_summary="The retina appears completely normal with no signs of drusen or fluid accumulation.",
@@ -241,7 +259,8 @@ def seed():
             diagnostic_id=uuid.uuid4(),
             patient_id=p2.patient_id,
             visit_id=v_j2.visit_id,
-            risk_level="MED",
+            eye_side="OS",
+            risk_level="Medium",
             condition_stage="Early AMD",
             ai_trend="Stable",
             drafted_summary="Early AMD findings are well-maintained with recommendation of routine follow-up.",
@@ -281,7 +300,8 @@ def seed():
             diagnostic_id=uuid.uuid4(),
             patient_id=p3.patient_id,
             visit_id=v_n1.visit_id,
-            risk_level="LOW",
+            eye_side="OS",
+            risk_level="Low",
             condition_stage="Normal",
             ai_trend="Normal",
             drafted_summary="The retina appears completely normal with no signs of drusen or fluid accumulation.",

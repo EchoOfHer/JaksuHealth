@@ -69,7 +69,7 @@ def test_full_workflow():
         diagnostic = Diagnostic(
             patient_id=patient.patient_id,
             visit_id=visit.visit_id,
-            risk_level="HIGH RISK",
+            risk_level="High",
             condition_stage="Intermediate AMD",
             ai_trend="Worsening",
             drafted_summary="Recent OCT analysis reveals a moderate accumulation of Subretinal Fluid (SRF).",

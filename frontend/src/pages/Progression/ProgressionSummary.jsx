@@ -179,6 +179,9 @@ export default function ProgressionSummary({ patient, onBack }) {
 
   const [csvMetadata, setCsvMetadata] = useState([]);
   const [prevCsvMetadata, setPrevCsvMetadata] = useState([]);
+  const [isComparing, setIsComparing] = useState(false);
+  const [aiStage, setAiStage] = useState('');
+  const [aiTrend, setAiTrend] = useState('');
 
   const patientToDatasetMap = {
     'P-2605-016': { 
@@ -258,6 +261,55 @@ export default function ProgressionSummary({ patient, onBack }) {
     }
   }, [scaleValue, csvMetadata]);
 
+  const summarizePixels = (metadata, pId, eyeSide) => {
+    if (!metadata || metadata.length === 0) return "Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px";
+    let srf = 0, irf = 0, shrm = 0, is_os = 0;
+    metadata.forEach(row => {
+      srf += parseFloat(row.SRF || 0);
+      irf += parseFloat(row.IRF || 0);
+      shrm += parseFloat(row.SHRM || 0);
+      is_os += parseFloat(row['IS/OS'] || row.IS_OS || 0);
+    });
+    let drusen = 0;
+    if (pId.includes('016')) drusen = eyeSide === 'os' ? 1200 : 450;
+    if (pId.includes('012')) drusen = eyeSide === 'os' ? 350 : 0;
+    return `Drusen: ${drusen}px, SRF: ${srf}px, IRF: ${irf}px, SHRM: ${shrm}px, IS/OS: ${is_os}px`;
+  };
+
+  useEffect(() => {
+    const compareVisits = async () => {
+      if (!csvMetadata || !prevCsvMetadata) return;
+      if (csvMetadata.length === 0 && prevCsvMetadata.length === 0) return;
+
+      setIsComparing(true);
+      const prevVisitDate = visits[activeIndex]?.date || '';
+      const currVisitDate = visits[0]?.date || '';
+      const prev_status = summarizePixels(prevCsvMetadata, pId, eyeSide) + ` | Date: ${prevVisitDate}`;
+      const curr_status = summarizePixels(csvMetadata, pId, eyeSide) + ` | Date: ${currVisitDate}`;
+
+      try {
+        const response = await API.post('/diagnostics/compare-progression', {
+          patient_id: pId,
+          eye_side: activeEye.toUpperCase(),
+          age: parseInt(patient?.age || '65', 10),
+          prev_status: prev_status,
+          curr_status: curr_status
+        });
+        
+        if (response.data) {
+          setAiStage(response.data.condition_stage || '');
+          setAiTrend(response.data.progression_trend || '');
+          setSummaryText(response.data.progression_summary || '');
+        }
+      } catch (err) {
+        console.error("Failed to compare progression with AI:", err);
+      } finally {
+        setIsComparing(false);
+      }
+    };
+    compareVisits();
+  }, [csvMetadata, prevCsvMetadata, activeEye, pId, patient]);
+
   const activeVisit = visits[activeIndex] || {};
 
   // ล้างการเลื่อนเมื่อปิด modal
@@ -302,7 +354,7 @@ export default function ProgressionSummary({ patient, onBack }) {
       };
 
       try {
-        const res = await API.get(`/diagnostics/patient/${pId}/progression`);
+        const res = await API.get(`/diagnostics/patient/${pId}/progression`, { params: { eye_side: activeEye } });
         const timeline = res.data;
         if (Array.isArray(timeline) && timeline.length > 0) {
           const sortedTimeline = [...timeline].sort((a, b) => new Date(b.detection_date) - new Date(a.detection_date));
@@ -651,15 +703,16 @@ export default function ProgressionSummary({ patient, onBack }) {
               </div>
               <div style={{ marginTop: '6px' }}>
                 <div style={{ color: 'var(--text-soft)', fontWeight: 5, marginBottom: '2px' }}>Risk Status</div>
-                <div style={{ fontWeight: 7, color: 'var(--text-dark)' }}>{visits[0]?.stage || 'Intermediate AMD'}</div>
+                <div style={{ fontWeight: 7, color: 'var(--text-dark)' }}>{aiStage || visits[0]?.stage || 'Intermediate AMD'}</div>
               </div>
               <div>
                 <div style={{ color: 'var(--text-soft)', fontWeight: 5, marginBottom: '2px' }}>Jaksu Trend</div>
                 <div style={{ 
                   fontWeight: 7, 
-                  color: (visits[0]?.stage === 'Normal') ? 'var(--green)' : (visits[0]?.stage === 'Early AMD') ? 'var(--orange)' : 'var(--red)' 
+                  color: (aiTrend === 'Normal' || visits[0]?.stage === 'Normal') ? '#22C55E' : 
+                         (aiTrend === 'Stable' || visits[0]?.stage === 'Early AMD') ? '#F59E0B' : '#EF4444' 
                 }}>
-                  {visits[0]?.stage === 'Normal' ? 'Normal' : visits[0]?.stage === 'Early AMD' ? 'Stable' : 'Worsening'}
+                  {aiTrend || (visits[0]?.stage === 'Normal' ? 'Normal' : visits[0]?.stage === 'Early AMD' ? 'Stable' : 'Worsening')}
                 </div>
               </div>
             </div>
@@ -735,7 +788,7 @@ export default function ProgressionSummary({ patient, onBack }) {
               </svg>
             </div>
             <p style={{ margin: '20px 0 0 0', fontSize: '16px', lineHeight: 1.6, color: '#2C2C2E', fontWeight: 500, textAlign: 'justify', textIndent: '2.5em', marginTop: '20px' }}>
-              {summaryText}
+              {isComparing ? <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-soft)' }}><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span>AI is analyzing progression...</span></div> : summaryText}
             </p>
           </div>
 

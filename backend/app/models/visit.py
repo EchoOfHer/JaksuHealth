@@ -19,4 +19,4 @@ class Visit(Base):
 
     # Relationship เชื่อมโยงกลับไปหา Patient และ Doctor เพื่อให้ดึงข้อมูลข้ามตารางได้ง่าย
     patient = relationship("Patient", back_populates="visits")
-    diagnostic = relationship("Diagnostic", back_populates="visit", uselist=False)
+    diagnostics = relationship("Diagnostic", back_populates="visit")
