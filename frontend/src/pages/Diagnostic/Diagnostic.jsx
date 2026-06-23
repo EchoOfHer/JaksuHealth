@@ -301,7 +301,12 @@ const Diagnostic = ({ onSelectPatient }) => {
           </div>
         ) : (
           processedPatients.map((patient, index) => (
-            <div key={index} className="patient-card" style={{ borderLeft: `12px solid ${patient.colorCode}` }}>
+            <div 
+              key={index} 
+              className="patient-card" 
+              style={{ borderLeft: `12px solid ${patient.colorCode}` }}
+              onClick={() => onSelectPatient(patient)}
+            >
               <div className="patient-col diagnosis-col">
                 <p className="patient-diagnosis">{patient.diagnosis}</p>
                 <p className="patient-risk" style={{ color: patient.colorCode }}>{patient.riskLevel}</p>
