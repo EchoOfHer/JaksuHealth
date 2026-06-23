@@ -369,40 +369,8 @@
    RESPONSIVE MEDIA QUERIES FOR PROGRESSION REGISTRY
    ========================================================================== */
 
-/* --- Tablet Mode (iPad / Width < 1024px) --- */
+/* --- Mobile & Tablet Mode (iPad / iPhone / Width < 1024px) --- */
 @media (max-width: 1023px) {
-  .page-subtitle-container {
-    max-width: 80%;
-  }
-
-  .search-filter-row {
-    max-width: 80%;
-  }
-
-  .table-header {
-    grid-template-columns: 18% 22% 18% 18% 12% 12%;
-    font-size: 16px;
-  }
-
-  .patient-row {
-    grid-template-columns: 18% 22% 18% 18% 12% 12%;
-    font-size: 15px;
-  }
-
-  .view-trend-btn {
-    width: 120px;
-    height: 38px;
-    font-size: 15px;
-    margin-right: 10px;
-  }
-
-  .view-trend-btn span.arrow {
-    font-size: 16px;
-  }
-}
-
-/* --- Mobile Mode (iPhone / Width < 768px) --- */
-@media (max-width: 767px) {
   .progression-container {
     padding-top: 10px !important;
   }

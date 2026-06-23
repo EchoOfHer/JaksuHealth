@@ -378,7 +378,7 @@ const ProgressionPage = () => {
                 {/* ปุ่ม View Trend แบบใช้งาน CSS Class แอนิเมชันโดยตรง */}
                 <div className="patient-cell-action">
                   <button className="view-trend-btn" onClick={() => setSelectedPatient(patient)}>
-                    View Trend
+                    Trend
                   </button>
                 </div>
               </div>

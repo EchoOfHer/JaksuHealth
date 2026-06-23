@@ -446,23 +446,8 @@
    RESPONSIVE MEDIA QUERIES FOR DIAGNOSTIC PAGE
    ========================================================================== */
 
-/* --- Tablet Mode (iPad) --- */
+/* --- Mobile & Tablet Mode (iPad / iPhone / Width < 1024px) --- */
 @media (max-width: 1023px) {
-  .search-filter-row {
-    max-width: 80%;
-  }
-
-  .patient-diagnosis, .patient-name, .patient-queue {
-    font-size: 20px;
-  }
-
-  .patient-risk, .patient-id, .patient-time {
-    font-size: 16px;
-  }
-}
-
-/* --- Mobile Mode (iPhone) --- */
-@media (max-width: 767px) {
   .diagnostic-container {
     padding-top: 10px !important;
     /* padding-bottom: 50px !important; */
