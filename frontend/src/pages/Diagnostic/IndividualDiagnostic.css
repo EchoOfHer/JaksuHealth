@@ -1016,4 +1016,22 @@
 @keyframes spin {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* iPad Layout Adjustments for Patient Info */
+@media (max-width: 1400px) {
+  .patient-details-list {
+    gap: 16px;
+    padding-left: 0;
+  }
+  .detail-title {
+    font-size: 16px;
+  }
+  .detail-value {
+    font-size: 18px;
+    white-space: nowrap;
+  }
+  .detail-row-group {
+    gap: 16px;
+  }
 }

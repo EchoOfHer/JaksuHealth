@@ -834,11 +834,7 @@ export default function ProgressionSummary({ patient, onBack }) {
           <div className="premium-card" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', flex: 1 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
               <p className="pill-label">Progression Summary</p>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="var(--orange)" strokeWidth="2.5"/>
-                <circle cx="12" cy="12" r="6" fill="#000"/>
-                <circle cx="15" cy="12" r="2" fill="var(--orange)"/>
-              </svg>
+              <img src="/BotLogo.png" alt="Bot Logo" width="24" height="24" style={{ objectFit: 'contain' }} />
             </div>
             <p style={{ margin: '20px 0 0 0', fontSize: '16px', lineHeight: 1.6, color: '#2C2C2E', fontWeight: 500, textAlign: 'justify', textIndent: '2.5em', marginTop: '20px' }}>
               {isComparing ? <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-soft)' }}><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span>AI is analyzing progression...</span></div> : summaryText}
