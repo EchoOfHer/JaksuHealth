@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './IndividualDiagnostic.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import API from '../../services/api';
@@ -563,6 +563,38 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     isDraggingRef.current = false;
   };
 
+  const handleWheel = useCallback((e) => {
+    e.preventDefault();
+    const totalSlices = csvMetadata.length > 0 ? csvMetadata.length : 100;
+    
+    setScaleValue(prevScale => {
+      let newScale = prevScale;
+      if (e.deltaY > 0) {
+        newScale -= 1;
+      } else {
+        newScale += 1;
+      }
+      
+      if (newScale < 1) newScale = 1;
+      if (newScale > totalSlices) newScale = totalSlices;
+      
+      if (newScale !== prevScale) {
+        const newPercent = 92 - ((newScale - 1) / (totalSlices - 1)) * (92 - 8);
+        setDragTopPercent(newPercent);
+      }
+      return newScale;
+    });
+  }, [csvMetadata]);
+
+  useEffect(() => {
+    const container = fundusContainerRef.current;
+    if (!container) return;
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, [handleWheel]);
+
   // โหลดรูปภาพและ overlay ตามชื่อไฟล์จริงจาก CSV metadata (ไดนามิกตามจำนวนจริง)
   const currentImageName = csvMetadata[scaleValue - 1]?.Image_Name || `${datasetId}_${scaleValue}.png`;
   
@@ -705,8 +737,8 @@ export default function IndividualDiagnostic({ patient, onBack }) {
 
               <div className="biomarker-legend-row">
                 <div className="legend-item"><span className="dot blue-dot"></span>SRF: {currentSliceData.SRF} px</div>
-                <div className="legend-item"><span className="dot green-dot"></span>PED: {currentSliceData.PED} px</div>
-                <div className="legend-item"><span className="dot red-dot"></span>IRF: {currentSliceData.IRF} px</div>
+                <div className="legend-item"><span className="dot red-dot"></span>PED: {currentSliceData.PED} px</div>
+                <div className="legend-item"><span className="dot green-dot"></span>IRF: {currentSliceData.IRF} px</div>
                 <div className="legend-item"><span className="dot yellow-dot"></span>SHRM: {currentSliceData.SHRM} px</div>
                 <div className="legend-item"><span className="dot purple-dot"></span>IS/OS: {currentSliceData.IS_OS} px</div>
               </div>
