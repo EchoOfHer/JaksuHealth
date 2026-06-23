@@ -709,8 +709,10 @@ export default function ProgressionSummary({ patient, onBack }) {
                 <div style={{ color: 'var(--text-soft)', fontWeight: 5, marginBottom: '2px' }}>Jaksu Trend</div>
                 <div style={{ 
                   fontWeight: 7, 
-                  color: (aiTrend === 'Normal' || visits[0]?.stage === 'Normal') ? '#22C55E' : 
-                         (aiTrend === 'Stable' || visits[0]?.stage === 'Early AMD') ? '#F59E0B' : '#EF4444' 
+                  color: (aiTrend || '').toLowerCase().includes('worsening') ? '#EF4444' :
+                         (aiTrend || '').toLowerCase().includes('stable') ? '#F59E0B' :
+                         (!aiTrend && visits[0]?.stage && (visits[0].stage.includes('Intermediate') || visits[0].stage.includes('Wet'))) ? '#EF4444' :
+                         (!aiTrend && visits[0]?.stage?.includes('Early')) ? '#F59E0B' : '#22C55E'
                 }}>
                   {aiTrend || (visits[0]?.stage === 'Normal' ? 'Normal' : visits[0]?.stage === 'Early AMD' ? 'Stable' : 'Worsening')}
                 </div>

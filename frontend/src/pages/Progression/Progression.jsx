@@ -96,14 +96,19 @@ const ProgressionPage = () => {
                   
                   if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
                     trend = "Worsening";
-                    trendColor = "#EF4444";
-                    dotColor = "#EF4444";
                   } else if (stage === "Early AMD") {
                     trend = "Stable";
+                  } else {
+                    trend = "Normal";
+                  }
+                  
+                  if (trend.toLowerCase().includes("worsening")) {
+                    trendColor = "#EF4444";
+                    dotColor = "#EF4444";
+                  } else if (trend.toLowerCase().includes("stable")) {
                     trendColor = "#FE7743";
                     dotColor = "#FE7743";
                   } else {
-                    trend = "Normal";
                     trendColor = "#22C55E";
                     dotColor = "#22C55E";
                   }
@@ -125,20 +130,25 @@ const ProgressionPage = () => {
                 lastVisit = formatDate(latest.detection_date);
                 stage = latest.detected_stage;
                 
-                if (stage === "Active Wet AMD" || stage === "Late AMD" || stage === "Late AMD (Neovascular/Wet AMD)") {
+                if (latest.ai_trend) {
+                  trend = latest.ai_trend;
+                } else if (stage === "Active Wet AMD" || stage === "Late AMD" || stage === "Late AMD (Neovascular/Wet AMD)") {
                   trend = "Worsening";
-                  trendColor = "#EF4444";
-                  dotColor = "#EF4444";
                 } else if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
                   trend = "Worsening";
-                  trendColor = "#EF4444";
-                  dotColor = "#EF4444";
                 } else if (stage === "Early AMD" || stage === "Early/Intermediate AMD") {
                   trend = "Stable";
+                } else {
+                  trend = "Normal";
+                }
+
+                if (trend.toLowerCase().includes("worsening")) {
+                  trendColor = "#EF4444";
+                  dotColor = "#EF4444";
+                } else if (trend.toLowerCase().includes("stable")) {
                   trendColor = "#FE7743";
                   dotColor = "#FE7743";
                 } else {
-                  trend = "Normal";
                   trendColor = "#22C55E";
                   dotColor = "#22C55E";
                 }
