@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // 👈 1. นำเข้า useNavigate
 import './Dashboard.css';
 import API from '../../services/api';
+import DashboardPatientCard from './DashboardPatientCard';
 const Dashboard = () => {
   const [currentDate, setCurrentDate] = useState('');
   const navigate = useNavigate(); // 👈 2. เรียกใช้งานเครื่องมือนำทาง
@@ -232,36 +233,25 @@ const Dashboard = () => {
       {/* Patient List */}
       <div className="patient-list-container">
         
-        {/* วนลูปแสดงรายชื่อคนไข้จาก Array */}
-        {mockPatients.map((patient, index) => (
-          <div key={index} className="patient-card" style={{ borderLeft: `12px solid ${patient.colorCode}` }}>
-            <div className="patient-col diagnosis-col">
-              <p className="patient-diagnosis">{patient.diagnosis}</p>
-              <p className="patient-risk" style={{ color: patient.colorCode }}>{patient.riskLevel}</p>
-            </div>
-            <div className="patient-col info-col">
-              <p className="patient-name" title={patient.name}>{patient.name}</p>
-              <p className="patient-id">{patient.id}</p>
-            </div>
-            <div className="patient-col queue-col">
-              <p className="patient-queue">{patient.queue}</p>
-              <p className="patient-time">{patient.time}</p>
-            </div>
-          </div>
+        {/* วนลูปแสดงรายชื่อคนไข้จาก Array (แสดงสูงสุดแค่ 3 รายการ เพื่อให้รายการที่ 3 โดน fade) */}
+        {mockPatients.slice(0, 3).map((patient, index) => (
+          <DashboardPatientCard key={index} patient={patient} />
         ))}
 
-        {/* กล่องควบคุม View All แบบฟุ้งสไลด์เบลอ */}
-        <div className="view-all-container">
-          <div className="blur-overlay"></div>
-          
-          {/* 👈 3. ใส่เหตุการณ์ onClick พร้อมเรียกฟังก์ชัน navigate ชี้ไปที่ /diagnostic */}
-          <button 
-            className="view-all-btn" 
-            onClick={() => navigate('/diagnostic')} 
-          >
-            View All
-          </button>
-        </div>
+        {/* กล่องควบคุม View All แบบฟุ้งสไลด์เบลอ (แสดงเฉพาะเมื่อเกิน 2 รายการ) */}
+        {mockPatients.length > 2 && (
+          <div className="view-all-container">
+            <div className="blur-overlay"></div>
+            
+            {/* 👈 3. ใส่เหตุการณ์ onClick พร้อมเรียกฟังก์ชัน navigate ชี้ไปที่ /diagnostic */}
+            <button 
+              className="view-all-btn" 
+              onClick={() => navigate('/diagnostic')} 
+            >
+              View All
+            </button>
+          </div>
+        )}
 
       </div>
     </div>

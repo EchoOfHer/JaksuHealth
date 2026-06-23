@@ -1,0 +1,114 @@
+.dash-patient-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: white;
+  align-items: center;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+}
+
+.dash-patient-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dash-diagnosis-col {
+  width: 400px;
+  flex: none;
+  align-items: flex-start;
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 50px;
+}
+
+.dash-info-col {
+  width: 350px;
+  flex: none;
+  align-items: flex-start;
+  text-align: left;
+  padding-left: 20px;
+  padding-right: 50px;
+}
+
+.dash-queue-col {
+  width: 250px;
+  flex: none;
+  align-items: flex-start;
+  text-align: left;
+  padding-left: 20px;
+  padding-right: 50px;
+}
+
+.dash-patient-diagnosis, .dash-patient-name, .dash-patient-queue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1C1C1E;
+  margin: 0;
+  opacity: 85%;
+}
+
+.dash-patient-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-patient-risk, .dash-patient-id, .dash-patient-time {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 8px 0 0 0;
+}
+
+.dash-patient-id, .dash-patient-time {
+  color: #555;
+  opacity: 75%;
+}
+
+/* ==========================================================================
+   RESPONSIVE MEDIA QUERIES
+   ========================================================================== */
+
+/* --- Tablet Mode (iPad) --- */
+@media (max-width: 1023px) {
+  .dash-diagnosis-col, .dash-info-col, .dash-queue-col {
+    width: auto;
+    flex: 1;
+    padding-right: 20px;
+  }
+
+  .dash-patient-diagnosis, .dash-patient-name, .dash-patient-queue {
+    font-size: 18px;
+  }
+
+  .dash-patient-risk, .dash-patient-id, .dash-patient-time {
+    font-size: 14px;
+  }
+}
+
+/* --- Mobile Mode (iPhone) --- */
+@media (max-width: 767px) {
+  .dash-patient-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 15px;
+  }
+
+  .dash-patient-col {
+    width: 100% !important;
+    padding-left: 0 !important;
+  }
+
+  .dash-diagnosis-col, .dash-info-col, .dash-queue-col {
+    align-items: flex-start !important;
+    text-align: left !important;
+    padding: 0 !important;
+  }
+
+  .dash-patient-name {
+    white-space: normal;
+  }
+}
