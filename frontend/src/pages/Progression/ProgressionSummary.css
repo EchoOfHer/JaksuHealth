@@ -806,3 +806,31 @@
   opacity: 1;
   background-color: rgba(0, 0, 0, 0.05);
 }
+
+/* Timeline Header Row Layout */
+.timeline-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2px;
+  width: 100%;
+}
+
+.timeline-latest-mobile {
+  display: none;
+}
+.timeline-latest-desktop {
+  display: inline;
+}
+
+@media (max-width: 1400px) {
+  .timeline-header-row {
+    align-items: center;
+  }
+  .timeline-latest-desktop {
+    display: none !important;
+  }
+  .timeline-latest-mobile {
+    display: block !important;
+  }
+}

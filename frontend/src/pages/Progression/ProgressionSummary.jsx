@@ -1,7 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './ProgressionSummary.css';
 import API from '../../services/api';
 
+
+// ฟังก์ชันช่วยย่อชื่อโรคให้สั้นลงเพื่อความสวยงามของ UI
+const formatDiseaseStage = (stage) => {
+  switch(stage) {
+    case "Advanced Age-related Macular Degeneration with active exudative features": return "wAMD (Active)";
+    case "Active Wet AMD": return "wAMD (Active)";
+    case "Intermediate AMD": return "iAMD";
+    case "Non-Exudative AMD": return "dryAMD";
+    case "Normal": return "Normal";
+    default: return stage;
+  }
+};
 
 // ฟังก์ชันดึงรายการสแกนจำลองตามคนไข้แต่ละรายเพื่อให้แสดงผลเสมือนจริง แยกข้างตาซ้าย/ขวา
 const getVisitsForPatient = (patient, eyeSide = 'os') => {
@@ -385,7 +397,7 @@ export default function ProgressionSummary({ patient, onBack }) {
 
           setVisits(mappedVisits);
           setActiveIndex(mappedVisits.length > 1 ? 1 : 0);
-          setSummaryText(mappedVisits[0]?.rawTimeline?.progression_summary || "");
+          setSummaryText(mappedVisits[0]?.rawTimeline?.progression_summary || mappedVisits[0]?.summary || getSummaryForPatient(patient, activeEye));
         } else {
           // Fallback to mockup data if timeline is empty
           loadMockupData(pId);
@@ -400,10 +412,10 @@ export default function ProgressionSummary({ patient, onBack }) {
 
   useEffect(() => {
     if (visits[activeIndex]) {
-      if (visits[activeIndex].rawTimeline) {
+      if (visits[activeIndex].rawTimeline && visits[activeIndex].rawTimeline.progression_summary) {
         setSummaryText(visits[activeIndex].rawTimeline.progression_summary);
       } else {
-        // Fallback for mockup visits
+        // Fallback for mockup visits or missing progression_summary
         setSummaryText(visits[activeIndex].summary || getSummaryForPatient(patient, activeEye));
       }
     }
@@ -625,6 +637,38 @@ export default function ProgressionSummary({ patient, onBack }) {
     isDraggingRef.current = false;
   };
 
+  const handleWheel = useCallback((e) => {
+    e.preventDefault();
+    const totalSlices = csvMetadata.length > 0 ? csvMetadata.length : 100;
+    
+    setScaleValue(prevScale => {
+      let newScale = prevScale;
+      if (e.deltaY > 0) {
+        newScale -= 1;
+      } else {
+        newScale += 1;
+      }
+      
+      if (newScale < 1) newScale = 1;
+      if (newScale > totalSlices) newScale = totalSlices;
+      
+      if (newScale !== prevScale) {
+        const newPercent = 92 - ((newScale - 1) / (totalSlices - 1)) * (92 - 8);
+        setDragTopPercent(newPercent);
+      }
+      return newScale;
+    });
+  }, [csvMetadata]);
+
+  useEffect(() => {
+    const container = fundusContainerRef.current;
+    if (!container) return;
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, [handleWheel]);
+
   const currentSlices = csvMetadata.length;
   const prevSlices = prevCsvMetadata.length;
   const prevScaleValue = (prevSlices > 1 && currentSlices > 1)
@@ -703,7 +747,9 @@ export default function ProgressionSummary({ patient, onBack }) {
               </div>
               <div style={{ marginTop: '6px' }}>
                 <div style={{ color: 'var(--text-soft)', fontWeight: 5, marginBottom: '2px' }}>Risk Status</div>
-                <div style={{ fontWeight: 7, color: 'var(--text-dark)' }}>{aiStage || visits[0]?.stage || 'Intermediate AMD'}</div>
+                <div style={{ fontWeight: 7, color: 'var(--text-dark)' }} title={aiStage || visits[0]?.stage || 'Intermediate AMD'}>
+                  {formatDiseaseStage(aiStage || visits[0]?.stage || 'Intermediate AMD')}
+                </div>
               </div>
               <div>
                 <div style={{ color: 'var(--text-soft)', fontWeight: 5, marginBottom: '2px' }}>Jaksu Trend</div>
@@ -732,10 +778,15 @@ export default function ProgressionSummary({ patient, onBack }) {
                   </div>
                   <div className="timeline-content">
                     <div className={`timeline-box ${index === activeIndex ? 'active' : ''}`}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
-                        <span style={{ fontWeight: 7, color: 'var(--text-dark)', fontSize: '14px' }}>{visit.stage}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--text-soft)', fontWeight: 5 }}>
-                          {visit.isLatest && <span style={{ color: 'var(--orange)', fontWeight: 7 }}>Latest</span>}
+                      <div className="timeline-header-row">
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minWidth: 0, paddingRight: '8px' }}>
+                          {visit.isLatest && <div className="timeline-latest-mobile" style={{ color: 'var(--orange)', fontWeight: 7, fontSize: '11px', marginBottom: '2px' }}>Latest</div>}
+                          <span style={{ fontWeight: 7, color: 'var(--text-dark)', fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }} title={visit.stage}>
+                            {formatDiseaseStage(visit.stage)}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--text-soft)', fontWeight: 5, flexShrink: 0 }}>
+                          {visit.isLatest && <span className="timeline-latest-desktop" style={{ color: 'var(--orange)', fontWeight: 7 }}>Latest</span>}
                           <span>{visit.date}</span>
                         </div>
                       </div>
@@ -876,11 +927,11 @@ export default function ProgressionSummary({ patient, onBack }) {
                 <span style={{ color: 'var(--text-dark)', opacity: 0.85 }}>SRF</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span className="legend-dot" style={{ backgroundColor: 'var(--green)' }}></span>
+                <span className="legend-dot" style={{ backgroundColor: 'var(--red)' }}></span>
                 <span style={{ color: 'var(--text-dark)', opacity: 0.85 }}>PED</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span className="legend-dot" style={{ backgroundColor: 'var(--red)' }}></span>
+                <span className="legend-dot" style={{ backgroundColor: 'var(--green)' }}></span>
                 <span style={{ color: 'var(--text-dark)', opacity: 0.85 }}>IRF</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -936,10 +987,15 @@ export default function ProgressionSummary({ patient, onBack }) {
                     </div>
                     <div className="timeline-content">
                       <div className={`timeline-box ${index === activeIndex ? 'active' : ''}`}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
-                          <span style={{ fontWeight: 7, color: 'var(--text-dark)', fontSize: '13px' }}>{visit.stage}</span>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: 'var(--text-soft)', fontWeight: 5 }}>
-                            {visit.isLatest && <span style={{ color: 'var(--orange)', fontWeight: 7 }}>Latest</span>}
+                        <div className="timeline-header-row">
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minWidth: 0, paddingRight: '6px' }}>
+                            {visit.isLatest && <div className="timeline-latest-mobile" style={{ color: 'var(--orange)', fontWeight: 7, fontSize: '9px', marginBottom: '1px' }}>Latest</div>}
+                            <span style={{ fontWeight: 7, color: 'var(--text-dark)', fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }} title={visit.stage}>
+                              {formatDiseaseStage(visit.stage)}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: 'var(--text-soft)', fontWeight: 5, flexShrink: 0 }}>
+                            {visit.isLatest && <span className="timeline-latest-desktop" style={{ color: 'var(--orange)', fontWeight: 7 }}>Latest</span>}
                             <span>{visit.date}</span>
                           </div>
                         </div>
