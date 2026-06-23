@@ -338,6 +338,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
         await API.post('/diagnostics/', {
           patient_id: pId,
           visit_id: vId,
+          eye_side: activeEye.toUpperCase(),
           risk_level: riskLevel,
           condition_stage: finalRisk,
           ai_trend: aiTrend,
@@ -383,9 +384,10 @@ export default function IndividualDiagnostic({ patient, onBack }) {
 
     if (vId) {
       try {
-        await API.put(`/diagnostics/visit/${vId}/approve`, {
+        await API.put(`/diagnostics/visit/${vId}/${activeEye.toUpperCase()}/approve`, {
           patient_id: pId,
           visit_id: vId,
+          eye_side: activeEye.toUpperCase(),
           risk_level: riskLevel,
           condition_stage: riskStatus,
           ai_trend: aiTrend,

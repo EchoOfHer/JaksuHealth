@@ -24,7 +24,7 @@ def create_diagnostic_draft(diagnostic_in: DiagnosticCreate, db: Session = Depen
         raise HTTPException(status_code=404, detail="ไม่พบรหัสคิวนัดหมายนี้")
 
     # ตรวจสอบว่ามี draft อยู่แล้วหรือยัง
-    db_diagnostic = db.query(Diagnostic).filter(Diagnostic.visit_id == diagnostic_in.visit_id).first()
+    db_diagnostic = db.query(Diagnostic).filter(Diagnostic.visit_id == diagnostic_in.visit_id, Diagnostic.eye_side == diagnostic_in.eye_side.upper()).first()
     if db_diagnostic:
         # อัปเดตข้อมูลที่มีอยู่แล้ว
         db_diagnostic.risk_level = diagnostic_in.risk_level
@@ -38,6 +38,7 @@ def create_diagnostic_draft(diagnostic_in: DiagnosticCreate, db: Session = Depen
         db_diagnostic = Diagnostic(
             patient_id=diagnostic_in.patient_id,
             visit_id=diagnostic_in.visit_id,
+            eye_side=diagnostic_in.eye_side.upper(),
             risk_level=diagnostic_in.risk_level,
             condition_stage=diagnostic_in.condition_stage,
             ai_trend=diagnostic_in.ai_trend,
