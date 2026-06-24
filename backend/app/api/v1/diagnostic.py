@@ -114,7 +114,7 @@ def approve_diagnostic(visit_id: UUID, eye_side: str, diagnostic_in: DiagnosticC
             detected_stage=diagnostic_in.condition_stage,
             progression_summary=diagnostic_in.drafted_summary,
             detection_date=now.date(),
-            tag_line="บันทึกการรักษา",
+            tag_line="Visit Record",
             created_at=now
         )
         db.add(db_timeline)
