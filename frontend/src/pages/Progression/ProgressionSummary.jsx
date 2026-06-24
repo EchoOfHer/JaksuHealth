@@ -71,11 +71,11 @@ const getVisitsForPatient = (patient, eyeSide = 'os') => {
       return [
         {
           date: "May 18, 2026",
-          stage: "Early AMD",
-          detection: "Stable",
+          stage: "Wet AMD",
+          detection: "Worsening",
           isLatest: true,
-          lesionPath: "M 190,132 Q 215,115 240,132 Z",
-          strokePath: "M 10,105 L 180,123 Q 230,130 280,127 L 450,127"
+          lesionPath: "M 210,130 Q 230,110 250,130 Z",
+          strokePath: "M 10,105 L 180,123 Q 230,132 280,127 L 450,127"
         },
         {
           date: "Dec 10, 2023",
@@ -151,7 +151,7 @@ const getSummaryForPatient = (patient, activeEye, activeIndex = 0) => {
     }
   } else if (name.includes("Jirawat")) {
     if (activeEye === 'os') {
-      return "Compared to the previous scan on Dec 10, 2023, the disease progression shows a stable trend. No new lesion or fluid accumulation is observed. The early AMD findings are well-maintained with recommendation of routine follow-up.";
+      return "Compared to the previous scan on Dec 10, 2023, the disease progression shows a worsening trend. New fluid accumulation including PED is observed. This suggests a progression from Early AMD to active Neovascular (Wet) AMD.";
     } else {
       return "The right retina appears completely normal. Retinal layer structural integrity is well-preserved with no signs of drusen or subretinal/intraretinal fluid accumulation.";
     }
@@ -542,7 +542,7 @@ export default function ProgressionSummary({ patient, onBack }) {
         if (mockPatientsList.length === 0) {
           mockPatientsList = [
             { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444" },
-            { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743" },
+            { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Wet AMD", riskLevel: "High", colorCode: "#EF4444" },
             { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f" }
           ];
         }
@@ -576,7 +576,7 @@ export default function ProgressionSummary({ patient, onBack }) {
           if (mockProgList.length === 0) {
             mockProgList = [
               { id: "P-2605-016", name: "Khanatip Gankingpai", lastVisit: "22 May 2026", stage: "Intermediate AMD", trend: "Worsening", trendColor: "#EF4444", dotColor: "#EF4444", age: "65", sex: "Male" },
-              { id: "P-2605-012", name: "Jirawat Jakthong", lastVisit: "18 May 2026", stage: "Early AMD", trend: "Stable", trendColor: "#FE7743", dotColor: "#FE7743", age: "58", sex: "Male" },
+              { id: "P-2605-012", name: "Jirawat Jakthong", lastVisit: "18 May 2026", stage: "Wet AMD", trend: "Worsening", trendColor: "#EF4444", dotColor: "#EF4444", age: "58", sex: "Male" },
               { id: "P-2605-037", name: "Natthawut Saengmani", lastVisit: "12 May 2026", stage: "Normal", trend: "Normal", trendColor: "#22C55E", dotColor: "#22C55E", age: "62", sex: "Male" }
             ];
           }

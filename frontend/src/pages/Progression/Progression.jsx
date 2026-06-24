@@ -23,10 +23,10 @@ const INITIAL_PATIENTS = [
     id: "P-2605-012",
     name: "Jirawat Jakthong",
     lastVisit: "18 May 2026",
-    stage: "Early AMD",
-    trend: "Stable",
-    trendColor: "#FE7743",
-    dotColor: "#FE7743",
+    stage: "Wet AMD",
+    trend: "Worsening",
+    trendColor: "#EF4444",
+    dotColor: "#EF4444",
     age: "58",
     sex: "Male"
   },
@@ -102,7 +102,7 @@ const ProgressionPage = () => {
                     trend = "Normal";
                   }
                   
-                  if (trend.toLowerCase().includes("worsening")) {
+                  if (trend.toLowerCase().includes("worsening") || trend.toLowerCase().includes("active") || trend.toLowerCase().includes("exudation")) {
                     trendColor = "#EF4444";
                     dotColor = "#EF4444";
                   } else if (trend.toLowerCase().includes("stable")) {
@@ -132,7 +132,7 @@ const ProgressionPage = () => {
                 
                 if (latest.ai_trend) {
                   trend = latest.ai_trend;
-                } else if (stage === "Active Wet AMD" || stage === "Late AMD" || stage === "Late AMD (Neovascular/Wet AMD)") {
+                } else if (stage === "Active Wet AMD" || stage === "Late AMD" || stage === "Late AMD (Neovascular/Wet AMD)" || stage === "Wet AMD") {
                   trend = "Worsening";
                 } else if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
                   trend = "Worsening";
@@ -142,7 +142,7 @@ const ProgressionPage = () => {
                   trend = "Normal";
                 }
 
-                if (trend.toLowerCase().includes("worsening")) {
+                if (trend.toLowerCase().includes("worsening") || trend.toLowerCase().includes("active") || trend.toLowerCase().includes("exudation")) {
                   trendColor = "#EF4444";
                   dotColor = "#EF4444";
                 } else if (trend.toLowerCase().includes("stable")) {

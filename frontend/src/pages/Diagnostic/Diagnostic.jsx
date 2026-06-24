@@ -33,7 +33,7 @@ const Diagnostic = ({ onSelectPatient }) => {
     }
     return [
       { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444", rawVisit: { visit_id: "39a2fe63-8bfd-406d-a51b-1c4495b8d00e" } },
-      { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Early AMD", riskLevel: "Medium", colorCode: "#FE7743", rawVisit: { visit_id: "49a2fe63-8bfd-406d-a51b-1c4495b8d00f" } },
+      { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Wet AMD", riskLevel: "High", colorCode: "#EF4444", rawVisit: { visit_id: "49a2fe63-8bfd-406d-a51b-1c4495b8d00f" } },
       { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f", rawVisit: { visit_id: "59a2fe63-8bfd-406d-a51b-1c4495b8d00e" } }
     ];
   };
@@ -93,12 +93,12 @@ const Diagnostic = ({ onSelectPatient }) => {
                   const savedList = JSON.parse(savedMock);
                   const index = savedList.findIndex(p => p.id === pid);
                   if (index !== -1) {
-                    const defaultDiagnosis = pid === 'P-2605-016' ? 'Intermediate AMD' : pid === 'P-2605-012' ? 'Early AMD' : 'Normal';
+                    const defaultDiagnosis = pid === 'P-2605-016' ? 'Intermediate AMD' : pid === 'P-2605-012' ? 'Wet AMD' : 'Normal';
                     // ตรวจพบว่าสเตตัสใน localStorage ถูกอนุมัติ (Approved) แล้ว แต่ยังไม่มีการวินิจฉัยใน DB (เกิดจากการ Rollback)
                     if (savedList[index].isApproved) {
                       savedList[index].diagnosis = defaultDiagnosis;
-                      savedList[index].riskLevel = pid === 'P-2605-016' ? 'High' : pid === 'P-2605-012' ? 'Medium' : 'Low';
-                      savedList[index].colorCode = pid === 'P-2605-016' ? '#EF4444' : pid === 'P-2605-012' ? '#FE7743' : '#40a34f';
+                      savedList[index].riskLevel = pid === 'P-2605-016' ? 'High' : pid === 'P-2605-012' ? 'High' : 'Low';
+                      savedList[index].colorCode = pid === 'P-2605-016' ? '#EF4444' : pid === 'P-2605-012' ? '#EF4444' : '#40a34f';
                       savedList[index].isApproved = false;
                       localStorage.setItem('mockPatients', JSON.stringify(savedList));
 
@@ -135,9 +135,9 @@ const Diagnostic = ({ onSelectPatient }) => {
                   riskLevel = 'High';
                   colorCode = '#EF4444';
                 } else if (pid === 'P-2605-012') {
-                  diagnosis = 'Early AMD';
-                  riskLevel = 'Medium';
-                  colorCode = '#FE7743';
+                  diagnosis = 'Wet AMD';
+                  riskLevel = 'High';
+                  colorCode = '#EF4444';
                 } else if (pid === 'P-2605-037') {
                   diagnosis = 'Normal';
                   riskLevel = 'Low';

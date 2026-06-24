@@ -108,8 +108,8 @@ def seed():
         d1_os = Diagnostic(patient_id=p1.patient_id, visit_id=v1.visit_id, eye_side="OS", risk_level="High", condition_stage="Intermediate AMD", ai_trend="", drafted_summary="", suggested_action="")
         d1_od = Diagnostic(patient_id=p1.patient_id, visit_id=v1.visit_id, eye_side="OD", risk_level="Medium", condition_stage="Early AMD", ai_trend="", drafted_summary="", suggested_action="")
         # P-2605-012
-        d2_os = Diagnostic(patient_id=p2.patient_id, visit_id=v2.visit_id, eye_side="OS", risk_level="Medium", condition_stage="Early AMD", ai_trend="", drafted_summary="", suggested_action="")
-        d2_od = Diagnostic(patient_id=p2.patient_id, visit_id=v2.visit_id, eye_side="OD", risk_level="Low", condition_stage="Normal", ai_trend="", drafted_summary="", suggested_action="")
+        d2_os = Diagnostic(patient_id=p2.patient_id, visit_id=v2.visit_id, eye_side="OS", risk_level="High", condition_stage="Wet AMD", ai_trend="", drafted_summary="", suggested_action="")
+        d2_od = Diagnostic(patient_id=p2.patient_id, visit_id=v2.visit_id, eye_side="OD", risk_level="High", condition_stage="Wet AMD", ai_trend="", drafted_summary="", suggested_action="")
         # P-2605-037
         d3_os = Diagnostic(patient_id=p3.patient_id, visit_id=v3.visit_id, eye_side="OS", risk_level="Low", condition_stage="Normal", ai_trend="", drafted_summary="", suggested_action="")
         d3_od = Diagnostic(patient_id=p3.patient_id, visit_id=v3.visit_id, eye_side="OD", risk_level="Low", condition_stage="Normal", ai_trend="", drafted_summary="", suggested_action="")
