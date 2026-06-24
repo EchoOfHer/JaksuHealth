@@ -244,6 +244,18 @@ const ProgressionPage = () => {
     setFilteredPatients(result);
   }, [searchQuery, trendFilter, sortBy, patients]);
 
+  // ฟังก์ชันช่วยย่อชื่อโรคให้สั้นลงเพื่อความสวยงามของ UI (Medical Abbreviations)
+  const formatDiseaseStage = (stage) => {
+    switch(stage) {
+      case "Advanced Age-related Macular Degeneration with active exudative features": return "wAMD (Active)";
+      case "Active Wet AMD": return "wAMD (Active)";
+      case "Intermediate AMD": return "iAMD";
+      case "Non-Exudative AMD": return "dryAMD";
+      case "Normal": return "Normal";
+      default: return stage;
+    }
+  };
+
   // หากมีการเลือกคนไข้ ให้เปลี่ยนไปเรนเดอร์หน้า Progression Summary
   if (selectedPatient) {
     return (
@@ -367,7 +379,7 @@ const ProgressionPage = () => {
                 <div className="patient-cell-left">{patient.id}</div>
                 <div className="patient-cell-bold">{patient.name}</div>
                 <div className="patient-cell-muted">{patient.lastVisit}</div>
-                <div className="patient-cell-left">{patient.stage}</div>
+                <div className="patient-cell-left" title={patient.stage}>{formatDiseaseStage(patient.stage)}</div>
                 
                 {/* สถานะ AI Trend พร้อมจุดสีแจ้งเตือน */}
                 <div className="patient-cell-trend" style={{ color: patient.trendColor }}>
