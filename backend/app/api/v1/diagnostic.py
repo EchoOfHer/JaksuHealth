@@ -137,6 +137,22 @@ def update_timeline_entry(history_id: UUID, timeline_update: TimelineUpdate, db:
     db_timeline.tag_line = timeline_update.tag_line
     db_timeline.progression_summary = timeline_update.progression_summary
     
+    # Update associated Diagnostic and Visit to sync dashboard and trigger reset
+    db_diagnostic = db.query(Diagnostic).filter(Diagnostic.diagnostic_id == db_timeline.diagnostic_id).first()
+    if db_diagnostic:
+        db_diagnostic.condition_stage = timeline_update.detected_stage
+        
+        # Calculate risk_level based on stage
+        stage = timeline_update.detected_stage
+        risk_level = "High" if stage in ["Intermediate AMD", "Inter. AMD", "Wet AMD", "Active Wet AMD"] else "Medium" if stage == "Early AMD" else "Low"
+        db_diagnostic.risk_level = risk_level
+        
+        # Update associated Visit status to trigger the 5-minute rollback monitor
+        from app.models.visit import Visit
+        db_visit = db.query(Visit).filter(Visit.visit_id == db_diagnostic.visit_id).first()
+        if db_visit:
+            db_visit.status = "REVIEWED"
+
     db.commit()
     db.refresh(db_timeline)
     return db_timeline

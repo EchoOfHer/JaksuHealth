@@ -520,78 +520,7 @@ export default function ProgressionSummary({ patient, onBack }) {
       setVisits(updatedVisits);
       setSummaryText(modalSummary);
 
-      // 2. Persist mockup changes in localStorage
-      const pId = patient?.id || patient?.patient_id;
-      if (pId) {
-        localStorage.setItem(`mockVisits_${pId}_${activeEye}`, JSON.stringify(updatedVisits));
 
-        // Sync with mockPatients (for Dashboard & Diagnostic workspace)
-        let mockPatientsList = [];
-        const savedMockPatients = localStorage.getItem('mockPatients');
-        if (savedMockPatients) {
-          try {
-            mockPatientsList = JSON.parse(savedMockPatients);
-          } catch (e) {
-            console.error("Failed to parse mockPatients from localStorage:", e);
-          }
-        }
-        
-        // Ensure mockPatientsList is an array
-        if (!Array.isArray(mockPatientsList)) {
-          mockPatientsList = [];
-        }
-
-        if (mockPatientsList.length === 0) {
-          mockPatientsList = [
-            { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444" },
-            { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Wet AMD", riskLevel: "High", colorCode: "#EF4444" },
-            { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f" }
-          ];
-        }
-
-        // Sync if the edited visit is the latest one (index 0)
-        if (activeIndex === 0) {
-          const patientIndex = mockPatientsList.findIndex(p => p && p.id === pId);
-          if (patientIndex !== -1) {
-            mockPatientsList[patientIndex].diagnosis = finalRisk;
-            mockPatientsList[patientIndex].riskLevel = finalRisk === 'Intermediate AMD' ? 'High' : finalRisk === 'Early AMD' ? 'Medium' : 'Low';
-            mockPatientsList[patientIndex].colorCode = mockPatientsList[patientIndex].riskLevel === 'High' ? '#EF4444' : mockPatientsList[patientIndex].riskLevel === 'Medium' ? '#FE7743' : '#40a34f';
-            localStorage.setItem('mockPatients', JSON.stringify(mockPatientsList));
-          }
-
-          // Sync with mockProgressionPatients (for Patient Progression Registry)
-          let mockProgList = [];
-          const savedMockProg = localStorage.getItem('mockProgressionPatients');
-          if (savedMockProg) {
-            try {
-              mockProgList = JSON.parse(savedMockProg);
-            } catch (e) {
-              console.error("Failed to parse mockProgressionPatients from localStorage:", e);
-            }
-          }
-
-          // Ensure mockProgList is an array
-          if (!Array.isArray(mockProgList)) {
-            mockProgList = [];
-          }
-
-          if (mockProgList.length === 0) {
-            mockProgList = [
-              { id: "P-2605-016", name: "Khanatip Gankingpai", lastVisit: "22 May 2026", stage: "Intermediate AMD", trend: "Worsening", trendColor: "#EF4444", dotColor: "#EF4444", age: "65", sex: "Male" },
-              { id: "P-2605-012", name: "Jirawat Jakthong", lastVisit: "18 May 2026", stage: "Wet AMD", trend: "Worsening", trendColor: "#EF4444", dotColor: "#EF4444", age: "58", sex: "Male" },
-              { id: "P-2605-037", name: "Natthawut Saengmani", lastVisit: "12 May 2026", stage: "Normal", trend: "Normal", trendColor: "#22C55E", dotColor: "#22C55E", age: "62", sex: "Male" }
-            ];
-          }
-          const progIdx = mockProgList.findIndex(p => p && p.id === pId);
-          if (progIdx !== -1) {
-            mockProgList[progIdx].stage = finalRisk;
-            mockProgList[progIdx].trend = finalRisk === "Intermediate AMD" ? "Worsening" : finalRisk === "Early AMD" ? "Stable" : "Normal";
-            mockProgList[progIdx].trendColor = finalRisk === "Intermediate AMD" ? "#EF4444" : finalRisk === "Early AMD" ? "#FE7743" : "#22C55E";
-            mockProgList[progIdx].dotColor = mockProgList[progIdx].trendColor;
-            localStorage.setItem('mockProgressionPatients', JSON.stringify(mockProgList));
-          }
-        }
-      }
 
       setTimeout(() => {
         closeEditModal();
