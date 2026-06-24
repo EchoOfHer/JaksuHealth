@@ -349,23 +349,7 @@ export default function ProgressionSummary({ patient, onBack }) {
       const pId = patient?.id || patient?.patient_id;
       if (!pId) return;
 
-      const loadMockupData = (pid) => {
-        const savedMock = localStorage.getItem(`mockVisits_${pid}_${activeEye}`);
-        if (savedMock) {
-          try {
-            const parsed = JSON.parse(savedMock);
-            if (parsed && parsed.length > 0) {
-              setVisits(parsed);
-              const newActiveIndex = 0;
-              setActiveIndex(newActiveIndex);
-              const activeVisit = parsed[newActiveIndex];
-              setSummaryText(activeVisit.summary || getSummaryForPatient(patient, activeEye, 0, newActiveIndex));
-              return;
-            }
-          } catch (e) {
-            console.error("Failed to parse mock visits from localStorage", e);
-          }
-        }
+      const loadMockupData = () => {
         const fallbackVisits = getVisitsForPatient(patient, activeEye);
         setVisits(fallbackVisits);
         const newActiveIndex = 0;

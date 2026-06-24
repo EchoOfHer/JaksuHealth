@@ -47,21 +47,8 @@ const ProgressionPage = () => {
   const location = useLocation();
   const [selectedPatient, setSelectedPatient] = useState(location.state?.patient || null);
   
-  const loadMockProgressionPatients = () => {
-    const saved = localStorage.getItem('mockProgressionPatients');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    localStorage.setItem('mockProgressionPatients', JSON.stringify(INITIAL_PATIENTS));
-    return INITIAL_PATIENTS;
-  };
-
-  const [patients, setPatients] = useState(loadMockProgressionPatients);
-  const [filteredPatients, setFilteredPatients] = useState(loadMockProgressionPatients);
+  const [patients, setPatients] = useState([]);
+  const [filteredPatients, setFilteredPatients] = useState([]);
 
   useEffect(() => {
     const formatDate = (dateStr) => {
@@ -84,108 +71,43 @@ const ProgressionPage = () => {
             let trendColor = "#22C55E";
             let dotColor = "#22C55E";
             
-            // 1. Load from localStorage mockup first (to sync mockup edits)
-            const savedVisitsOS = localStorage.getItem(`mockVisits_${p.patient_id}_os`);
-            const savedVisitsOD = localStorage.getItem(`mockVisits_${p.patient_id}_od`);
-            
-            const processMockVisits = (savedVisits) => {
-              if (savedVisits) {
-                try {
-                  const visitsList = JSON.parse(savedVisits);
-                  if (visitsList && visitsList.length > 0) {
-                    const latest = visitsList[0];
-                    lastVisit = latest.date;
-                    stage = latest.stage;
-                    
-                    if (stage === "Intermediate AMD" || stage === "Inter. AMD" || stage === "Wet AMD" || stage === "Active Wet AMD") {
-                      trend = "Worsening";
-                    } else if (stage === "Early AMD") {
-                      trend = "Stable";
-                    } else {
-                      trend = "Normal";
-                    }
-                    
-                    if (trend.toLowerCase().includes("worsening") || trend.toLowerCase().includes("active") || trend.toLowerCase().includes("exudation")) {
-                      trendColor = "#EF4444";
-                      dotColor = "#EF4444";
-                    } else if (trend.toLowerCase().includes("stable")) {
-                      trendColor = "#3B82F6";
-                      dotColor = "#3B82F6";
-                    } else {
-                      trendColor = "#22C55E";
-                      dotColor = "#22C55E";
-                    }
-                    return true;
-                  }
-                } catch (e) {
-                  console.error("Failed to parse saved mock visits in Progression.jsx:", e);
-                }
-              }
-              return false;
-            };
-
-            const foundMock = processMockVisits(savedVisitsOS) || processMockVisits(savedVisitsOD);
-
-            if (!foundMock) {
-              try {
-                const progRes = await API.get(`/diagnostics/patient/${p.patient_id}/progression`);
-                const timeline = progRes.data;
+            try {
+              const progRes = await API.get(`/diagnostics/patient/${p.patient_id}/progression`);
+              const timeline = progRes.data;
+              
+              if (Array.isArray(timeline) && timeline.length > 0) {
+                // ข้อมูลมาจาก endpoint ล่าสุด (รวม Pending ด้วย) เรียงจากเก่าไปใหม่
+                const sortedTimeline = [...timeline].sort((a, b) => new Date(b.detection_date) - new Date(a.detection_date));
+                const latest = sortedTimeline[0];
                 
-                if (Array.isArray(timeline) && timeline.length > 0) {
-                  // ข้อมูลมาจาก endpoint ล่าสุด (รวม Pending ด้วย) เรียงจากเก่าไปใหม่
-                  const sortedTimeline = [...timeline].sort((a, b) => new Date(b.detection_date) - new Date(a.detection_date));
-                  const latest = sortedTimeline[0];
-                  
-                  lastVisit = formatDate(latest.detection_date);
-                  stage = latest.detected_stage;
-                  
-                  if (latest.ai_trend) {
-                    trend = latest.ai_trend;
-                  } else if (stage === "Active Wet AMD" || stage === "Late AMD" || stage === "Late AMD (Neovascular/Wet AMD)" || stage === "Wet AMD") {
-                    trend = "Worsening";
-                  } else if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
-                    trend = "Worsening";
-                  } else if (stage === "Early AMD" || stage === "Early/Intermediate AMD") {
-                    trend = "Stable";
-                  } else {
-                    trend = "Normal";
-                  }
-
-                  if (trend.toLowerCase().includes("worsening") || trend.toLowerCase().includes("active") || trend.toLowerCase().includes("exudation")) {
-                    trendColor = "#EF4444";
-                    dotColor = "#EF4444";
-                  } else if (trend.toLowerCase().includes("stable")) {
-                    trendColor = "#3B82F6";
-                    dotColor = "#3B82F6";
-                  } else {
-                    trendColor = "#22C55E";
-                    dotColor = "#22C55E";
-                  }
+                lastVisit = formatDate(latest.detection_date);
+                stage = latest.detected_stage;
+                
+                if (latest.ai_trend) {
+                  trend = latest.ai_trend;
+                } else if (stage === "Active Wet AMD" || stage === "Late AMD" || stage === "Late AMD (Neovascular/Wet AMD)" || stage === "Wet AMD") {
+                  trend = "Worsening";
+                } else if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
+                  trend = "Worsening";
+                } else if (stage === "Early AMD" || stage === "Early/Intermediate AMD") {
+                  trend = "Stable";
                 } else {
-                  // ถ้าไม่มีข้อมูลใน DB และ localStorage เลย ให้ใช้ค่า Mockup ตั้งต้น
-                  if (p.patient_id === 'P-2605-016') {
-                    stage = "Intermediate AMD";
-                    trend = "Worsening";
-                    trendColor = "#EF4444";
-                    dotColor = "#EF4444";
-                    lastVisit = "22 May 2026";
-                  } else if (p.patient_id === 'P-2605-012') {
-                    stage = "Wet AMD";
-                    trend = "Worsening";
-                    trendColor = "#EF4444";
-                    dotColor = "#EF4444";
-                    lastVisit = "18 May 2026";
-                  } else if (p.patient_id === 'P-2605-037') {
-                    stage = "Normal";
-                    trend = "Normal";
-                    trendColor = "#22C55E";
-                    dotColor = "#22C55E";
-                    lastVisit = "12 May 2026";
-                  }
+                  trend = "Normal";
                 }
-              } catch (err) {
-                console.error("Failed to load progression timeline for patient", p.patient_id, err);
+
+                if (trend.toLowerCase().includes("worsening") || trend.toLowerCase().includes("active") || trend.toLowerCase().includes("exudation")) {
+                  trendColor = "#EF4444";
+                  dotColor = "#EF4444";
+                } else if (trend.toLowerCase().includes("stable")) {
+                  trendColor = "#3B82F6";
+                  dotColor = "#3B82F6";
+                } else {
+                  trendColor = "#22C55E";
+                  dotColor = "#22C55E";
+                }
               }
+            } catch (err) {
+              console.error("Failed to load progression timeline for patient", p.patient_id, err);
             }
             
             return {
@@ -201,32 +123,16 @@ const ProgressionPage = () => {
             };
           }));
 
-          // Override with mockProgressionPatients to ensure local edits are strictly preserved
-          const savedProgPatients = localStorage.getItem('mockProgressionPatients');
-          if (savedProgPatients) {
-            try {
-              const progOverrides = JSON.parse(savedProgPatients);
-              mappedPatients = mappedPatients.map(mp => {
-                const override = progOverrides.find(op => op.id === mp.id);
-                if (override) {
-                  return { ...mp, ...override };
-                }
-                return mp;
-              });
-            } catch(e) {}
-          }
-          
           setPatients(mappedPatients);
           setFilteredPatients(mappedPatients);
         } else {
-          // Fallback to local storage lists if database patients is empty
-          setPatients(loadMockProgressionPatients());
-          setFilteredPatients(loadMockProgressionPatients());
+          setPatients([]);
+          setFilteredPatients([]);
         }
       } catch (err) {
-        console.error("Error loading patients registry, keeping mockup fallback:", err);
-        setPatients(loadMockProgressionPatients());
-        setFilteredPatients(loadMockProgressionPatients());
+        console.error("Error loading patients registry:", err);
+        setPatients([]);
+        setFilteredPatients([]);
       }
     };
     loadPatients();
