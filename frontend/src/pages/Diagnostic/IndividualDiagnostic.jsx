@@ -762,7 +762,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                     <p style={{ margin: 0, fontSize: '13px' }}>Analyzing OCT data with AI...</p>
                   </div>
                 ) : (
-                  <div style={{ display: 'flex', gap: '24px' }}>
+                  <div style={{ display: 'flex', gap: '48px' }}>
                     {/* Left Column */}
                     <div style={{ flex: '1 1 50%' }}>
                       <div style={{ marginBottom: '16px' }}>
