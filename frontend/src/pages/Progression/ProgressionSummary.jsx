@@ -153,7 +153,7 @@ const getSummaryForPatient = (patient, activeEye, activeIndex = 0) => {
     if (activeEye === 'os') {
       return "Compared to the previous scan on Dec 10, 2023, the disease progression shows a worsening trend. New fluid accumulation including PED is observed. This suggests a progression from Early AMD to active Neovascular (Wet) AMD.";
     } else {
-      return "The right retina appears completely normal. Retinal layer structural integrity is well-preserved with no signs of drusen or subretinal/intraretinal fluid accumulation.";
+      return "Compared to the previous scan, the disease progression shows a significant worsening trend. New subretinal and intraretinal fluid accumulation is observed. This indicates active Neovascular (Wet) AMD.";
     }
   } else {
     return "The retina appears completely normal with no signs of drusen or fluid accumulation. Comparative review against previous baseline scan confirms no progression.";
