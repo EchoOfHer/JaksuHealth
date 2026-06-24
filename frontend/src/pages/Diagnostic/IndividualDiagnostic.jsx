@@ -764,14 +764,14 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                 ) : (
                   <>
                     <div>
-                      <p className="report-title">Drafted Summary:</p>
+                      <p className="report-title">Diagnostic Summary:</p>
                       <p id="summaryText" className="report-desc" style={{ whiteSpace: 'pre-wrap' }}>
                         {summaryText}
                       </p>
                     </div>
 
                     <div>
-                      <p className="report-title">Suggested Action:</p>
+                      <p className="report-title">Treatment Guideline:</p>
                       <p id="actionText" className="report-desc" style={{ whiteSpace: 'pre-wrap' }}>
                         {actionText ? actionText.replace(/ (\d+\.)/g, '\n$1') : ''}
                       </p>
