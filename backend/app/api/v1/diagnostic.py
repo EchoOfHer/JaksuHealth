@@ -207,7 +207,7 @@ def get_dataset_metadata(dataset_id: str):
     import csv
     
     dataset_dir = get_dataset_dir()
-    csv_path = os.path.join(dataset_dir, dataset_id, f"{dataset_id}_lesion_report.csv")
+    csv_path = os.path.join(dataset_dir, dataset_id, f"{dataset_id}_detailed_report.csv")
     if not os.path.exists(csv_path):
         raise HTTPException(status_code=404, detail=f"ไม่พบไฟล์ข้อมูลรอยโรคสำหรับรหัส {dataset_id}")
         
@@ -216,14 +216,20 @@ def get_dataset_metadata(dataset_id: str):
         with open(csv_path, mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
+                srf = int(float(row.get("SRF_Pixels", 0)))
+                ped = int(float(row.get("PED_Pixels", 0)))
+                irf = int(float(row.get("IRF_Pixels", 0)))
+                shrm = int(float(row.get("SHRM_Pixels", 0)))
+                is_os = int(float(row.get("IS/OS_Pixels", 0)))
+                
                 data.append({
                     "Image_Name": row.get("Image_Name", ""),
-                    "SRF": int(float(row.get("SRF", 0))),
-                    "PED": int(float(row.get("PED", 0))),
-                    "IRF": int(float(row.get("IRF", 0))),
-                    "SHRM": int(float(row.get("SHRM", 0))),
-                    "IS_OS": int(float(row.get("IS/OS", 0))),
-                    "Total_Lesion_Pixels": int(float(row.get("Total_Lesion_Pixels", 0)))
+                    "SRF": srf,
+                    "PED": ped,
+                    "IRF": irf,
+                    "SHRM": shrm,
+                    "IS_OS": is_os,
+                    "Total_Lesion_Pixels": srf + ped + irf + shrm + is_os
                 })
         
         # จัดเรียงข้อมูลตามหมายเลขสไลด์จริงจากชื่อไฟล์ (Numerical Sorting) เพื่อให้เลื่อนภาพต่อเนื่อง
