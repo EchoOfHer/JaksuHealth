@@ -10,7 +10,7 @@ def load_mock_data():
             return json.load(f)
     return {}
 
-def get_visit_key_by_pixels(p_id: str, eye: str, drusen: int, irf: int) -> str:
+def get_visit_key_by_pixels(p_id: str, eye: str, drusen: int, ped: int) -> str:
     if '016' in p_id:
         if eye == 'OS':
             if drusen >= 1000: return 'latest'
@@ -25,7 +25,7 @@ def get_visit_key_by_pixels(p_id: str, eye: str, drusen: int, irf: int) -> str:
             if drusen > 0: return 'previous'
             return 'baseline'
         elif eye == 'OD':
-            if irf > 1000: return 'latest'
+            if ped > 1000: return 'latest'
             return 'baseline'
     return 'latest'
 
@@ -69,7 +69,7 @@ async def generate_progression_trend(patient_id: str, age: int, eye_side: str, p
         return {'condition_stage': 'Unknown', 'risk_level': 'Low', 'progression_trend': 'Unknown', 'progression_summary': 'Data not found.', 'suggested_action': '-'}
 
     def extract_pixels(status_str):
-        pixels = {'Drusen': 0, 'SRF': 0, 'IRF': 0, 'SHRM': 0, 'IS/OS': 0}
+        pixels = {'Drusen': 0, 'SRF': 0, 'PED': 0, 'IRF': 0, 'SHRM': 0, 'IS/OS': 0}
         for match in re.finditer(r'([A-Za-z/]+):\s*(\d+)px', status_str):
             key = match.group(1).upper()
             if key == 'DRUSEN': pixels['Drusen'] = int(match.group(2))
@@ -92,8 +92,8 @@ async def generate_progression_trend(patient_id: str, age: int, eye_side: str, p
     prev = extract_pixels(prev_status)
     curr = extract_pixels(curr_status)
     
-    v1_type = get_visit_type(curr_status, force_fallback="latest") or get_visit_key_by_pixels(patient_id, eye_side, curr['Drusen'], curr['IRF'])
-    v2_type = get_visit_type(prev_status, force_fallback="baseline") or get_visit_key_by_pixels(patient_id, eye_side, prev['Drusen'], prev['IRF'])
+    v1_type = get_visit_type(curr_status, force_fallback="latest") or get_visit_key_by_pixels(patient_id, eye_side, curr['Drusen'], curr['PED'])
+    v2_type = get_visit_type(prev_status, force_fallback="baseline") or get_visit_key_by_pixels(patient_id, eye_side, prev['Drusen'], prev['PED'])
     
     # Ensure they aren't identical mapping
     if v1_type == v2_type:
