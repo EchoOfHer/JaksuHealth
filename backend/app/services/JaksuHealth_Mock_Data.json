@@ -1,198 +1,198 @@
 {
-    "P-2605-016": {
-        "OS": {
-            "single_diagnostics": {
-                "latest_2026-05-22": {
-                    "condition_stage": "Active Wet AMD",
-                    "risk_level": "High",
-                    "ai_trend": "Worsening",
-                    "drafted_summary": "The OCT scan of the left eye (OS) for patient P-2605-016, aged 65, reveals significant findings consistent with active exudative age-related macular degeneration (AMD). There is a substantial presence of subretinal fluid (SRF) and intraretinal fluid (IRF), indicating active leakage and exudation. Drusen are also noted, consistent with underlying AMD pathology. Critically, there is extensive disruption of the photoreceptor inner segment/outer segment (IS/OS) junction, suggesting significant damage to the photoreceptor layer. No subretinal hemorrhage (SHRM) was detected. These findings collectively point to an active and vision-threatening process.",
-                    "suggested_action": "Immediate ophthalmological consultation and initiation of anti-VEGF therapy are strongly recommended to address the active exudative process, reduce fluid accumulation, and prevent further vision loss. Close monitoring of treatment response with serial OCT scans is crucial. Further evaluation for potential choroidal neovascularization (CNV) with angiography (e.g., FFA/ICG) may be warranted if not already performed."
-                },
-                "previous_2024-01-15": {
-                    "condition_stage": "Intermediate AMD",
-                    "risk_level": "Moderate risk of progression to advanced AMD",
-                    "ai_trend": "Stable (no active exudative changes detected)",
-                    "drafted_summary": "OCT scan of the left eye (OS) for patient P-2605-016, aged 65, reveals significant drusen accumulation. There is no evidence of subretinal fluid (SRF), intraretinal fluid (IRF), or subretinal hyperreflective material (SHRM). The inner segment/outer segment (IS/OS) junction appears intact without disruption. These findings are consistent with intermediate age-related macular degeneration.",
-                    "suggested_action": "Recommend continued regular monitoring with OCT and clinical examination every 6-12 months to assess for progression. Patient education regarding Amsler grid self-monitoring and consideration of AREDS2 formulation nutritional supplements should be provided. Counsel on risk factors and symptoms of advanced AMD."
-                },
-                "baseline_2023-07-22": {
-                    "condition_stage": "No significant macular pathology detected",
-                    "risk_level": "Low",
-                    "ai_trend": "Stable",
-                    "drafted_summary": "The OCT scan of the left eye (OS) for patient P-2605-016, aged 65, shows no evidence of drusen, subretinal fluid (SRF), intraretinal fluid (IRF), subretinal hyperreflective material (SHRM), or disruption of the inner segment/outer segment (IS/OS) junction. All measured parameters are zero, indicating an anatomically normal macula.",
-                    "suggested_action": "Routine follow-up as per standard ophthalmic guidelines for age-related macular degeneration screening. No immediate intervention is indicated."
-                }
-            },
-            "progression_trends": {
-                "latest_vs_previous": {
-                    "condition_stage": "Advanced Age-related Macular Degeneration with active exudative features",
-                    "risk_level": "High",
-                    "progression_trend": "Worsening",
-                    "progression_summary": "Significant worsening observed. Drusen burden has significantly increased. There is new onset of substantial subretinal fluid (SRF) at and intraretinal fluid (IRF) indicating conversion to exudative (wet) Age-related Macular Degeneration. Additionally, significant disruption of the photoreceptor inner segment/outer segment (IS/OS) junction is now present.",
-                    "suggested_action": "Urgent ophthalmological evaluation is recommended for potential anti-VEGF therapy to manage active exudative AMD and prevent further vision loss."
-                },
-                "latest_vs_baseline": {
-                    "condition_stage": "Active Exudative AMD",
-                    "risk_level": "High",
-                    "progression_trend": "Worsening",
-                    "progression_summary": "There is clear evidence of significant disease progression from baseline. The development of new drusen, substantial subretinal fluid, and intraretinal fluid are indicative of a conversion to active exudative Age-related Macular Degeneration. Additionally, there is significant IS/OS disruption, suggesting photoreceptor damage.",
-                    "suggested_action": "Immediate ophthalmological consultation for further evaluation and initiation of treatment, likely anti-VEGF therapy, is strongly recommended to prevent further vision loss."
-                },
-                "previous_vs_baseline": {
-                    "condition_stage": "Early AMD",
-                    "risk_level": "Elevated",
-                    "progression_trend": "Worsening",
-                    "progression_summary": "New onset of drusen formation, with drusen increasing . Other parameters including SRF, IRF, SHRM, and IS/OS integrity remain stable.",
-                    "suggested_action": "Close monitoring, consider lifestyle modifications, and further evaluation for AMD staging."
-                }
-            }
+  "P-2605-016": {
+    "OS": {
+      "single_diagnostics": {
+        "latest_2026-05-22": {
+          "condition_stage": "Wet AMD",
+          "risk_level": "High",
+          "ai_trend": "Active Exudation",
+          "drafted_summary": "Findings:\n- Drusen detected\n- Significant Subretinal Fluid (SRF) present\n- Pigment Epithelial Detachment (PED) observed\n- Severe IS/OS disruption noted\n- No Intraretinal Fluid (IRF) or Subretinal Hyperreflective Material (SHRM) detected\n- Clinical Impact: Active fluid accumulation and photoreceptor layer disruption strongly indicate vision-threatening exudative activity, likely causing acute visual distortion.",
+          "suggested_action": "Indications:\n- Urgent consultation with a retina specialist\n- Consider initiation of Anti-VEGF therapy\n- Close monitoring of fluid levels"
         },
-        "OD": {
-            "single_diagnostics": {
-                "latest_2026-05-22": {
-                    "condition_stage": "Active Wet AMD",
-                    "risk_level": "High",
-                    "ai_trend": "Worsening",
-                    "drafted_summary": "The OCT scan of the right eye (OD) for patient P-2605-016, aged 65, reveals significant intraretinal fluid (IRF) and subretinal fluid (SRF). There is also notable disruption of the IS/OS junction. Drusen are present, but no subretinal hyperreflective material (SHRM) is detected. These findings are highly indicative of active neovascular age-related macular degeneration (AMD). The extensive fluid accumulation and photoreceptor disruption suggest significant disease activity and potential for vision loss.",
-                    "suggested_action": "Immediate referral to a retina specialist for comprehensive evaluation and initiation of anti-VEGF therapy. Close monitoring of visual acuity and repeat OCT scans are crucial to assess treatment response. Patient education regarding the condition and potential for vision loss is also recommended."
-                },
-                "baseline_2024-01-15": {
-                    "condition_stage": "Healthy Macula",
-                    "risk_level": "Low",
-                    "ai_trend": "Stable",
-                    "drafted_summary": "The OCT scan of the right eye (OD) for patient P-2605-016, aged 65, shows no evidence of drusen, subretinal fluid (SRF), intraretinal fluid (IRF), subretinal hyperreflective material (SHRM), or disruption of the inner segment/outer segment (IS/OS) junction. All quantitative pixel data for these macular lesions are zero, indicating a healthy macular profile.",
-                    "suggested_action": "Given the absence of any significant macular pathology, continue routine ophthalmological follow-up as per age-appropriate guidelines. No immediate intervention is indicated based on this OCT scan."
-                }
-            },
-            "progression_trends": {
-                "latest_vs_baseline": {
-                    "condition_stage": "Active Neovascular AMD",
-                    "risk_level": "High",
-                    "progression_trend": "Worsening",
-                    "progression_summary": "There is significant worsening with the development of new drusen, substantial subretinal fluid, extensive intraretinal fluid, and marked disruption of the IS/OS junction, compared to baseline. These findings are highly indicative of active neovascular AMD.",
-                    "suggested_action": "Urgent ophthalmological consultation for further evaluation and initiation of anti-VEGF therapy."
-                }
-            }
+        "previous_2024-01-15": {
+          "condition_stage": "Dry AMD",
+          "risk_level": "Moderate",
+          "ai_trend": "Intermediate",
+          "drafted_summary": "Findings:\n- Mild Drusen detected\n- No Subretinal Fluid (SRF) or Intraretinal Fluid (IRF) present\n- No Pigment Epithelial Detachment (PED) or SHRM detected\n- IS/OS layer remains intact\n- Clinical Impact: Early signs of macular degeneration without active leakage; low immediate risk to central vision, but requires ongoing surveillance.",
+          "suggested_action": "Indications:\n- Routine follow-up in 6 months\n- Self-monitoring with Amsler grid\n- Consider AREDS2 supplements if indicated clinically"
+        },
+        "baseline_2023-07-22": {
+          "condition_stage": "Normal",
+          "risk_level": "Low",
+          "ai_trend": "Stable",
+          "drafted_summary": "Findings:\n- No Drusen detected\n- No retinal fluid (SRF/IRF) or PED present\n- No structural disruptions (SHRM, IS/OS) observed\n- Clinical Impact: Healthy macular structure with no immediate threat to vision.",
+          "suggested_action": "Indications:\n- Annual routine eye screening\n- General eye health maintenance"
         }
+      },
+      "progression_trends": {
+        "latest_vs_previous": {
+          "condition_stage": "Wet AMD",
+          "risk_level": "High",
+          "progression_trend": "Worsening",
+          "progression_summary": "Findings:\n- Drusen volume has increased\n- New onset of significant Subretinal Fluid (SRF)\n- Development of Pigment Epithelial Detachment (PED)\n- New, severe IS/OS layer disruption\n- Clinical Impact: Sudden transition from dry to active wet AMD, posing a high risk of rapid and permanent visual acuity loss if left untreated.",
+          "suggested_action": "Indications:\n- Immediate evaluation by an ophthalmologist for active exudation\n- Highly recommend Anti-VEGF treatment\n- Schedule follow-up OCT within 4 weeks of treatment"
+        },
+        "latest_vs_baseline": {
+          "condition_stage": "Wet AMD",
+          "risk_level": "High",
+          "progression_trend": "Worsening",
+          "progression_summary": "Findings:\n- Progression from normal baseline to active Wet AMD\n- Development of Drusen\n- Massive accumulation of SRF and PED\n- Significant structural damage to the IS/OS layer\n- Clinical Impact: Aggressive disease onset leading to structural macular damage and a high probability of severe visual impairment.",
+          "suggested_action": "Indications:\n- Urgent medical intervention required\n- Anti-VEGF injection planning\n- Strict follow-up schedule to monitor response to therapy"
+        },
+        "previous_vs_baseline": {
+          "condition_stage": "Dry AMD",
+          "risk_level": "Moderate",
+          "progression_trend": "Worsening",
+          "progression_summary": "Findings:\n- New development of mild Drusen compared to a clear baseline\n- Retinal fluid and structural integrity remain perfectly stable\n- Clinical Impact: Conversion to early dry AMD, requiring routine monitoring but not immediately vision-threatening.",
+          "suggested_action": "Indications:\n- Monitor progression of Dry AMD\n- Recommend lifestyle modifications and vitamin supplementation\n- Follow-up OCT in 6 months"
+        }
+      }
     },
-    "P-2605-012": {
-        "OS": {
-            "single_diagnostics": {
-                "latest_2026-05-18": {
-                    "condition_stage": "Active Wet AMD",
-                    "risk_level": "High",
-                    "ai_trend": "Active Disease",
-                    "drafted_summary": "The OCT scan of the left eye (OS) for patient P-2605-012 reveals extensive intraretinal fluid (IRF), significant subretinal fluid (SRF) and notable subretinal hyperreflective material (SHRM). Drusen are also present. There is severe disruption of the photoreceptor inner segment/outer segment (IS/OS) junction. These findings are highly indicative of active neovascular age-related macular degeneration (nAMD) with severe macular edema and significant photoreceptor damage.",
-                    "suggested_action": "Urgent referral to a retina specialist for comprehensive evaluation and initiation of appropriate treatment, likely anti-VEGF therapy, to manage the active neovascularization and reduce macular edema, aiming to preserve vision."
-                },
-                "previous_2023-12-10": {
-                    "condition_stage": "Intermediate AMD",
-                    "risk_level": "Moderate",
-                    "ai_trend": "Stable (no active exudative changes detected)",
-                    "drafted_summary": "OCT scan of the left eye (OS) for patient P-2605-012 (65 years old) reveals the presence of drusen, consistent with Age-related Macular Degeneration. There is no evidence of subretinal fluid (SRF), intraretinal fluid (IRF), subretinal hyperreflective material (SHRM), or IS/OS disruption. This indicates a dry form of AMD without active exudative changes or significant photoreceptor damage at this time.",
-                    "suggested_action": "Recommend regular follow-up OCT imaging and clinical examination to monitor for progression of drusen and development of exudative changes or geographic atrophy. Patient education on Amsler grid self-monitoring and lifestyle modifications (e.g., AREDS2 supplementation, smoking cessation) should be reinforced."
-                },
-                "baseline_2023-10-05": {
-                    "condition_stage": "Normal",
-                    "risk_level": "Low",
-                    "ai_trend": "Stable",
-                    "drafted_summary": "The OCT scan of the left eye (OS) for patient P-2605-012, aged 65, shows no evidence of Drusen, Subretinal Fluid (SRF), Intraretinal Fluid (IRF), Subretinal Hyperreflective Material (SHRM), or IS/OS disruption. All quantitative pixel data for these macular lesions are zero, indicating a healthy macula at the time of this scan.",
-                    "suggested_action": "Continue routine ophthalmological follow-up as per standard guidelines for age-related macular degeneration screening. No immediate intervention is required based on this OCT scan."
-                }
-            },
-            "progression_trends": {
-                "latest_vs_previous": {
-                    "condition_stage": "Active Wet AMD",
-                    "risk_level": "High",
-                    "progression_trend": "Severe Worsening",
-                    "progression_summary": "Drastic disease progression. Transitioned from early AMD to active exudative disease with massive intraretinal and subretinal fluid accumulation, newly formed subretinal hyperreflective material, and severe disruption of the IS/OS junction.",
-                    "suggested_action": "Emergency referral to a retina specialist for immediate anti-VEGF therapy."
-                },
-                "latest_vs_baseline": {
-                    "condition_stage": "Active Wet AMD",
-                    "risk_level": "High",
-                    "progression_trend": "Severe Worsening",
-                    "progression_summary": "Severe deterioration from a normal baseline. Scan now demonstrates widespread pathological changes including extensive intraretinal and subretinal fluid, drusen, subretinal hyperreflective material, and marked IS/OS junction disruption.",
-                    "suggested_action": "Urgent retinal consultation and initiation of anti-VEGF treatment protocol."
-                },
-                "previous_vs_baseline": {
-                    "condition_stage": "Early/Intermediate AMD",
-                    "risk_level": "Medium",
-                    "progression_trend": "Mild Progression",
-                    "progression_summary": "Mild progression from baseline with the new appearance of drusen. There is no evidence of fluid accumulation or structural disruption.",
-                    "suggested_action": "Routine monitoring in 6 months and consider AREDS2 supplementation."
-                }
-            }
+    "OD": {
+      "single_diagnostics": {
+        "latest_2026-05-22": {
+          "condition_stage": "Wet AMD",
+          "risk_level": "High",
+          "ai_trend": "Active Exudation",
+          "drafted_summary": "Findings:\n- Drusen present\n- Subretinal Fluid (SRF) detected\n- Significant Pigment Epithelial Detachment (PED)\n- IS/OS disruption observed\n- Clinical Impact: Active exudative process with photoreceptor compromise, indicating a high risk of immediate vision loss and symptomatic metamorphopsia.",
+          "suggested_action": "Indications:\n- Retina specialist consult required\n- Evaluate for Anti-VEGF therapy based on PED and SRF presence\n- Ongoing monitoring"
         },
-        "OD": {
-            "single_diagnostics": {
-                "latest_2026-05-18": {
-                    "condition_stage": "Active Wet AMD",
-                    "risk_level": "High",
-                    "ai_trend": "Critical",
-                    "drafted_summary": "Significant subretinal and intraretinal fluid detected. Subretinal hyperreflective material is present alongside marked disruption of the IS/OS junction.",
-                    "suggested_action": "Urgent referral to ophthalmology for evaluation and potential anti-VEGF injection."
-                },
-                "baseline_2023-10-05": {
-                    "condition_stage": "Normal",
-                    "risk_level": "Low",
-                    "ai_trend": "Stable",
-                    "drafted_summary": "Normal macular architecture. No evidence of drusen, fluid accumulation, or disruption of the IS/OS junction.",
-                    "suggested_action": "Routine annual eye examination."
-                }
-            },
-            "progression_trends": {
-                "latest_vs_baseline": {
-                    "condition_stage": "Active Wet AMD",
-                    "risk_level": "High",
-                    "progression_trend": "Significant Worsening",
-                    "progression_summary": "Rapid pathological progression from a normal baseline. The current scan reveals substantial intraretinal and subretinal fluid, hyperreflective material, and IS/OS layer disruption.",
-                    "suggested_action": "Immediate clinical management required to address active fluid leakage."
-                }
-            }
+        "baseline_2024-01-15": {
+          "condition_stage": "Normal",
+          "risk_level": "Low",
+          "ai_trend": "Stable",
+          "drafted_summary": "Findings:\n- No visible pathology\n- Drusen, fluid (SRF/IRF), PED, and SHRM are all absent\n- IS/OS junction intact\n- Clinical Impact: Normal anatomical structure with preserved visual potential.",
+          "suggested_action": "Indications:\n- Annual routine check-up\n- Standard preventive care"
         }
-    },
-    "P-2605-037": {
-        "OS": {
-            "single_diagnostics": {
-                "latest_2026-05-12": {
-                    "condition_stage": "Normal",
-                    "risk_level": "Low",
-                    "ai_trend": "Stable",
-                    "drafted_summary": "Retinal layers are perfectly intact with no pathological lesions. No subretinal or intraretinal fluid, drusen, or structural anomalies detected.",
-                    "suggested_action": "Continue with regular annual screenings."
-                }
-            },
-            "progression_trends": {
-                "latest_vs_baseline": {
-                    "condition_stage": "Normal",
-                    "risk_level": "Low",
-                    "progression_trend": "Stable",
-                    "progression_summary": "No pathological changes observed over time. The macular structure remains completely stable and healthy.",
-                    "suggested_action": "Maintain routine annual follow-up."
-                }
-            }
-        },
-        "OD": {
-            "single_diagnostics": {
-                "latest_2026-05-12": {
-                    "condition_stage": "Normal",
-                    "risk_level": "Low",
-                    "ai_trend": "Stable",
-                    "drafted_summary": "Normal OCT scan. Free of drusen, intraretinal fluid, and subretinal fluid. The IS/OS junction is well preserved.",
-                    "suggested_action": "Routine preventive eye care."
-                }
-            },
-            "progression_trends": {
-                "latest_vs_baseline": {
-                    "condition_stage": "Normal",
-                    "risk_level": "Low",
-                    "progression_trend": "Stable",
-                    "progression_summary": "Stable findings with no evidence of disease progression. Retinal anatomy remains perfectly intact since the baseline scan.",
-                    "suggested_action": "Routine annual monitoring."
-                }
-            }
+      },
+      "progression_trends": {
+        "latest_vs_baseline": {
+          "condition_stage": "Wet AMD",
+          "risk_level": "High",
+          "progression_trend": "Worsening",
+          "progression_summary": "Findings:\n- Conversion to an active disease state from a normal baseline\n- Emergence of significant PED and SRF\n- New Drusen formation and IS/OS damage\n- Clinical Impact: Rapid onset of exudation and structural damage, acutely threatening central vision.",
+          "suggested_action": "Indications:\n- Immediate clinical assessment\n- Prepare for potential intravitreal injections\n- Continuous monitoring of the fellow eye"
         }
+      }
     }
+  },
+  "P-2605-012": {
+    "OS": {
+      "single_diagnostics": {
+        "latest_2026-05-18": {
+          "condition_stage": "Advanced Wet AMD",
+          "risk_level": "High",
+          "ai_trend": "Severe Active Exudation",
+          "drafted_summary": "Findings:\n- Massive Pigment Epithelial Detachment (PED) present\n- Extensive IS/OS layer disruption\n- Subretinal Fluid (SRF) accumulation\n- Presence of Subretinal Hyperreflective Material (SHRM)\n- Mild Drusen\n- Clinical Impact: Severe structural distortion and potential fibrotic changes (indicated by SHRM) point to a highly guarded visual prognosis and high risk of permanent scarring.",
+          "suggested_action": "Indications:\n- Critical priority for immediate retinal intervention\n- High probability of requiring intensive Anti-VEGF treatment\n- Guarded prognosis; careful discussion with the patient required"
+        },
+        "previous_2023-12-10": {
+          "condition_stage": "Early Dry AMD",
+          "risk_level": "Low",
+          "ai_trend": "Mild",
+          "drafted_summary": "Findings:\n- Very mild Drusen present\n- No active fluid exudation (SRF, IRF, PED absent)\n- Retinal architecture remains intact\n- Clinical Impact: Asymptomatic early dry AMD with stable visual function and low immediate risk.",
+          "suggested_action": "Indications:\n- Standard clinical monitoring in 6-12 months\n- Provide Amsler grid for at-home testing"
+        },
+        "baseline_2023-10-05": {
+          "condition_stage": "Normal",
+          "risk_level": "Low",
+          "ai_trend": "Stable",
+          "drafted_summary": "Findings:\n- Zero pathological markers detected across all categories\n- Retinal layers are well-preserved\n- Clinical Impact: Optimal macular health with normal visual function expected.",
+          "suggested_action": "Indications:\n- Routine preventative examination in 1 year"
+        }
+      },
+      "progression_trends": {
+        "latest_vs_previous": {
+          "condition_stage": "Advanced Wet AMD",
+          "risk_level": "High",
+          "progression_trend": "Worsening",
+          "progression_summary": "Findings:\n- Dramatic worsening from mild dry to advanced wet AMD\n- Explosive growth of PED\n- New onset of SRF, SHRM, and massive IS/OS loss\n- Drusen increased slightly\n- Clinical Impact: Catastrophic progression to advanced wet AMD with early fibrotic signs, severely threatening long-term visual acuity and requiring immediate salvage therapy.",
+          "suggested_action": "Indications:\n- Urgent, aggressive Anti-VEGF management required\n- Evaluate for potential fibrotic changes due to SHRM\n- Close bi-weekly or monthly follow-up"
+        },
+        "latest_vs_baseline": {
+          "condition_stage": "Advanced Wet AMD",
+          "risk_level": "High",
+          "progression_trend": "Worsening",
+          "progression_summary": "Findings:\n- Severe disease progression since baseline\n- Development of massive PED and widespread IS/OS damage\n- Substantial SRF and SHRM now present\n- Clinical Impact: Extensive destruction of macular architecture, highly likely to cause profound and irreversible vision loss without urgent care.",
+          "suggested_action": "Indications:\n- Expedite treatment protocols for active exudative disease\n- High risk for severe vision loss without intervention"
+        },
+        "previous_vs_baseline": {
+          "condition_stage": "Early Dry AMD",
+          "risk_level": "Low",
+          "progression_trend": "Worsening",
+          "progression_summary": "Findings:\n- Subtle progression with new onset of mild Drusen\n- No signs of neovascularization or fluid leakage\n- Clinical Impact: Slow degenerative change without fluid exudation; central vision likely remains unaffected at this stage.",
+          "suggested_action": "Indications:\n- Continued regular observation\n- Emphasize importance of symptom reporting (e.g., sudden distortion in vision)"
+        }
+      }
+    },
+    "OD": {
+      "single_diagnostics": {
+        "latest_2026-05-18": {
+          "condition_stage": "Wet AMD",
+          "risk_level": "High",
+          "ai_trend": "Active Exudation",
+          "drafted_summary": "Findings:\n- Notable Subretinal Fluid (SRF)\n- Pigment Epithelial Detachment (PED) present\n- High level of IS/OS disruption\n- SHRM detected\n- No Drusen or IRF identified\n- Clinical Impact: Active neovascularization with SHRM suggests a high risk of subretinal fibrosis, leading to permanent photoreceptor loss and significant visual decline.",
+          "suggested_action": "Indications:\n- Fast-track consultation for Anti-VEGF therapy\n- Monitor SHRM closely to prevent permanent photoreceptor damage"
+        },
+        "baseline_2023-10-05": {
+          "condition_stage": "Normal",
+          "risk_level": "Low",
+          "ai_trend": "Stable",
+          "drafted_summary": "Findings:\n- Unremarkable OCT scan\n- All pathology markers are absent\n- Clinical Impact: Excellent structural integrity supporting normal vision.",
+          "suggested_action": "Indications:\n- Maintain routine screening schedule"
+        }
+      },
+      "progression_trends": {
+        "latest_vs_baseline": {
+          "condition_stage": "Wet AMD",
+          "risk_level": "High",
+          "progression_trend": "Worsening",
+          "progression_summary": "Findings:\n- Rapid progression to exudative AMD\n- Accumulation of SRF and PED\n- Appearance of SHRM accompanied by severe IS/OS breakdown\n- Clinical Impact: Acute exudative event with impending fibrotic scarring, severely endangering central vision.",
+          "suggested_action": "Indications:\n- Immediate therapeutic intervention necessary\n- Frequent monitoring to assess fluid resolution after treatment"
+        }
+      }
+    }
+  },
+  "P-2605-037": {
+    "OS": {
+      "single_diagnostics": {
+        "latest_2026-05-12": {
+          "condition_stage": "Normal",
+          "risk_level": "Low",
+          "ai_trend": "Stable",
+          "drafted_summary": "Findings:\n- Clear scan with no retinal abnormalities detected\n- Drusen, fluid, and structural disruptions are entirely absent\n- Clinical Impact: Normal ocular health with no structural risk to vision.",
+          "suggested_action": "Indications:\n- No treatment required\n- Routine annual eye exam"
+        }
+      },
+      "progression_trends": {
+        "latest_vs_baseline": {
+          "condition_stage": "Normal",
+          "risk_level": "Low",
+          "progression_trend": "Stable",
+          "progression_summary": "Findings:\n- No changes observed from baseline\n- Retinal morphology remains completely normal\n- Clinical Impact: Sustained structural stability ensuring preserved visual function.",
+          "suggested_action": "Indications:\n- Continue standard preventative eye care"
+        }
+      }
+    },
+    "OD": {
+      "single_diagnostics": {
+        "latest_2026-05-12": {
+          "condition_stage": "Normal",
+          "risk_level": "Low",
+          "ai_trend": "Stable",
+          "drafted_summary": "Findings:\n- Scan confirms perfectly healthy retinal structures\n- No pathological indicators found\n- Clinical Impact: Normal visual potential with no signs of disease.",
+          "suggested_action": "Indications:\n- No action needed beyond routine health check-ups"
+        }
+      },
+      "progression_trends": {
+        "latest_vs_baseline": {
+          "condition_stage": "Normal",
+          "risk_level": "Low",
+          "progression_trend": "Stable",
+          "progression_summary": "Findings:\n- Consistent with baseline; no signs of disease development\n- Perfect stability in retinal measurements\n- Clinical Impact: Excellent structural preservation over time.",
+          "suggested_action": "Indications:\n- Maintain standard annual review"
+        }
+      }
+    }
+  }
 }

@@ -33,9 +33,9 @@ class ProgressionSchema(BaseModel):
 
 def get_system_instruction(task_type: str) -> str:
     if task_type == 'SingleDiagnostic':
-        return 'You are an expert AI Ophthalmologist analyzing an Optical Coherence Tomography (OCT) scan.\nYour task is to review the quantitative pixel data for macular lesions (Drusen, SRF, IRF, SHRM) and IS/OS disruption.\nGenerate a structured clinical report in JSON format following the provided schema.\nAlways provide realistic, medically accurate summaries and actionable suggestions.'
+        return 'You are an expert AI Ophthalmologist analyzing an Optical Coherence Tomography (OCT) scan.\nYour task is to review the quantitative pixel data for macular lesions (Drusen, SRF, PED, IRF, SHRM) and IS/OS disruption.\nGenerate a structured clinical report in JSON format following the provided schema.\nCRITICAL: Format `drafted_summary` and `suggested_action` using a bulleted list format (e.g. "Findings:\n- ...\n- ...\nIndications:\n- ...") to make it very easy to read. Always provide realistic, medically accurate summaries and actionable suggestions.'
     else:
-        return 'You are an expert AI Ophthalmologist analyzing the progression of AMD between two Optical Coherence Tomography (OCT) scans.\nCompare the previous status to the current status based on the provided quantitative pixel data.\nGenerate a structured progression report in JSON format following the provided schema.\nDetermine if the disease is Stable, Improving, or Worsening, and provide a clear clinical summary.'
+        return 'You are an expert AI Ophthalmologist analyzing the progression of AMD between two Optical Coherence Tomography (OCT) scans.\nCompare the previous status to the current status based on the provided quantitative pixel data.\nGenerate a structured progression report in JSON format following the provided schema.\nDetermine if the disease is Stable, Improving, or Worsening, and provide a clear clinical summary.\nCRITICAL: Format `progression_summary` and `suggested_action` using a bulleted list format to make it very easy to read.'
 
 async def call_gemini(instruction: str, prompt: str, schema: type[BaseModel]):
     max_retries = 10
@@ -74,37 +74,37 @@ async def call_gemini(instruction: str, prompt: str, schema: type[BaseModel]):
 
 data_combinations = [
     # ---- KHANATIP OS ----
-    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'single', 'key': 'latest_2026-05-22', 'prompt': 'Patient: P-2605-016\nAge: 65\nEye Side: OS\nDrusen: 1200px, SRF: 53792px, IRF: 12194px, SHRM: 0px, IS/OS: 79459px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'single', 'key': 'previous_2024-01-15', 'prompt': 'Patient: P-2605-016\nAge: 65\nEye Side: OS\nDrusen: 600px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'single', 'key': 'baseline_2023-07-22', 'prompt': 'Patient: P-2605-016\nAge: 65\nEye Side: OS\nDrusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'progression', 'key': 'latest_vs_previous', 'prompt': 'Compare Previous: Drusen: 600px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 1200px, SRF: 53792px, IRF: 12194px, SHRM: 0px, IS/OS: 79459px'},
-    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 1200px, SRF: 53792px, IRF: 12194px, SHRM: 0px, IS/OS: 79459px'},
-    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'progression', 'key': 'previous_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 600px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px'},
+    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'single', 'key': 'latest_2026-05-22', 'prompt': 'Patient: P-2605-016\nAge: 65\nEye Side: OS\nDrusen: 1200px, SRF: 53792px, PED: 12194px, IRF: 0px, SHRM: 0px, IS/OS: 79459px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'single', 'key': 'previous_2024-01-15', 'prompt': 'Patient: P-2605-016\nAge: 65\nEye Side: OS\nDrusen: 600px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'single', 'key': 'baseline_2023-07-22', 'prompt': 'Patient: P-2605-016\nAge: 65\nEye Side: OS\nDrusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'progression', 'key': 'latest_vs_previous', 'prompt': 'Compare Previous: Drusen: 600px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 1200px, SRF: 53792px, PED: 12194px, IRF: 0px, SHRM: 0px, IS/OS: 79459px'},
+    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 1200px, SRF: 53792px, PED: 12194px, IRF: 0px, SHRM: 0px, IS/OS: 79459px'},
+    {'patient': 'P-2605-016', 'eye': 'OS', 'type': 'progression', 'key': 'previous_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 600px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px'},
 
     # ---- KHANATIP OD ----
-    {'patient': 'P-2605-016', 'eye': 'OD', 'type': 'single', 'key': 'latest_2026-05-22', 'prompt': 'Patient: P-2605-016\nAge: 65\nEye Side: OD\nDrusen: 450px, SRF: 11305px, IRF: 31689px, SHRM: 0px, IS/OS: 23098px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-016', 'eye': 'OD', 'type': 'single', 'key': 'baseline_2024-01-15', 'prompt': 'Patient: P-2605-016\nAge: 65\nEye Side: OD\nDrusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-016', 'eye': 'OD', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 450px, SRF: 11305px, IRF: 31689px, SHRM: 0px, IS/OS: 23098px'},
+    {'patient': 'P-2605-016', 'eye': 'OD', 'type': 'single', 'key': 'latest_2026-05-22', 'prompt': 'Patient: P-2605-016\nAge: 65\nEye Side: OD\nDrusen: 450px, SRF: 11305px, PED: 31689px, IRF: 0px, SHRM: 0px, IS/OS: 23098px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-016', 'eye': 'OD', 'type': 'single', 'key': 'baseline_2024-01-15', 'prompt': 'Patient: P-2605-016\nAge: 65\nEye Side: OD\nDrusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-016', 'eye': 'OD', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 450px, SRF: 11305px, PED: 31689px, IRF: 0px, SHRM: 0px, IS/OS: 23098px'},
 
     # ---- JIRAWAT OS ----
-    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'single', 'key': 'latest_2026-05-18', 'prompt': 'Patient: P-2605-012\nAge: 65\nEye Side: OS\nDrusen: 350px, SRF: 27055px, IRF: 478400px, SHRM: 925px, IS/OS: 112203px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'single', 'key': 'previous_2023-12-10', 'prompt': 'Patient: P-2605-012\nAge: 65\nEye Side: OS\nDrusen: 150px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'single', 'key': 'baseline_2023-10-05', 'prompt': 'Patient: P-2605-012\nAge: 65\nEye Side: OS\nDrusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'progression', 'key': 'latest_vs_previous', 'prompt': 'Compare Previous: Drusen: 150px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 350px, SRF: 27055px, IRF: 478400px, SHRM: 925px, IS/OS: 112203px'},
-    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 350px, SRF: 27055px, IRF: 478400px, SHRM: 925px, IS/OS: 112203px'},
-    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'progression', 'key': 'previous_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 150px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px'},
+    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'single', 'key': 'latest_2026-05-18', 'prompt': 'Patient: P-2605-012\nAge: 65\nEye Side: OS\nDrusen: 350px, SRF: 27055px, PED: 478400px, IRF: 0px, SHRM: 925px, IS/OS: 112203px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'single', 'key': 'previous_2023-12-10', 'prompt': 'Patient: P-2605-012\nAge: 65\nEye Side: OS\nDrusen: 150px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'single', 'key': 'baseline_2023-10-05', 'prompt': 'Patient: P-2605-012\nAge: 65\nEye Side: OS\nDrusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'progression', 'key': 'latest_vs_previous', 'prompt': 'Compare Previous: Drusen: 150px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 350px, SRF: 27055px, PED: 478400px, IRF: 0px, SHRM: 925px, IS/OS: 112203px'},
+    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 350px, SRF: 27055px, PED: 478400px, IRF: 0px, SHRM: 925px, IS/OS: 112203px'},
+    {'patient': 'P-2605-012', 'eye': 'OS', 'type': 'progression', 'key': 'previous_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 150px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px'},
 
     # ---- JIRAWAT OD ----
-    {'patient': 'P-2605-012', 'eye': 'OD', 'type': 'single', 'key': 'latest_2026-05-18', 'prompt': 'Patient: P-2605-012\nAge: 65\nEye Side: OD\nDrusen: 0px, SRF: 24408px, IRF: 25734px, SHRM: 6067px, IS/OS: 83358px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-012', 'eye': 'OD', 'type': 'single', 'key': 'baseline_2023-10-05', 'prompt': 'Patient: P-2605-012\nAge: 65\nEye Side: OD\nDrusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-012', 'eye': 'OD', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 0px, SRF: 24408px, IRF: 25734px, SHRM: 6067px, IS/OS: 83358px'},
+    {'patient': 'P-2605-012', 'eye': 'OD', 'type': 'single', 'key': 'latest_2026-05-18', 'prompt': 'Patient: P-2605-012\nAge: 65\nEye Side: OD\nDrusen: 0px, SRF: 24408px, PED: 25734px, IRF: 0px, SHRM: 6067px, IS/OS: 83358px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-012', 'eye': 'OD', 'type': 'single', 'key': 'baseline_2023-10-05', 'prompt': 'Patient: P-2605-012\nAge: 65\nEye Side: OD\nDrusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-012', 'eye': 'OD', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 0px, SRF: 24408px, PED: 25734px, IRF: 0px, SHRM: 6067px, IS/OS: 83358px'},
 
     # ---- NATTHAWUT OS & OD ----
-    {'patient': 'P-2605-037', 'eye': 'OS', 'type': 'single', 'key': 'latest_2026-05-12', 'prompt': 'Patient: P-2605-037\nAge: 65\nEye Side: OS\nDrusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-037', 'eye': 'OS', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px'},
+    {'patient': 'P-2605-037', 'eye': 'OS', 'type': 'single', 'key': 'latest_2026-05-12', 'prompt': 'Patient: P-2605-037\nAge: 65\nEye Side: OS\nDrusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-037', 'eye': 'OS', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px'},
     
-    {'patient': 'P-2605-037', 'eye': 'OD', 'type': 'single', 'key': 'latest_2026-05-12', 'prompt': 'Patient: P-2605-037\nAge: 65\nEye Side: OD\nDrusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
-    {'patient': 'P-2605-037', 'eye': 'OD', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 0px, SRF: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px'},
+    {'patient': 'P-2605-037', 'eye': 'OD', 'type': 'single', 'key': 'latest_2026-05-12', 'prompt': 'Patient: P-2605-037\nAge: 65\nEye Side: OD\nDrusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nWrite a clinical summary.'},
+    {'patient': 'P-2605-037', 'eye': 'OD', 'type': 'progression', 'key': 'latest_vs_baseline', 'prompt': 'Compare Baseline: Drusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px\nto Current: Drusen: 0px, SRF: 0px, PED: 0px, IRF: 0px, SHRM: 0px, IS/OS: 0px'},
 ]
 
 async def main():
@@ -154,7 +154,7 @@ async def main():
             with open(output_path, 'w', encoding='utf-8') as f:
                 json.dump(final_output, f, indent=2, ensure_ascii=False)
                 
-            time.sleep(2) 
+            time.sleep(8) 
         else:
             print('Failed to generate item.')
 
