@@ -767,7 +767,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                     <div style={{ flex: '1 1 50%' }}>
                       <div style={{ marginBottom: '16px' }}>
                         <p className="report-title">Diagnostic Summary:</p>
-                        <p id="summaryText" className="report-desc" style={{ whiteSpace: 'pre-wrap' }}>
+                        <p id="summaryText" className="report-desc" style={{ whiteSpace: 'pre-wrap', textIndent: '24px' }}>
                           {summaryText}
                         </p>
                       </div>
