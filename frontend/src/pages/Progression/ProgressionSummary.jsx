@@ -137,16 +137,20 @@ const getVisitsForPatient = (patient, eyeSide = 'os') => {
   }
 };
 
-const getSummaryForPatient = (patient, eyeSide = 'os') => {
-  const name = patient?.name || "Khanatip Gankingpai";
-  if (name.includes("Khanatip")) {
-    if (eyeSide === 'os') {
+const getSummaryForPatient = (patient, activeEye, activeIndex = 0) => {
+  if (activeIndex > 0) {
+    return "Baseline scan. No progression history available for comparison.";
+  }
+
+  const name = patient?.name || patient?.first_name || "Unknown";
+  if (name.includes("Khanatip") || name.includes("P-2605-016")) {
+    if (activeEye === 'os') {
       return "Compared to the previous scan on Jan 15, 2024, the disease progression shows a significant worsening trend. While the previous scan indicated only Subretinal Hyperreflective Material (SHRM), the current scan reveals new fluid accumulation, including both SRF and IRF. This suggests a potential transition from Intermediate AMD to active Neovascular (Wet) AMD.";
     } else {
       return "Compared to the previous scan on Jan 15, 2024, the dry AMD findings in the right eye are stable. Mild drusen accumulation remains unchanged with no sign of geographic atrophy or active neovascularization.";
     }
   } else if (name.includes("Jirawat")) {
-    if (eyeSide === 'os') {
+    if (activeEye === 'os') {
       return "Compared to the previous scan on Dec 10, 2023, the disease progression shows a stable trend. No new lesion or fluid accumulation is observed. The early AMD findings are well-maintained with recommendation of routine follow-up.";
     } else {
       return "The right retina appears completely normal. Retinal layer structural integrity is well-preserved with no signs of drusen or subretinal/intraretinal fluid accumulation.";
@@ -350,9 +354,10 @@ export default function ProgressionSummary({ patient, onBack }) {
             const parsed = JSON.parse(savedMock);
             if (parsed && parsed.length > 0) {
               setVisits(parsed);
-              setActiveIndex(parsed.length > 1 ? 1 : 0);
-              const firstVisit = parsed[0];
-              setSummaryText(firstVisit.summary || getSummaryForPatient(patient, activeEye));
+              const newActiveIndex = parsed.length > 1 ? 1 : 0;
+              setActiveIndex(newActiveIndex);
+              const activeVisit = parsed[newActiveIndex];
+              setSummaryText(activeVisit.summary || getSummaryForPatient(patient, activeEye, newActiveIndex));
               return;
             }
           } catch (e) {
@@ -361,8 +366,9 @@ export default function ProgressionSummary({ patient, onBack }) {
         }
         const fallbackVisits = getVisitsForPatient(patient, activeEye);
         setVisits(fallbackVisits);
-        setActiveIndex(fallbackVisits.length > 1 ? 1 : 0);
-        setSummaryText(getSummaryForPatient(patient, activeEye));
+        const newActiveIndex = fallbackVisits.length > 1 ? 1 : 0;
+        setActiveIndex(newActiveIndex);
+        setSummaryText(getSummaryForPatient(patient, activeEye, newActiveIndex));
       };
 
       try {
@@ -396,8 +402,9 @@ export default function ProgressionSummary({ patient, onBack }) {
           });
 
           setVisits(mappedVisits);
-          setActiveIndex(mappedVisits.length > 1 ? 1 : 0);
-          setSummaryText(mappedVisits[0]?.rawTimeline?.progression_summary || mappedVisits[0]?.summary || getSummaryForPatient(patient, activeEye));
+          const newActiveIndex = mappedVisits.length > 1 ? 1 : 0;
+          setActiveIndex(newActiveIndex);
+          setSummaryText(mappedVisits[newActiveIndex]?.rawTimeline?.progression_summary || mappedVisits[newActiveIndex]?.summary || getSummaryForPatient(patient, activeEye, newActiveIndex));
         } else {
           // Fallback to mockup data if timeline is empty
           loadMockupData(pId);
@@ -416,7 +423,7 @@ export default function ProgressionSummary({ patient, onBack }) {
         setSummaryText(visits[activeIndex].rawTimeline.progression_summary);
       } else {
         // Fallback for mockup visits or missing progression_summary
-        setSummaryText(visits[activeIndex].summary || getSummaryForPatient(patient, activeEye));
+        setSummaryText(visits[activeIndex].summary || getSummaryForPatient(patient, activeEye, activeIndex));
       }
     }
   }, [activeIndex, visits, patient, activeEye]);
