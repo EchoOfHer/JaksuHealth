@@ -222,13 +222,19 @@ def get_dataset_metadata(dataset_id: str):
                 shrm = int(float(row.get("SHRM_Pixels", 0)))
                 is_os = int(float(row.get("IS/OS_Pixels", 0)))
                 
+                srf_conf = float(row.get("SRF_Confidence", 0.0))
+                ped_conf = float(row.get("PED_Confidence", 0.0))
+                irf_conf = float(row.get("IRF_Confidence", 0.0))
+                shrm_conf = float(row.get("SHRM_Confidence", 0.0))
+                is_os_conf = float(row.get("IS/OS_Confidence", 0.0))
+                
                 data.append({
                     "Image_Name": row.get("Image_Name", ""),
-                    "SRF": srf,
-                    "PED": ped,
-                    "IRF": irf,
-                    "SHRM": shrm,
-                    "IS_OS": is_os,
+                    "SRF": srf, "SRF_Conf": srf_conf,
+                    "PED": ped, "PED_Conf": ped_conf,
+                    "IRF": irf, "IRF_Conf": irf_conf,
+                    "SHRM": shrm, "SHRM_Conf": shrm_conf,
+                    "IS_OS": is_os, "IS_OS_Conf": is_os_conf,
                     "Total_Lesion_Pixels": srf + ped + irf + shrm + is_os
                 })
         
