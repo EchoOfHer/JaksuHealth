@@ -685,12 +685,15 @@ export default function ProgressionSummary({ patient, onBack }) {
   const currentImageName = csvMetadata[scaleValue - 1]?.Image_Name || `${currentDatasetId}_${scaleValue}.png`;
   const prevImageName = prevCsvMetadata[prevScaleValue - 1]?.Image_Name || `${prevDatasetId}_${prevScaleValue}.png`;
 
+  const currentFolderPrefix = currentDatasetId.includes('natthawut') ? 'cropped' : 'padded';
+  const prevFolderPrefix = prevDatasetId.includes('natthawut') ? 'cropped' : 'padded';
+
   const octImgUrl = showMask
-    ? `/dataset/${currentDatasetId}/cropped_overlays/${currentImageName}`
-    : `/dataset/${currentDatasetId}/cropped_images/${currentImageName}`;
+    ? `/dataset/${currentDatasetId}/${currentFolderPrefix}_overlays/${currentImageName}`
+    : `/dataset/${currentDatasetId}/${currentFolderPrefix}_images/${currentImageName}`;
   const prevOctImgUrl = showMask
-    ? `/dataset/${prevDatasetId}/cropped_overlays/${prevImageName}`
-    : `/dataset/${prevDatasetId}/cropped_images/${prevImageName}`;
+    ? `/dataset/${prevDatasetId}/${prevFolderPrefix}_overlays/${prevImageName}`
+    : `/dataset/${prevDatasetId}/${prevFolderPrefix}_images/${prevImageName}`;
 
   return (
     <div className="progression-summary-container progression-summary-page">
