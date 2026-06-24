@@ -206,7 +206,7 @@ export default function ProgressionSummary({ patient, onBack }) {
     },
     'P-2605-012': { 
       os: { current: '130', baseline: '6' }, 
-      od: { current: '117', baseline: '95' } 
+      od: { current: 'natthawut_od', baseline: 'natthawut_od' } 
     },
     'P-2605-037': { 
       os: { current: 'natthawut_os', baseline: 'natthawut_os' }, 

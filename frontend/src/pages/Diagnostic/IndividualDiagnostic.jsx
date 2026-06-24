@@ -172,7 +172,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   // ตั้งค่า mapping สำหรับคนไข้เพื่อหา dataset_id ของภาพและข้อมูลจริง
   const patientToDatasetMap = {
     'P-2605-016': { os: '79', od: '14' }, // Khanatip (Intermediate/Early)
-    'P-2605-012': { os: '130', od: '117' },   // Jirawat (Early/Normal)
+    'P-2605-012': { os: '130', od: 'natthawut_od' },   // Jirawat (Early/Normal)
     'P-2605-037': { os: 'natthawut_os', od: 'natthawut_od' }  // Natthawut (Normal/Normal)
   };
   const pId = patient?.id || passedPatient?.id || 'P-2605-016';

@@ -207,7 +207,11 @@ def get_dataset_metadata(dataset_id: str):
     import csv
     
     dataset_dir = get_dataset_dir()
-    csv_path = os.path.join(dataset_dir, dataset_id, f"{dataset_id}_detailed_report.csv")
+    csv_path_detailed = os.path.join(dataset_dir, dataset_id, f"{dataset_id}_detailed_report.csv")
+    csv_path_lesion = os.path.join(dataset_dir, dataset_id, f"{dataset_id}_lesion_report.csv")
+    
+    csv_path = csv_path_detailed if os.path.exists(csv_path_detailed) else csv_path_lesion
+
     if not os.path.exists(csv_path):
         raise HTTPException(status_code=404, detail=f"ไม่พบไฟล์ข้อมูลรอยโรคสำหรับรหัส {dataset_id}")
         
@@ -216,11 +220,11 @@ def get_dataset_metadata(dataset_id: str):
         with open(csv_path, mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                srf = int(float(row.get("SRF_Pixels", 0)))
-                ped = int(float(row.get("PED_Pixels", 0)))
-                irf = int(float(row.get("IRF_Pixels", 0)))
-                shrm = int(float(row.get("SHRM_Pixels", 0)))
-                is_os = int(float(row.get("IS/OS_Pixels", 0)))
+                srf = int(float(row.get("SRF_Pixels", row.get("SRF", 0))))
+                ped = int(float(row.get("PED_Pixels", row.get("PED", 0))))
+                irf = int(float(row.get("IRF_Pixels", row.get("IRF", 0))))
+                shrm = int(float(row.get("SHRM_Pixels", row.get("SHRM", 0))))
+                is_os = int(float(row.get("IS/OS_Pixels", row.get("IS/OS", 0))))
                 
                 srf_conf = float(row.get("SRF_Confidence", 0.0))
                 ped_conf = float(row.get("PED_Confidence", 0.0))
@@ -244,7 +248,7 @@ def get_dataset_metadata(dataset_id: str):
             try:
                 parts = name.split("_")
                 if len(parts) > 1:
-                    num_str = parts[1].split(".")[0]
+                    num_str = parts[-1].split(".")[0] # Fix to use the last part which is usually the number
                 else:
                     num_str = parts[0].split(".")[0]
                 return int(num_str)
