@@ -599,11 +599,11 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   const currentImageName = csvMetadata[scaleValue - 1]?.Image_Name || `${datasetId}_${scaleValue}.png`;
   
   const octImgUrl = showMask 
-    ? `/dataset/${datasetId}/cropped_overlays/${currentImageName}`
-    : `/dataset/${datasetId}/cropped_images/${currentImageName}`;
+    ? `/dataset/${datasetId}/padded_overlays/${currentImageName}`
+    : `/dataset/${datasetId}/padded_images/${currentImageName}`;
 
-  const originalOctImgUrl = `/dataset/${datasetId}/cropped_images/${currentImageName}`;
-  const biomarkerOctImgUrl = `/dataset/${datasetId}/cropped_overlays/${currentImageName}`;
+  const originalOctImgUrl = `/dataset/${datasetId}/padded_images/${currentImageName}`;
+  const biomarkerOctImgUrl = `/dataset/${datasetId}/padded_overlays/${currentImageName}`;
 
   const currentSliceData = csvMetadata[scaleValue - 1] || {
     SRF: 0, PED: 0, IRF: 0, SHRM: 0, IS_OS: 0, Total_Lesion_Pixels: 0
