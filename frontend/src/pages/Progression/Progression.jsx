@@ -106,8 +106,8 @@ const ProgressionPage = () => {
                     trendColor = "#EF4444";
                     dotColor = "#EF4444";
                   } else if (trend.toLowerCase().includes("stable")) {
-                    trendColor = "#FE7743";
-                    dotColor = "#FE7743";
+                    trendColor = "#3B82F6";
+                    dotColor = "#3B82F6";
                   } else {
                     trendColor = "#22C55E";
                     dotColor = "#22C55E";
@@ -146,8 +146,8 @@ const ProgressionPage = () => {
                   trendColor = "#EF4444";
                   dotColor = "#EF4444";
                 } else if (trend.toLowerCase().includes("stable")) {
-                  trendColor = "#FE7743";
-                  dotColor = "#FE7743";
+                  trendColor = "#3B82F6";
+                  dotColor = "#3B82F6";
                 } else {
                   trendColor = "#22C55E";
                   dotColor = "#22C55E";

@@ -766,9 +766,9 @@ export default function ProgressionSummary({ patient, onBack }) {
                 <div style={{ 
                   fontWeight: 7, 
                   color: (aiTrend || '').toLowerCase().includes('worsening') ? '#EF4444' :
-                         (aiTrend || '').toLowerCase().includes('stable') ? '#F59E0B' :
+                         (aiTrend || '').toLowerCase().includes('stable') ? '#3B82F6' :
                          (!aiTrend && visits[0]?.stage && (visits[0].stage.includes('Intermediate') || visits[0].stage.includes('Wet'))) ? '#EF4444' :
-                         (!aiTrend && visits[0]?.stage?.includes('Early')) ? '#F59E0B' : '#22C55E'
+                         (!aiTrend && visits[0]?.stage?.includes('Early')) ? '#3B82F6' : '#22C55E'
                 }}>
                   {aiTrend || (visits[0]?.stage === 'Normal' ? 'Normal' : visits[0]?.stage === 'Early AMD' ? 'Stable' : 'Worsening')}
                 </div>

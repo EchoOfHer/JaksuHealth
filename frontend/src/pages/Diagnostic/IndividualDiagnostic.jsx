@@ -505,8 +505,10 @@ export default function IndividualDiagnostic({ patient, onBack }) {
         if (progIdx !== -1) {
           progList[progIdx].stage = riskStatus;
           progList[progIdx].lastVisit = todayStr;
-          progList[progIdx].trend = riskStatus === "Intermediate AMD" ? "Worsening" : riskStatus === "Early AMD" ? "Stable" : "Normal";
-          progList[progIdx].trendColor = riskStatus === "Intermediate AMD" ? "#EF4444" : riskStatus === "Early AMD" ? "#FE7743" : "#22C55E";
+          const isWorsening = ["Intermediate AMD", "Inter. AMD", "Wet AMD", "Active Wet AMD"].includes(riskStatus);
+          const isStable = ["Early AMD"].includes(riskStatus);
+          progList[progIdx].trend = isWorsening ? "Worsening" : isStable ? "Stable" : "Normal";
+          progList[progIdx].trendColor = isWorsening ? "#EF4444" : isStable ? "#3B82F6" : "#22C55E";
           progList[progIdx].dotColor = progList[progIdx].trendColor;
           localStorage.setItem('mockProgressionPatients', JSON.stringify(progList));
         }
