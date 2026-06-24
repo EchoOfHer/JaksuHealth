@@ -6,14 +6,14 @@
           "condition_stage": "Wet AMD",
           "risk_level": "High",
           "ai_trend": "Active Exudation",
-          "drafted_summary": "Significant Subretinal Fluid (53792) and Pigment Epithelial Detachment (12194) are present with severe IS/OS disruption (79459), indicating active exudative maculopathy that strongly threatens vision.",
+          "drafted_summary": "Significant Subretinal Fluid and Pigment Epithelial Detachment are present with severe IS/OS disruption, indicating active exudative maculopathy that strongly threatens vision.",
           "suggested_action": "1. Urgent consultation with a retina specialist\n2. Consider initiation of Anti-VEGF therapy\n3. Close monitoring of fluid levels"
         },
         "previous_2024-01-15": {
           "condition_stage": "Dry AMD",
           "risk_level": "Moderate",
           "ai_trend": "Stable Dry",
-          "drafted_summary": "Moderate drusen (600) are present without signs of fluid accumulation or photoreceptor disruption, indicating non-exudative macular degeneration.",
+          "drafted_summary": "Moderate drusen are present without signs of fluid accumulation or photoreceptor disruption, indicating non-exudative macular degeneration.",
           "suggested_action": "1. Routine monitoring with an Amsler grid\n2. Recommend AREDS2 supplements\n3. Follow up examination in 6 months"
         },
         "baseline_2023-07-22": {
@@ -29,21 +29,21 @@
           "condition_stage": "Wet AMD",
           "risk_level": "High",
           "progression_trend": "Worsening",
-          "progression_summary": "Severe progression from dry to wet AMD, marked by a new onset of significant Subretinal Fluid (53792) and PED (12194) with extensive structural damage.",
+          "progression_summary": "Severe progression from dry to wet AMD, marked by a new onset of significant Subretinal Fluid and PED with extensive structural damage.",
           "suggested_action": "1. Urgent consultation with a retina specialist\n2. Immediate consideration for Anti-VEGF therapy\n3. Close follow-up monitoring"
         },
         "latest_vs_baseline": {
           "condition_stage": "Wet AMD",
           "risk_level": "High",
           "progression_trend": "Worsening",
-          "progression_summary": "Dramatic deterioration from a normal baseline to active exudative AMD, characterized by massive fluid accumulation and severe IS/OS disruption (79459).",
+          "progression_summary": "Dramatic deterioration from a normal baseline to active exudative AMD, characterized by massive fluid accumulation and severe IS/OS disruption.",
           "suggested_action": "1. Urgent consultation with a retina specialist\n2. Immediate consideration for Anti-VEGF therapy\n3. Frequent structural monitoring"
         },
         "previous_vs_baseline": {
           "condition_stage": "Dry AMD",
           "risk_level": "Moderate",
           "progression_trend": "Worsening",
-          "progression_summary": "Progression from a normal baseline to early/intermediate dry AMD due to the new appearance of drusen (600).",
+          "progression_summary": "Progression from a normal baseline to early/intermediate dry AMD due to the new appearance of drusen.",
           "suggested_action": "1. Initiate AREDS2 supplements\n2. Monitor with an Amsler grid\n3. Follow up examination in 6 months"
         }
       }
@@ -54,7 +54,7 @@
           "condition_stage": "Wet AMD",
           "risk_level": "High",
           "ai_trend": "Active Exudation",
-          "drafted_summary": "Presence of Subretinal Fluid (11305) and significant Pigment Epithelial Detachment (31689) with photoreceptor damage indicates an active exudative process.",
+          "drafted_summary": "Presence of Subretinal Fluid and significant Pigment Epithelial Detachment with photoreceptor damage indicates an active exudative process.",
           "suggested_action": "1. Urgent consultation with a retina specialist\n2. Consider initiation of Anti-VEGF therapy\n3. Close monitoring of fluid levels"
         },
         "baseline_2024-01-15": {
@@ -83,14 +83,14 @@
           "condition_stage": "Severe Wet AMD",
           "risk_level": "High",
           "ai_trend": "Severe Exudation",
-          "drafted_summary": "Massive Pigment Epithelial Detachment (478400), Subretinal Fluid (27055), and profound IS/OS disruption (112203) indicate a severe, vision-threatening active exudative disease.",
+          "drafted_summary": "Massive Pigment Epithelial Detachment, Subretinal Fluid, and profound IS/OS disruption indicate a severe, vision-threatening active exudative disease.",
           "suggested_action": "1. Immediate consultation with a retina specialist\n2. Urgent initiation of Anti-VEGF therapy\n3. Intensive monitoring protocol"
         },
         "previous_2023-12-10": {
           "condition_stage": "Early Dry AMD",
           "risk_level": "Low",
           "ai_trend": "Stable Dry",
-          "drafted_summary": "Minimal drusen (150) are present without any exudative changes or structural disruption.",
+          "drafted_summary": "Minimal drusen are present without any exudative changes or structural disruption.",
           "suggested_action": "1. Routine monitoring with an Amsler grid\n2. Follow up examination in 6-12 months\n3. Consider dietary modifications for macular health"
         },
         "baseline_2023-10-05": {
@@ -120,7 +120,7 @@
           "condition_stage": "Early Dry AMD",
           "risk_level": "Low",
           "progression_trend": "Worsening",
-          "progression_summary": "Mild structural changes showing the new appearance of small drusen (150) compared to a completely normal baseline.",
+          "progression_summary": "Mild structural changes showing the new appearance of small drusen compared to a completely normal baseline.",
           "suggested_action": "1. Routine monitoring with an Amsler grid\n2. Consider dietary modifications for macular health\n3. Follow up examination in 6-12 months"
         }
       }
@@ -131,7 +131,7 @@
           "condition_stage": "Wet AMD",
           "risk_level": "High",
           "ai_trend": "Active Exudation",
-          "drafted_summary": "Significant Subretinal Fluid (24408), PED (25734), and the presence of SHRM (6067) combined with extensive photoreceptor damage point to highly active exudative maculopathy.",
+          "drafted_summary": "Significant Subretinal Fluid, PED, and the presence of SHRM combined with extensive photoreceptor damage point to highly active exudative maculopathy.",
           "suggested_action": "1. Urgent consultation with a retina specialist\n2. Consider initiation of Anti-VEGF therapy\n3. Close monitoring of fluid levels"
         },
         "baseline_2023-10-05": {
