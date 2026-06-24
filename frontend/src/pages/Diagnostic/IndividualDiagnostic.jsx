@@ -762,60 +762,66 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                     <p style={{ margin: 0, fontSize: '13px' }}>Analyzing OCT data with AI...</p>
                   </div>
                 ) : (
-                  <>
-                    <div style={{ marginBottom: '16px' }}>
-                      <p className="report-title" style={{ color: '#EF4444', borderBottom: '1px solid #eee', paddingBottom: '4px', marginBottom: '8px' }}>Present (abnormal)</p>
-                      <ul style={{ listStyleType: 'none', paddingLeft: 0, margin: 0, fontSize: '13px', color: '#333' }}>
-                        {currentSliceData.SRF > 0 && (
-                          <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                            <span>Significant subretinal fluid (SRF)</span>
-                            <span style={{ fontWeight: 'bold' }}>{Math.round(currentSliceData.SRF_Conf * 100)}%</span>
-                          </li>
-                        )}
-                        {currentSliceData.PED > 0 && (
-                          <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                            <span>Pigment epithelial detachment (PED)</span>
-                            <span style={{ fontWeight: 'bold' }}>{Math.round(currentSliceData.PED_Conf * 100)}%</span>
-                          </li>
-                        )}
-                        {currentSliceData.IRF > 0 && (
-                          <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                            <span>Intraretinal fluid (IRF)</span>
-                            <span style={{ fontWeight: 'bold' }}>{Math.round(currentSliceData.IRF_Conf * 100)}%</span>
-                          </li>
-                        )}
-                        {currentSliceData.SHRM > 0 && (
-                          <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                            <span>Subretinal Hyperreflective Material (SHRM)</span>
-                            <span style={{ fontWeight: 'bold' }}>{Math.round(currentSliceData.SHRM_Conf * 100)}%</span>
-                          </li>
-                        )}
-                        {currentSliceData.IS_OS > 0 && (
-                          <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                            <span>Severe IS/OS disruption</span>
-                            <span style={{ fontWeight: 'bold' }}>{Math.round(currentSliceData.IS_OS_Conf * 100)}%</span>
-                          </li>
-                        )}
-                        {(!currentSliceData.SRF && !currentSliceData.PED && !currentSliceData.IRF && !currentSliceData.SHRM && !currentSliceData.IS_OS) && (
-                          <li style={{ color: '#888', fontStyle: 'italic' }}>No significant abnormalities detected in this slice.</li>
-                        )}
-                      </ul>
+                  <div style={{ display: 'flex', gap: '24px' }}>
+                    {/* Left Column */}
+                    <div style={{ flex: '1 1 50%' }}>
+                      <div style={{ marginBottom: '16px' }}>
+                        <p className="report-title">Diagnostic Summary:</p>
+                        <p id="summaryText" className="report-desc" style={{ whiteSpace: 'pre-wrap' }}>
+                          {summaryText}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="report-title">Treatment Guideline:</p>
+                        <p id="actionText" className="report-desc" style={{ whiteSpace: 'pre-wrap' }}>
+                          {actionText ? actionText.replace(/ (\d+\.)/g, '\n$1') : ''}
+                        </p>
+                      </div>
                     </div>
 
-                    <div style={{ marginBottom: '16px' }}>
-                      <p className="report-title">Diagnostic Summary:</p>
-                      <p id="summaryText" className="report-desc" style={{ whiteSpace: 'pre-wrap' }}>
-                        {summaryText}
-                      </p>
+                    {/* Right Column */}
+                    <div style={{ flex: '1 1 50%' }}>
+                      <div style={{ marginBottom: '16px' }}>
+                        <p className="report-title" style={{ color: '#EF4444', borderBottom: '1px solid #eee', paddingBottom: '4px', marginBottom: '8px' }}>Present (abnormal)</p>
+                        <ul className="report-desc" style={{ listStyleType: 'none', paddingLeft: 0, margin: 0, color: '#333' }}>
+                          {currentSliceData.SRF > 0 && (
+                            <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                              <span>Significant subretinal fluid (SRF)</span>
+                              <span style={{ fontWeight: 'bold' }}>{Math.round(currentSliceData.SRF_Conf * 100)}%</span>
+                            </li>
+                          )}
+                          {currentSliceData.PED > 0 && (
+                            <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                              <span>Pigment epithelial detachment (PED)</span>
+                              <span style={{ fontWeight: 'bold' }}>{Math.round(currentSliceData.PED_Conf * 100)}%</span>
+                            </li>
+                          )}
+                          {currentSliceData.IRF > 0 && (
+                            <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                              <span>Intraretinal fluid (IRF)</span>
+                              <span style={{ fontWeight: 'bold' }}>{Math.round(currentSliceData.IRF_Conf * 100)}%</span>
+                            </li>
+                          )}
+                          {currentSliceData.SHRM > 0 && (
+                            <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                              <span>Subretinal Hyperreflective Material (SHRM)</span>
+                              <span style={{ fontWeight: 'bold' }}>{Math.round(currentSliceData.SHRM_Conf * 100)}%</span>
+                            </li>
+                          )}
+                          {currentSliceData.IS_OS > 0 && (
+                            <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                              <span>Severe IS/OS disruption</span>
+                              <span style={{ fontWeight: 'bold' }}>{Math.round(currentSliceData.IS_OS_Conf * 100)}%</span>
+                            </li>
+                          )}
+                          {(!currentSliceData.SRF && !currentSliceData.PED && !currentSliceData.IRF && !currentSliceData.SHRM && !currentSliceData.IS_OS) && (
+                            <li style={{ color: '#888', fontStyle: 'italic' }}>No significant abnormalities detected in this slice.</li>
+                          )}
+                        </ul>
+                      </div>
                     </div>
-
-                    <div>
-                      <p className="report-title">Treatment Guideline:</p>
-                      <p id="actionText" className="report-desc" style={{ whiteSpace: 'pre-wrap' }}>
-                        {actionText ? actionText.replace(/ (\d+\.)/g, '\n$1') : ''}
-                      </p>
-                    </div>
-                  </>
+                  </div>
                 )}
 
                 <div className="copy-action-wrapper">
