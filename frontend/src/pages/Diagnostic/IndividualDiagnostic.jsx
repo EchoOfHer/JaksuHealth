@@ -871,7 +871,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
       {/* POPUP MODAL (EDIT TEXT OVERLAY) */}
       {isEditModalOpen && (
         <div id="modalBackdrop" className="modal-overlay-show" onClick={closeEditModal}>
-          <div id="modalContainer" onClick={(e) => e.stopPropagation()}>
+          <div id="individualModalContainer" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close-circle-btn" onClick={closeEditModal}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -915,27 +915,29 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                   />
                   Normal
                 </label>
-                <label className="modal-radio-label">
-                  <input 
-                    type="radio" 
-                    name="modalRisk" 
-                    value="Other" 
-                    className="modal-radio-input"
-                    checked={modalRisk === 'Other'}
-                    onChange={(e) => setModalRisk(e.target.value)}
-                  />
-                  Other...
-                  <input 
-                    type="text" 
-                    placeholder="Type status..." 
-                    className="modal-text-input" 
-                    value={modalRiskOther}
-                    onChange={(e) => {
-                      setModalRisk('Other');
-                      setModalRiskOther(e.target.value);
-                    }}
-                  />
-                </label>
+                <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginTop: '4px' }}>
+                  <label className="modal-radio-label" style={{ marginBottom: modalRisk === 'Other' ? '8px' : '0' }}>
+                    <input 
+                      type="radio" 
+                      name="modalRisk" 
+                      value="Other" 
+                      className="modal-radio-input"
+                      checked={modalRisk === 'Other'}
+                      onChange={(e) => setModalRisk(e.target.value)}
+                    />
+                    Other...
+                  </label>
+                  {modalRisk === 'Other' && (
+                    <input 
+                      type="text" 
+                      placeholder="Type status..." 
+                      className="modal-text-input" 
+                      value={modalRiskOther}
+                      onChange={(e) => setModalRiskOther(e.target.value)}
+                      style={{ width: '100%', boxSizing: 'border-box' }}
+                    />
+                  )}
+                </div>
               </div>
             </div>
 

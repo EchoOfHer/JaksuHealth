@@ -510,7 +510,7 @@
   animation: fadeIn 0.2s forwards ease-out;
 }
 
-#modalContainer {
+#individualModalContainer {
   background-color: #FFFFFF;
   border-radius: 24px;
   padding: 36px 40px;
@@ -906,7 +906,7 @@
   }
 
   /* Modals */
-  #modalContainer {
+  #individualModalContainer {
     padding: 24px 20px;
     gap: 16px;
     width: 95%;
