@@ -999,7 +999,22 @@
 
 .mask-tab:not(.active):hover {
   opacity: 1;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* ══════════════════════════════════════════════════
+   COPILOT TWO COLUMN RESPONSIVE
+   ══════════════════════════════════════════════════ */
+.copilot-two-column {
+  display: flex;
+  gap: 48px;
+}
+
+@media (max-width: 1024px) {
+  .copilot-two-column {
+    flex-direction: column;
+    gap: 24px;
+  }
 }
 
 .oct-overlay-toggle {

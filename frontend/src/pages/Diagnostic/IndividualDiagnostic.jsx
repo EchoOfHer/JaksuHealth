@@ -762,7 +762,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                     <p style={{ margin: 0, fontSize: '13px' }}>Analyzing OCT data with AI...</p>
                   </div>
                 ) : (
-                  <div style={{ display: 'flex', gap: '48px' }}>
+                  <div className="copilot-two-column">
                     {/* Left Column */}
                     <div style={{ flex: '1 1 50%' }}>
                       <div style={{ marginBottom: '16px' }}>
@@ -783,7 +783,10 @@ export default function IndividualDiagnostic({ patient, onBack }) {
                     {/* Right Column */}
                     <div style={{ flex: '1 1 50%' }}>
                       <div style={{ marginBottom: '16px' }}>
-                        <p className="report-title" style={{ color: '#EF4444', borderBottom: '1px solid #eee', paddingBottom: '4px', marginBottom: '8px' }}>Present (abnormal)</p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '4px', marginBottom: '8px' }}>
+                          <p className="report-title" style={{ color: '#EF4444', margin: 0 }}>Present (abnormal)</p>
+                          <p className="report-title" style={{ color: '#888', margin: 0, fontSize: '13px' }}>AI Confidence (%)</p>
+                        </div>
                         <ul className="report-desc" style={{ listStyleType: 'none', paddingLeft: 0, margin: 0, color: '#333' }}>
                           {currentSliceData.SRF > 0 && (
                             <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
