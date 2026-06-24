@@ -465,7 +465,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
       } else if (pName.includes("Jirawat")) {
         if (activeEye === 'os') {
           visitsList = [
-            { date: "May 18, 2026", stage: "Early AMD", detection: "Stable", isLatest: true, lesionPath: "M 190,132 Q 215,115 240,132 Z", strokePath: "M 10,105 L 180,123 Q 230,130 280,127 L 450,127" },
+            { date: "May 18, 2026", stage: "Wet AMD", detection: "Worsening", isLatest: true, lesionPath: "M 210,130 Q 230,110 250,130 Z", strokePath: "M 10,105 L 180,123 Q 230,132 280,127 L 450,127" },
             { date: "Dec 10, 2023", stage: "Early AMD", detection: "1st Detection", isLatest: false, lesionPath: "M 180,135 Q 200,120 220,135 Z", strokePath: "M 10,105 L 180,122 Q 230,129 280,127 L 450,127" },
             { date: "Oct 05, 2023", stage: "Normal", detection: "Baseline", isLatest: false, lesionPath: "", strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127" }
           ];

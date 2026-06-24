@@ -201,16 +201,16 @@ export default function ProgressionSummary({ patient, onBack }) {
 
   const patientToDatasetMap = {
     'P-2605-016': { 
-      os: { current: '79', baseline: 'natthawut_os' }, 
-      od: { current: '14', baseline: 'natthawut_od' } 
+      os: { current: '79', historical: '14', baseline: 'natthawut_os' }, 
+      od: { current: '14', historical: '14', baseline: 'natthawut_od' } 
     },
     'P-2605-012': { 
-      os: { current: '130', baseline: 'natthawut_os' }, 
-      od: { current: '117', baseline: 'natthawut_od' } 
+      os: { current: '130', historical: '14', baseline: 'natthawut_os' }, 
+      od: { current: '117', historical: '117', baseline: 'natthawut_od' } 
     },
     'P-2605-037': { 
-      os: { current: 'natthawut_os', baseline: 'natthawut_os' }, 
-      od: { current: 'natthawut_od', baseline: 'natthawut_od' } 
+      os: { current: 'natthawut_os', historical: 'natthawut_os', baseline: 'natthawut_os' }, 
+      od: { current: 'natthawut_od', historical: 'natthawut_od', baseline: 'natthawut_od' } 
     }
   };
 
@@ -225,7 +225,7 @@ export default function ProgressionSummary({ patient, onBack }) {
     ? currentDatasetId
     : (isSelectedVisitNormal 
         ? `natthawut_${eyeSide}` 
-        : (patientToDatasetMap[pId]?.[eyeSide]?.baseline || '18'));
+        : (patientToDatasetMap[pId]?.[eyeSide]?.historical || '14'));
 
   // โหลดข้อมูล CSV Metadata ของทั้ง Current และ Previous
   useEffect(() => {
