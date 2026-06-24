@@ -221,9 +221,11 @@ export default function ProgressionSummary({ patient, onBack }) {
   const selectedVisit = visits[activeIndex] || {};
   const isSelectedVisitNormal = selectedVisit.stage === 'Normal' || selectedVisit.stage === 'normal';
 
-  const prevDatasetId = activeIndex === 0
+  const previousIndex = activeIndex === 0 ? (visits.length > 1 ? 1 : 0) : activeIndex;
+
+  const prevDatasetId = previousIndex === 0
     ? currentDatasetId
-    : (isSelectedVisitNormal 
+    : ((visits[previousIndex]?.stage === 'Normal' || visits[previousIndex]?.stage === 'normal') 
         ? `natthawut_${eyeSide}` 
         : (patientToDatasetMap[pId]?.[eyeSide]?.historical || '14'));
 
@@ -893,14 +895,22 @@ export default function ProgressionSummary({ patient, onBack }) {
                   <div className="custom-select-wrapper">
                     <select 
                       className="custom-select" 
-                      value={activeIndex} 
+                      value={previousIndex} 
                       onChange={(e) => setActiveIndex(parseInt(e.target.value))}
+                      disabled={visits.length <= 1}
                     >
-                      {visits.map((visit, index) => (
-                        <option key={index} value={index}>
-                          {visit.date} {visit.isLatest ? '( Latest )' : ''}
-                        </option>
-                      ))}
+                      {visits.length <= 1 ? (
+                        <option>ไม่มีตัวให้เทียบ</option>
+                      ) : (
+                        visits.map((visit, index) => {
+                          if (index === 0) return null; // ห้ามเทียบกับตัวมันเอง
+                          return (
+                            <option key={index} value={index}>
+                              {visit.date} {visit.isLatest ? '( Latest )' : ''}
+                            </option>
+                          );
+                        })
+                      )}
                     </select>
                     <span className="select-arrow">▼</span>
                   </div>

@@ -169,7 +169,7 @@ def get_patient_progression_trend(patient_id: str, eye_side: str = 'os', db: Ses
                 "detected_stage": d.condition_stage,
                 "progression_summary": d.drafted_summary,
                 "detection_date": d.created_at.date() if d.created_at else datetime.utcnow().date(),
-                "tag_line": f"รอยืนยัน ({d.eye_side})",
+                "tag_line": f"Pending Review ({d.eye_side})",
                 "created_at": d.created_at or datetime.utcnow(),
                 "is_pending": True,
                 "eye_side": d.eye_side
