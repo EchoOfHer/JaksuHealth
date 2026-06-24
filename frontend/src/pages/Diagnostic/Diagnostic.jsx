@@ -20,25 +20,7 @@ const Diagnostic = ({ onSelectPatient }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ข้อมูลคนไข้ดึงจากระบบหลังบ้านจริง
-  const loadMockPatients = () => {
-    const saved = localStorage.getItem('mockPatients');
-    if (saved) {
-      try {
-        const list = JSON.parse(saved);
-        return list.filter(p => !p.isApproved);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return [
-      { id: "P-2605-016", name: "Khanatip Gankingpai", queue: "Q#001", time: "10:00AM", diagnosis: "Intermediate AMD", riskLevel: "High", colorCode: "#EF4444", rawVisit: { visit_id: "39a2fe63-8bfd-406d-a51b-1c4495b8d00e" } },
-      { id: "P-2605-012", name: "Jirawat Jakthong", queue: "Q#002", time: "10:15AM", diagnosis: "Wet AMD", riskLevel: "High", colorCode: "#EF4444", rawVisit: { visit_id: "49a2fe63-8bfd-406d-a51b-1c4495b8d00f" } },
-      { id: "P-2605-037", name: "Natthawut Saengmani", queue: "Q#003", time: "10:30AM", diagnosis: "Normal", riskLevel: "Low", colorCode: "#40a34f", rawVisit: { visit_id: "59a2fe63-8bfd-406d-a51b-1c4495b8d00e" } }
-    ];
-  };
-
-  const [mockPatients, setMockPatients] = useState(loadMockPatients);
+  const [mockPatients, setMockPatients] = useState([]);
 
   useEffect(() => {
     const fetchPendingPatients = async () => {
@@ -70,79 +52,33 @@ const Diagnostic = ({ onSelectPatient }) => {
             let colorCode = '#FE7743';
 
             if (v.diagnostics && v.diagnostics.length > 0) {
-              const highDiag = v.diagnostics.find(d => d.risk_level === 'High' || d.risk_level === 'High');
-              const medDiag = v.diagnostics.find(d => d.risk_level === 'Medium' || d.risk_level === 'Medium');
+              const highDiag = v.diagnostics.find(d => d.risk_level === 'High');
+              const medDiag = v.diagnostics.find(d => d.risk_level === 'Medium');
               const validDiag = highDiag || medDiag || v.diagnostics[0];
 
               diagnosis = validDiag.condition_stage;
               riskLevel = validDiag.risk_level;
               
-              if (riskLevel === 'High' || riskLevel === 'High') {
+              if (riskLevel === 'High') {
                 colorCode = '#EF4444';
-              } else if (riskLevel === 'Medium' || riskLevel === 'Medium') {
+              } else if (riskLevel === 'Medium') {
                 colorCode = '#FE7743';
               } else {
                 colorCode = '#40a34f';
               }
             } else {
-              // ฐานข้อมูลจริงไม่มี diagnostic (เช่น หลังรัน rollback DB)
-              // ล้างสเตตัส mismatch ใน localStorage เพื่อซิงค์กับ DB
-              const savedMock = localStorage.getItem('mockPatients');
-              if (savedMock) {
-                try {
-                  const savedList = JSON.parse(savedMock);
-                  const index = savedList.findIndex(p => p.id === pid);
-                  if (index !== -1) {
-                    const defaultDiagnosis = pid === 'P-2605-016' ? 'Intermediate AMD' : pid === 'P-2605-012' ? 'Wet AMD' : 'Normal';
-                    // ตรวจพบว่าสเตตัสใน localStorage ถูกอนุมัติ (Approved) แล้ว แต่ยังไม่มีการวินิจฉัยใน DB (เกิดจากการ Rollback)
-                    if (savedList[index].isApproved) {
-                      savedList[index].diagnosis = defaultDiagnosis;
-                      savedList[index].riskLevel = pid === 'P-2605-016' ? 'High' : pid === 'P-2605-012' ? 'High' : 'Low';
-                      savedList[index].colorCode = pid === 'P-2605-016' ? '#EF4444' : pid === 'P-2605-012' ? '#EF4444' : '#40a34f';
-                      savedList[index].isApproved = false;
-                      localStorage.setItem('mockPatients', JSON.stringify(savedList));
-
-                      localStorage.removeItem(`mockDraft_${pid}_os`);
-                      localStorage.removeItem(`mockDraft_${pid}_od`);
-                      localStorage.removeItem(`mockVisits_${pid}_os`);
-                      localStorage.removeItem(`mockVisits_${pid}_od`);
-                    }
-                  }
-                } catch (e) {
-                  console.error(e);
-                }
-              }
-
-              const savedMockUpdated = localStorage.getItem('mockPatients');
-              let foundSaved = false;
-              if (savedMockUpdated) {
-                try {
-                  const savedList = JSON.parse(savedMockUpdated);
-                  const matched = savedList.find(p => p.id === pid);
-                  if (matched) {
-                    diagnosis = matched.diagnosis;
-                    riskLevel = matched.riskLevel;
-                    colorCode = matched.colorCode;
-                    foundSaved = true;
-                  }
-                } catch (e) {
-                  console.error(e);
-                }
-              }
-              if (!foundSaved) {
-                if (pid === 'P-2605-016') {
-                  diagnosis = 'Intermediate AMD';
-                  riskLevel = 'High';
-                  colorCode = '#EF4444';
-                } else if (pid === 'P-2605-012') {
-                  diagnosis = 'Wet AMD';
-                  riskLevel = 'High';
-                  colorCode = '#EF4444';
-                } else if (pid === 'P-2605-037') {
-                  diagnosis = 'Normal';
-                  riskLevel = 'Low';
-                  colorCode = '#40a34f';
-                }
+              if (pid === 'P-2605-016') {
+                diagnosis = 'Intermediate AMD';
+                riskLevel = 'High';
+                colorCode = '#EF4444';
+              } else if (pid === 'P-2605-012') {
+                diagnosis = 'Wet AMD';
+                riskLevel = 'High';
+                colorCode = '#EF4444';
+              } else if (pid === 'P-2605-037') {
+                diagnosis = 'Normal';
+                riskLevel = 'Low';
+                colorCode = '#40a34f';
               }
             }
 
@@ -151,11 +87,11 @@ const Diagnostic = ({ onSelectPatient }) => {
 
           setMockPatients(mapped);
         } else {
-          setMockPatients(loadMockPatients());
+          setMockPatients([]);
         }
       } catch (err) {
-        console.error("Error loading pending diagnostic patients, using mockup fallback:", err);
-        setMockPatients(loadMockPatients());
+        console.error("Error loading pending diagnostic patients:", err);
+        setMockPatients([]);
       }
     };
 
