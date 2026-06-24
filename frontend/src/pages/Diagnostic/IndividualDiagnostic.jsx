@@ -172,7 +172,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
   // ตั้งค่า mapping สำหรับคนไข้เพื่อหา dataset_id ของภาพและข้อมูลจริง
   const patientToDatasetMap = {
     'P-2605-016': { os: '79', od: '14' }, // Khanatip (Intermediate/Early)
-    'P-2605-012': { os: '130', od: 'natthawut_od' },   // Jirawat (Early/Normal)
+    'P-2605-012': { os: '130', od: '117' },   // Jirawat (Early/Wet)
     'P-2605-037': { os: 'natthawut_os', od: 'natthawut_od' }  // Natthawut (Normal/Normal)
   };
   const pId = patient?.id || passedPatient?.id || 'P-2605-016';
@@ -471,7 +471,7 @@ export default function IndividualDiagnostic({ patient, onBack }) {
           ];
         } else {
           visitsList = [
-            { date: "May 18, 2026", stage: "Normal", detection: "Normal", isLatest: true, lesionPath: "", strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127" },
+            { date: "May 18, 2026", stage: "Wet AMD", detection: "Worsening", isLatest: true, lesionPath: "M 210,130 Q 230,110 250,130 Z", strokePath: "M 10,105 L 180,123 Q 230,132 280,127 L 450,127" },
             { date: "Oct 05, 2023", stage: "Normal", detection: "Baseline", isLatest: false, lesionPath: "", strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127" }
           ];
         }

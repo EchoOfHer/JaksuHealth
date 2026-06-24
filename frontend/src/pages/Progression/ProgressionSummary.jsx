@@ -98,11 +98,11 @@ const getVisitsForPatient = (patient, eyeSide = 'os') => {
       return [
         {
           date: "May 18, 2026",
-          stage: "Normal",
-          detection: "Normal",
+          stage: "Wet AMD",
+          detection: "Worsening",
           isLatest: true,
-          lesionPath: "",
-          strokePath: "M 10,105 L 180,120 Q 230,126 280,127 L 450,127"
+          lesionPath: "M 210,130 Q 230,110 250,130 Z",
+          strokePath: "M 10,105 L 180,123 Q 230,132 280,127 L 450,127"
         },
         {
           date: "Oct 05, 2023",
@@ -201,12 +201,12 @@ export default function ProgressionSummary({ patient, onBack }) {
 
   const patientToDatasetMap = {
     'P-2605-016': { 
-      os: { current: '79', baseline: '18' }, 
-      od: { current: '14', baseline: '151' } 
+      os: { current: '79', baseline: 'natthawut_os' }, 
+      od: { current: '14', baseline: 'natthawut_od' } 
     },
     'P-2605-012': { 
-      os: { current: '130', baseline: '6' }, 
-      od: { current: 'natthawut_od', baseline: 'natthawut_od' } 
+      os: { current: '130', baseline: 'natthawut_os' }, 
+      od: { current: '117', baseline: 'natthawut_od' } 
     },
     'P-2605-037': { 
       os: { current: 'natthawut_os', baseline: 'natthawut_os' }, 
