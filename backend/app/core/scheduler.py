@@ -1,12 +1,44 @@
 import threading
 import time
 import logging
-from datetime import date
+import json
+import os
+from datetime import date, datetime
 from app.core.database import SessionLocal
 from app.models.visit import Visit
 from seed_db import seed
 
 logger = logging.getLogger("uvicorn.error")
+
+HISTORY_FILE = "rollback_history.json"
+
+def log_rollback_event(status, issue="None"):
+    history = []
+    if os.path.exists(HISTORY_FILE):
+        try:
+            with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+                history = json.load(f)
+        except Exception:
+            pass
+            
+    record = {
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "status": status,
+        "issue": issue
+    }
+    history.append(record)
+    
+    if len(history) > 200:
+        history = history[-200:]
+        
+    for idx, item in enumerate(history):
+        item["id"] = idx + 1
+        
+    try:
+        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(history, f, indent=4, ensure_ascii=False)
+    except Exception as e:
+        logger.error(f"Failed to write history: {e}")
 
 # Global variables for monitoring
 last_check_time = time.time()
@@ -40,10 +72,16 @@ def check_db_changes_and_rollback():
 
         if modified_visits > 0:
             logger.info("⚠️ [Database Monitor] พบการแก้ไขหรือ Approve คนไข้ในฐานข้อมูล! กำลังดำเนินการ Rollback...")
-            seed()
-            from datetime import datetime
-            last_rollback_time = datetime.utcnow().isoformat() + "Z"
-            logger.info("✅ [Database Monitor] ดำเนินการ Rollback และบันทึกข้อมูลตั้งต้น (Seed) เรียบร้อย")
+            try:
+                seed()
+                from datetime import datetime as dt
+                last_rollback_time = dt.utcnow().isoformat() + "Z"
+                logger.info("✅ [Database Monitor] ดำเนินการ Rollback และบันทึกข้อมูลตั้งต้น (Seed) เรียบร้อย")
+                log_rollback_event("Success", "None")
+            except Exception as e:
+                logger.error(f"❌ [Database Monitor] ดำเนินการ Rollback ล้มเหลว: {e}")
+                log_rollback_event("Failed", str(e))
+                raise e
         else:
             logger.info("ℹ [Database Monitor] ไม่พบการเปลี่ยนแปลงข้อมูลคิวตรวจวันนี้ (สถานะยังคงเป็น PENDING)")
     except Exception as e:
