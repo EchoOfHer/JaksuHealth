@@ -155,8 +155,8 @@ const Dashboard = () => {
           <DashboardPatientCard key={index} patient={patient} />
         ))}
 
-        {/* กล่องควบคุม View All แบบฟุ้งสไลด์เบลอ (แสดงเฉพาะเมื่อเกิน 2 รายการ) */}
-        {mockPatients.length > 2 && (
+        {/* กล่องควบคุม View All แบบฟุ้งสไลด์เบลอ (แสดงเฉพาะเมื่อเกิน 0 รายการ) */}
+        {mockPatients.length > 0 && (
           <div className="view-all-container">
             <div className="blur-overlay"></div>
             
