@@ -2,7 +2,7 @@ import json
 import os
 from tabulate import tabulate
 
-HISTORY_FILE = "rollback_history.json"
+HISTORY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rollback_history.json")
 
 def main():
     if not os.path.exists(HISTORY_FILE):
