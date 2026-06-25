@@ -85,11 +85,9 @@ const ProgressionPage = () => {
                 
                 if (latest.ai_trend) {
                   trend = latest.ai_trend;
-                } else if (stage === "Active Wet AMD" || stage === "Late AMD" || stage === "Late AMD (Neovascular/Wet AMD)" || stage === "Wet AMD") {
+                } else if (stage.toLowerCase().includes("wet") || stage.toLowerCase().includes("late") || stage.toLowerCase().includes("intermediate") || stage.toLowerCase().includes("inter.")) {
                   trend = "Worsening";
-                } else if (stage === "Intermediate AMD" || stage === "Inter. AMD") {
-                  trend = "Worsening";
-                } else if (stage === "Early AMD" || stage === "Early/Intermediate AMD") {
+                } else if (stage.toLowerCase().includes("early")) {
                   trend = "Stable";
                 } else {
                   trend = "Normal";

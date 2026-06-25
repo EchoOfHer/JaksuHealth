@@ -294,21 +294,22 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     // Save draft to PostgreSQL if vId exists
     if (vId) {
       try {
-        let riskLevel = 'Low';
-        let aiTrend = 'Normal';
-        if (finalRisk === 'Intermediate AMD') {
-          riskLevel = 'High';
-          aiTrend = 'Worsening';
-        } else if (finalRisk === 'Early AMD') {
-          riskLevel = 'Medium';
-          aiTrend = 'Stable';
-        } else if (finalRisk === 'Normal') {
-          riskLevel = 'Low';
-          aiTrend = 'Normal';
-        } else {
-          riskLevel = 'High';
-          aiTrend = 'Stable';
-        }
+          let riskLevel = 'Low';
+          let aiTrend = 'Normal';
+          const finalRiskLower = finalRisk.toLowerCase();
+          if (finalRiskLower.includes('wet') || finalRiskLower.includes('late') || finalRiskLower.includes('intermediate') || finalRiskLower.includes('inter.')) {
+            riskLevel = 'High';
+            aiTrend = 'Worsening';
+          } else if (finalRiskLower.includes('early')) {
+            riskLevel = 'Medium';
+            aiTrend = 'Stable';
+          } else if (finalRiskLower.includes('normal')) {
+            riskLevel = 'Low';
+            aiTrend = 'Normal';
+          } else {
+            riskLevel = 'High';
+            aiTrend = 'Stable';
+          }
 
         await API.post('/diagnostics/', {
           patient_id: pId,
@@ -343,13 +344,14 @@ export default function IndividualDiagnostic({ patient, onBack }) {
     // Map risk status to severity risk level as expected by DB schema
     let riskLevel = 'Low';
     let aiTrend = 'Normal';
-    if (riskStatus === 'Intermediate AMD') {
+    const finalRiskLower = riskStatus.toLowerCase();
+    if (finalRiskLower.includes('wet') || finalRiskLower.includes('late') || finalRiskLower.includes('intermediate') || finalRiskLower.includes('inter.')) {
       riskLevel = 'High';
       aiTrend = 'Worsening';
-    } else if (riskStatus === 'Early AMD') {
+    } else if (finalRiskLower.includes('early')) {
       riskLevel = 'Medium';
       aiTrend = 'Stable';
-    } else if (riskStatus === 'Normal') {
+    } else if (finalRiskLower.includes('normal')) {
       riskLevel = 'Low';
       aiTrend = 'Normal';
     } else {
