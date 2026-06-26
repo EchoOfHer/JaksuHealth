@@ -604,8 +604,8 @@ export default function IndividualDiagnostic({ patient, onBack }) {
 
               <div className="biomarker-legend-row">
                 <div className="legend-item"><span className="dot blue-dot"></span>SRF: {currentSliceData.SRF} px</div>
-                <div className="legend-item"><span className="dot red-dot"></span>PED: {currentSliceData.IRF} px</div>
-                <div className="legend-item"><span className="dot green-dot"></span>IRF: {currentSliceData.PED} px</div>
+                <div className="legend-item"><span className="dot green-dot"></span>PED: {currentSliceData.PED} px</div>
+                <div className="legend-item"><span className="dot red-dot"></span>IRF: {currentSliceData.IRF} px</div>
                 <div className="legend-item"><span className="dot yellow-dot"></span>SHRM: {currentSliceData.SHRM} px</div>
                 <div className="legend-item"><span className="dot purple-dot"></span>IS/OS: {currentSliceData.IS_OS} px</div>
               </div>

@@ -236,15 +236,23 @@ def get_dataset_metadata(dataset_id: str):
         with open(csv_path, mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
+                # The AI model outputs PED and IRF in swapped columns in the CSV.
+                # We swap them back here so the frontend receives the correct data.
                 srf = int(float(row.get("SRF_Pixels", row.get("SRF", 0))))
-                ped = int(float(row.get("PED_Pixels", row.get("PED", 0))))
-                irf = int(float(row.get("IRF_Pixels", row.get("IRF", 0))))
+                ped_raw = int(float(row.get("PED_Pixels", row.get("PED", 0))))
+                irf_raw = int(float(row.get("IRF_Pixels", row.get("IRF", 0))))
+                ped = irf_raw
+                irf = ped_raw
+                
                 shrm = int(float(row.get("SHRM_Pixels", row.get("SHRM", 0))))
                 is_os = int(float(row.get("IS/OS_Pixels", row.get("IS/OS", 0))))
                 
                 srf_conf = float(row.get("SRF_Confidence", 0.0))
-                ped_conf = float(row.get("PED_Confidence", 0.0))
-                irf_conf = float(row.get("IRF_Confidence", 0.0))
+                ped_conf_raw = float(row.get("PED_Confidence", 0.0))
+                irf_conf_raw = float(row.get("IRF_Confidence", 0.0))
+                ped_conf = irf_conf_raw
+                irf_conf = ped_conf_raw
+                
                 shrm_conf = float(row.get("SHRM_Confidence", 0.0))
                 is_os_conf = float(row.get("IS/OS_Confidence", 0.0))
                 
