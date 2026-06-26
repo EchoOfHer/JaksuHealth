@@ -236,8 +236,6 @@ def get_dataset_metadata(dataset_id: str):
         with open(csv_path, mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                # The AI model outputs PED and IRF in swapped columns in the CSV.
-                # We swap them back here so the frontend receives the correct data.
                 srf = int(float(row.get("SRF_Pixels", row.get("SRF", 0))))
                 ped_raw = int(float(row.get("PED_Pixels", row.get("PED", 0))))
                 irf_raw = int(float(row.get("IRF_Pixels", row.get("IRF", 0))))
