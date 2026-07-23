@@ -19,27 +19,29 @@ We are proud to have represented Mae Fah Luang University (MFU) and achieved the
 * 🎤 **National Finalist & Exhibitor** - SITE 2026
 
 <table align="center" border="0" cellpadding="10">
-  <!-- แถวบน: 2 รูป (Regional Pitching) -->
+  <!-- แถวบน: 3 รูป (Regional Pitching) -->
   <tr>
-    <td align="center" valign="top">
-     <img width="450" alt="image" src="https://github.com/user-attachments/assets/51c0da50-786e-4914-8542-665b9d20d2ba" />
-      <p><i>บรรยากาศการนำเสนอผลงาน Regional Pitching Round</i></p>
+    <td  align="center" valign="top">
+      <img width="700" alt="JaksuHealth team at Coaching Camp" src="https://github.com/user-attachments/assets/2d585616-b4c4-469a-b08e-7d9e5947df0c" />
+      <p><i>1st Runner-Up "Star of the Camp" (Coaching Camp)</i></p>
     </td>
     <td align="center" valign="top">
-      <img width="400" alt="JaksuHealth Team Winning 1st Place Regional Pitching" src="https://github.com/user-attachments/assets/ebdce96c-af20-44a6-b731-bd19d76483a9" />
-      <p><i>ทีม JaksuHealth รับรางวัลชนะเลิศอันดับ 1 (ตัวแทนภาคเหนือ)</i></p>
+     <img width="700" alt="Regional Pitching Room" src="https://github.com/user-attachments/assets/51c0da50-786e-4914-8542-665b9d20d2ba" />
+      <p><i>Regional Pitching Round Atmosphere</i></p>
     </td>
   </tr>
-  <!-- แถวล่าง: 1 รูป (Star of the camp) -->
-  <tr>
-    <td colspan="2" align="center">
-      <img width="700" alt="JaksuHealth team at Coaching Camp" src="https://github.com/user-attachments/assets/2d585616-b4c4-469a-b08e-7d9e5947df0c" />
-      <p><i>ทีมรับรางวัลรองชนะเลิศ Star of the Camp (Coaching Camp)</i></p>
+  <td align="center" valign="top">
+      <img width="700" alt="Team at Pitching" src="https://github.com/user-attachments/assets/35cbed28-0dea-4d10-b633-bd55c962eea6" />
+      <p><i>Team JaksuHealth - 1st Place Winners</i></p>
     </td>
+    <td align="center" valign="top">
+      <img width="700" alt="Winning 1st Place" src="https://github.com/user-attachments/assets/ebdce96c-af20-44a6-b731-bd19d76483a9" />
+      <p><i>Award Ceremony Group Photo</i></p>
+    </td>
+  <tr>
+    
   </tr>
 </table>
-
-
 
 ## 🚀 Our Journey
 
@@ -47,11 +49,11 @@ We are proud to have represented Mae Fah Luang University (MFU) and achieved the
   <tr>
     <td align="center" valign="top">
       <img width="400" alt="Atmosphere of National Pitching at SITE 2026" src="https://github.com/user-attachments/assets/3c013237-deaf-4d50-8c4e-3aa766225614" />
-      <p><i>บรรยากาศการนำเสนอผลงานระดับประเทศ SITE 2026</i></p>
+      <p><i>National Pitching at SITE 2026</i></p>
     </td>
     <td align="center" valign="top">
       <img width="400" alt="JaksuHealth Team with competition backdrop at SITE 2026" src="https://github.com/user-attachments/assets/7fbb0ada-18b3-49e0-838c-53a2e7a81d19" />
-      <p><i>ทีม JaksuHealth in SITE 2026</i></p>
+      <p><i>Team JaksuHealth at SITE 2026</i></p>
     </td>
   </tr>
 </table>
@@ -68,4 +70,3 @@ This project was brought to life by a dedicated core team of 5 members:
 * 🤖 **Q** — Large Language Model (LLM) Training
 * 📈 **Dream** — Marketing, Business Strategy, & Pitching
 * ⚖️ **Suai** — Legal Affairs
-
