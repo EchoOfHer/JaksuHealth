@@ -66,7 +66,7 @@ While we didn't take home the national trophy, the experience was our greatest r
 This project was brought to life by a dedicated core team of 5 members:
 
 * 👨‍💻 **Natthawut Saengmani (Me)** — Project Manager, Fullstack Web Development, AWS Cloud Deployment, & Pitching
-* 🧠 **Peach** — Computer Vision Model Training
+* 🧠 **Jirawat Jakthong (Peach)** — Computer Vision Model Training
 * 🤖 **Q** — Large Language Model (LLM) Training
 * 📈 **Dream** — Marketing, Business Strategy, & Pitching
-* ⚖️ **Suai** — Legal Affairs
+* ⚖️ **Khaosuay** — Legal Affairs
